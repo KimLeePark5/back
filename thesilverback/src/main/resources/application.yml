@@ -3,9 +3,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/comprehensive
-    username: ohgiraffers
-    password: ohgiraffers
+    url: jdbc:mysql://localhost:3306/thesilver
+    username: thesilver
+    password: thesilver
 
   # jpa config
   jpa:
