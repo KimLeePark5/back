@@ -1,0 +1,61 @@
+#---- CHECK ----
+# datasource config
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/comprehensive
+    username: ohgiraffers
+    password: ohgiraffers
+
+  # jpa config
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # file upload size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# server port
+server:
+  port: 8001
+
+# parameter logging view
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+#---- CHECK ----
+# image file
+image:
+  image-url: http://localhost:8001/productimgs/
+  image-dir: src/main/resources/static/productimgs
+
+#---- CHECK ----
+# jwt setting
+jwt:
+  secret: asdfjp298pafo1320efqw0udvnh0er0h412r08byfdq9dsvh02143908hfeqwn80fdqs0nfdqs0n412013rq0nqefn08dfas0das730732g86923
+  access:
+    expiration: 3600000
+    #expiration: 1000
+  refresh:
+    expiration: 604800000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
