@@ -10,6 +10,7 @@ import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
 import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
+import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,9 +55,9 @@ public class CustomerService {
         return customerResponse;
     }
 
-    public Page<License> getLicenses(Long customerCode,Integer page) {
+    public Page<LicensesResponse> getLicenses(Long customerCode,Integer page) {
         Page<License> licenses = licenseRepository.findByCustomerCustomerCode(customerCode, getPageableLicense(page));
-        return licenses;
+        return licenses.map(license -> LicensesResponse.from(license));
     }
 
     public Long save(CreateCustomersRequest createCustomersRequest) {
@@ -65,17 +66,25 @@ public class CustomerService {
         return customer.getCustomerCode();
     }
 
-    public void update(Long customersCode, UpdateCustomersRequest updateCustomersRequest) {
-        Customer findCustomer = customerRepository.findById(customersCode).orElseThrow();
+    public void update(Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
+        Customer findCustomer = customerRepository.findById(customerCode).orElseThrow();
         findCustomer.update(updateCustomersRequest);
     }
 
-    public Long saveLicenses(Long customersCode, CreateLicensesRequest createLicensesRequest) {
+    public Long saveLicenses(Long customerCode, CreateLicensesRequest createLicensesRequest) {
 
-        Customer customer = customerRepository.findById(customersCode).orElseThrow();
+        Customer customer = customerRepository.findById(customerCode).orElseThrow();
         License newLicense = License.of(customer,createLicensesRequest);
 
         License license = licenseRepository.save(newLicense);
         return license.getLicenseCode();
+    }
+
+    public void deleteCustomer(Long customerCode) {
+        customerRepository.deleteById(customerCode);
+    }
+
+    public void deleteLicense(Long licenseCode) {
+        licenseRepository.deleteById(licenseCode);
     }
 }

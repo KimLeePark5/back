@@ -11,6 +11,7 @@ import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
 import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
+import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
 import com.kimleepark.thesilver.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class CustomerController {
 
     @GetMapping("/customers/licenses/{customerCode}")
     public ResponseEntity<PagingResponse> getLicenses(@PathVariable Long customerCode, @RequestParam(defaultValue = "1") Integer page) {
-        Page<License> licenses = customerService.getLicenses(customerCode, page);
+        Page<LicensesResponse> licenses = customerService.getLicenses(customerCode, page);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(licenses);
         final PagingResponse pagingResponse = PagingResponse.of(licenses.getContent(), pagingButtonInfo);
         return ResponseEntity.ok(pagingResponse);
@@ -69,20 +70,34 @@ public class CustomerController {
         return ResponseEntity.created(URI.create("/customers/" + customerCode)).build();
     }
 
-    @PutMapping("/customers/{customersCode}")
-    public ResponseEntity<Void> update(@PathVariable Long customersCode,
+    @PutMapping("/customers/{customerCode}")
+    public ResponseEntity<Void> update(@PathVariable Long customerCode,
                                        @RequestBody @Valid UpdateCustomersRequest updateCustomersRequest) {
-        customerService.update(customersCode, updateCustomersRequest);
+        customerService.update(customerCode, updateCustomersRequest);
 
-        return ResponseEntity.created(URI.create("/customers/" + customersCode)).build();
+        return ResponseEntity.created(URI.create("/customers/" + customerCode)).build();
     }
 
-    @PostMapping("/customers/licenses/{customersCode}")
-    public ResponseEntity<Void> saveLicenses(@PathVariable Long customersCode,
+    @PostMapping("/customers/licenses/{customerCode}")
+    public ResponseEntity<Void> saveLicenses(@PathVariable Long customerCode,
                                              @RequestBody @Valid CreateLicensesRequest createLicensesRequest) {
-        Long licenseCode = customerService.saveLicenses(customersCode, createLicensesRequest);
+        Long licenseCode = customerService.saveLicenses(customerCode, createLicensesRequest);
         System.out.println("customerCode : " + licenseCode);
 
         return ResponseEntity.created(URI.create("/customers/" + licenseCode)).build();
+    }
+
+    @DeleteMapping("/customers/{customerCode}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long customerCode) {
+        customerService.deleteCustomer(customerCode);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/customers/licenses/{licenseCode}")
+    public ResponseEntity<Void> deleteLicense(@PathVariable Long licenseCode) {
+        customerService.deleteLicense(licenseCode);
+
+        return ResponseEntity.noContent().build();
     }
 }
