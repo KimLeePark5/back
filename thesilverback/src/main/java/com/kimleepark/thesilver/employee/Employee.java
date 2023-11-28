@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -32,8 +33,9 @@ public class Employee {
     @Column(nullable = false)
     private String registrationNumber;
 
+    @Enumerated(value = STRING)
     @Column
-    private String workingStatus;
+    private WorkingType workingStatus;
 
     @Column(nullable = false)
     private String employeeEmail;
@@ -93,4 +95,12 @@ public class Employee {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="team_code")
     private Team team;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="employeeCode")
+    private List<LeaveHistory> leaveHistoryList;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="employeeCode")
+    private List<RankHistory> rankHistoryList;
 }

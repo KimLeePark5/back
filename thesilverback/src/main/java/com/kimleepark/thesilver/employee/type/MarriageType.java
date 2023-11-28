@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum MarriageType {
 
-    MARRIAGE("marriage"),
+    MARRIAGE("결혼"),
 
-    SINGLE("single");
+    SINGLE("미혼");
 
     private final String value;
 

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum WorkingType {
 
-    WORK("work"),
+    WORK("근무"),
 
-    TIMEOFF("timeOff");
+    TIMEOFF("휴직");
 
     private final String value;
 
