@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum LeaveType {
 
-    YES("yes"),
+    YES("퇴사"),
 
-    NO("no");
+    NO("근무");
 
     private final String value;
 

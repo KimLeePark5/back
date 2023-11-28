@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum DisabilityType {
 
-    DISABLED("disabled"),
+    DISABLED("장애"),
 
-    NORMAL("normal");
+    NORMAL("비장애");
 
     private final String value;
 

@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.employee.service;
 
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.employee.QLeaveHistory;
 import com.kimleepark.thesilver.employee.dto.CustomerEmployeeResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
@@ -14,6 +15,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.kimleepark.thesilver.employee.QLeaveHistory.leaveHistory;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
 
 @Service
@@ -35,9 +40,16 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CustomerEmployeeResponse> getCustomerEmployee(final Integer page){
+    public Page<CustomerEmployeeResponse> getCustomerEmployees(final Integer page){
         Page<Employee> employees = employeeRepository.findByLeave(getPageable(page), NO);
 
         return employees.map(employee -> CustomerEmployeeResponse.from(employee));
+    }
+
+    public CustomerEmployeeResponse getCustomerEmployee(Long employeeCodeCode) {
+        Employee employee = employeeRepository.findByEmployCodeAndLeave(employeeCodeCode, NO);
+//                .orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CODE));
+
+        return CustomerEmployeeResponse.from(employee);
     }
 }

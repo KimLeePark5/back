@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EmploymentType {
-    NEW("new"),
+    NEW("신입"),
 
-    VETERAN("veteran");
+    VETERAN("경력");
 
     private final String value;
 
