@@ -47,7 +47,7 @@ public class EmployeeService {
     }
 
     public CustomerEmployeeResponse getCustomerEmployee(Long employeeCodeCode) {
-        Employee employee = employeeRepository.findByEmployCodeAndLeave(employeeCodeCode, NO);
+        Employee employee = employeeRepository.findByEmployeeCodeAndLeave(employeeCodeCode, NO);
 //                .orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CODE));
 
         return CustomerEmployeeResponse.from(employee);
