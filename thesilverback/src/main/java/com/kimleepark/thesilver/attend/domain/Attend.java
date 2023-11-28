@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.attend.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.attend.domain.type.AttendType;
+import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -46,7 +48,7 @@ public class Attend {
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime leavetime;
 
-    private int attendTime;
+    private float attendTime;
 
     private String type;
 
@@ -55,6 +57,9 @@ public class Attend {
     @Enumerated(EnumType.STRING)
     private AttendType status = AttendType.N;
 
+    public static final String LATE = "지각";
+    public static final String OVERTIME = "연장근무";
+    public static final String LEAVE_EARLY = "조퇴";
     public static Attend of() {
 
         return new Attend();
@@ -63,7 +68,46 @@ public class Attend {
     public static void setEmp(Attend attend,int empNo){
         attend.employeeCode = empNo;
     }
-    public static void setLeaveTime(Attend attend){
-        attend.leavetime = LocalTime.now();
+
+
+    public void updateType() {
+        this.type = OVERTIME;
+    }
+    public void setLeaveTime(){
+        this.leavetime = LocalTime.now();
+    }
+
+    public void setAttendTime(float attendTime) {
+        this.attendTime = attendTime;
+    }
+
+    public void updateNote(String note) {
+        switch(note){
+            case "EARLY_LEAVE" : this.updateNote(LEAVE_EARLY);
+            break;
+            case "LATE" : this.updateNote(LATE);
+            break;
+
+        }
+    }
+
+    public void updateAttend(RequestAttend requestAttend) {
+        if (requestAttend.getEnterTime() != null){
+            this.entertime = requestAttend.getEnterTime();
+        }
+        if(requestAttend.getLeaveTime() != null){
+            this.leavetime = requestAttend.getLeaveTime();
+        }
+        if(requestAttend.getType() != null){
+            this.type = requestAttend.getType();
+        }
+        if(requestAttend.getNote() != null){
+            this.note = requestAttend.getNote();
+        }
+
+        Duration diff = Duration.between(this.entertime,this.leavetime);
+
+        this.attendTime = (float) diff.toMinutes() /60;
+
     }
 }

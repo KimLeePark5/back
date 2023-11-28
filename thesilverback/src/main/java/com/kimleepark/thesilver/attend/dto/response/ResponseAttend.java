@@ -19,7 +19,7 @@ public class ResponseAttend {
     private final LocalDate attendDate;
     private final LocalTime enterTime;
     private final LocalTime leaveTime;
-    private final int attendTime;
+    private final float attendTime;
     private final String type;
     private final String note;
 
