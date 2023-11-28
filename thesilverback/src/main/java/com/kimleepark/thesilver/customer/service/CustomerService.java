@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.customer.service;
 
+import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.customer.domain.Customer;
 import com.kimleepark.thesilver.customer.domain.License;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CUSTOMER_CODE;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
 
 @Service
@@ -50,7 +52,8 @@ public class CustomerService {
     }
 
     public CustomerResponse getCustomer (final Long customerCode) {
-        Customer customer = customerRepository.findByCustomerCode(customerCode).orElse(null);
+        Customer customer = customerRepository.findByCustomerCode(customerCode)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
         CustomerResponse customerResponse = CustomerResponse.from(customer);
         return customerResponse;
     }
