@@ -90,7 +90,7 @@ public class Employee {
     @Column
     private LeaveType leave;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "Employee")
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="team_code")
     private Team team;
 }

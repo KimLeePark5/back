@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.vacation.domain;
 
-import lombok.Generated;
+
+import com.kimleepark.thesilver.employee.Employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
