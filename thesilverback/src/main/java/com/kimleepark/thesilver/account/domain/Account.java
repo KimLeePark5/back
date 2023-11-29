@@ -49,8 +49,19 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountChangeStatus changeStatus = UNCHANGED;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeCode")
     private Employee employee;
 
+
+
+
+
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 }
+
+

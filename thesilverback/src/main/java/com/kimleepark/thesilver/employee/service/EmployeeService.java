@@ -1,7 +1,6 @@
 package com.kimleepark.thesilver.employee.service;
 
 import com.kimleepark.thesilver.employee.Employee;
-import com.kimleepark.thesilver.employee.QLeaveHistory;
 import com.kimleepark.thesilver.employee.dto.CustomerEmployeeResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.kimleepark.thesilver.employee.QLeaveHistory.leaveHistory;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
 
 @Service
