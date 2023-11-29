@@ -10,6 +10,9 @@ import com.kimleepark.thesilver.attend.dto.response.ResponseAttend;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +72,7 @@ public class AttendService {
         log.info("attend : {}", attend);
 
         LocalTime now = LocalTime.now();
-        LocalTime limit = LocalTime.of(11,30);
+        LocalTime limit = LocalTime.of(18,30);
         LocalTime leaveEarly = LocalTime.of(17,50);
 
 
@@ -83,7 +86,7 @@ public class AttendService {
         attend.setLeaveTime();
 
         Duration diff = Duration.between(attend.getEntertime(), attend.getLeavetime());
-        float attendTime = (float) diff.toMinutesPart() /60;
+        float attendTime = (float) diff.toMinutesPart()/60;
         attend.setAttendTime(attendTime);
     }
 
@@ -103,9 +106,16 @@ public class AttendService {
         modifiedAttendRepository.save(newModifiedAttend);
     }
 
-    public Page<ResponseModifiedAttend> getModifiedAttend(int currentPage) {
 
+
+    public Page<ResponseModifiedAttend> getModifiedAttend(int currentPage, int modifiedNo) {
+        Page<ModifiedAttend> attendHistory = modifiedAttendRepository.findByAttendNo(getPageable(currentPage),modifiedNo);
+        log.info("attendHistory : {}", attendHistory.getContent());
         return null;
+    }
+
+    private Pageable getPageable(int currentPage) {
+        return PageRequest.of(currentPage-1,6);
     }
 
 

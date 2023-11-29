@@ -12,7 +12,7 @@ public class ResponseModifiedAttend {
     private final int employeeCode;
     private final LocalDateTime modifiedAt;
     private final LocalTime beforeEntertime;
-    private final LocalTime afterEnterTime;
+    private final LocalTime afterEntertime;
     private final LocalTime beforeLeavetime;
     private final LocalTime afterLeavetime;
     private final String note;

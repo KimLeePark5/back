@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.attend.domain;
 
 import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,13 +14,14 @@ import java.time.LocalTime;
 @Table(name = "tbl_modifiedattend")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
+@ToString
 public class ModifiedAttend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long modifiedNo;
-    @JoinColumn(name = "attendNo")
-    @ManyToOne
-    private Attend attendNo;
+
+    private int attendNo;
+
     private int employeeCode;
     @LastModifiedDate
     @Column(nullable = false)
@@ -32,7 +34,7 @@ public class ModifiedAttend {
     private String type;
 
     public ModifiedAttend(Attend attend, int empNo, LocalTime beforeEntertime, LocalTime afterEnterTime, LocalTime beforLeavetime, LocalTime AfterLeaveTime, String note, String type) {
-        this.attendNo = attend;
+        this.attendNo = attend.getAttendNo();
         this.employeeCode = empNo;
         this.beforeEntertime = beforeEntertime;
         this.afterEntertime = afterEnterTime;

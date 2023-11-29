@@ -81,9 +81,9 @@ public class AttendController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/getMdofiedAttend")
-    public ResponseEntity<Page<ResponseModifiedAttend>> getModifiedAttend(@RequestParam(defaultValue = "1") Integer page){
-        Page<ResponseModifiedAttend> responseModifiedAttends = attendService.getModifiedAttend(page);
+    @GetMapping("/getModifiedAttend/{modifiedNo}")
+    public ResponseEntity<Page<ResponseModifiedAttend>> getModifiedAttend(@RequestParam(defaultValue = "1") Integer page,@PathVariable int modifiedNo){
+        Page<ResponseModifiedAttend> responseModifiedAttends = attendService.getModifiedAttend(page, modifiedNo);
 
 
 
