@@ -84,7 +84,7 @@ public class Employee {
     @Column
     private String employeePicture;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="rank_code")
     private Rank rank;
 
