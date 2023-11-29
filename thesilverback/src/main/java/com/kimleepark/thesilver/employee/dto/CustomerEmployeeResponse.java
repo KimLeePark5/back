@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.employee.dto;
 
+import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.type.*;
 import lombok.Getter;

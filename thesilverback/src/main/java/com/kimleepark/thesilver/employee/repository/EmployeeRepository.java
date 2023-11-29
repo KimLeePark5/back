@@ -16,5 +16,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @EntityGraph(attributePaths = {"rank","team","leaveHistoryList"})
     Page<Employee> findByLeave(Pageable pageable, LeaveType leaveType);
 
-    Employee findByEmployeeCodeAndLeave(Long employeeCodeCode, LeaveType leaveType);
+    Employee findByEmployeeCodeAndLeave(Long employeeCode, LeaveType leaveType);
 }
