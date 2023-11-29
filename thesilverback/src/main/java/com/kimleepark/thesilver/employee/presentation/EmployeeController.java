@@ -30,9 +30,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{employeeCode}")
-    public ResponseEntity<CustomerEmployeeResponse> getCustomerProduct(@PathVariable final Long employeeCodeCode) {
+    public ResponseEntity<CustomerEmployeeResponse> getCustomerProduct(@PathVariable final Long employeeCode) {
 
-        final CustomerEmployeeResponse customerEmployeeResponse = employeeService.getCustomerEmployee(employeeCodeCode);
+        final CustomerEmployeeResponse customerEmployeeResponse = employeeService.getCustomerEmployee(employeeCode);
 
         return ResponseEntity.ok(customerEmployeeResponse);
     }
