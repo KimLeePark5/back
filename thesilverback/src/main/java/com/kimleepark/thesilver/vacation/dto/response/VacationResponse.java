@@ -14,15 +14,14 @@ public class VacationResponse {
     private final LocalDateTime occurYear;
     private final Long occurVacation;
     private final Long useVacation;
-    private final String employeeName;
+
 
     public static VacationResponse from(final Vacation vacation) {
         return new VacationResponse(
                 vacation.getVacationCode(),
                 vacation.getOccurYear(),
                 vacation.getOccurVacation(),
-                vacation.getUseVacation(),
-                vacation.getEmployee().getEmployeeName()
+                vacation.getUseVacation()
         );
     }
 }
