@@ -16,5 +16,4 @@ public class PagingResponse {
     public static PagingResponse of(Object data, PagingButtonInfo pagingButtonInfo) {
         return new PagingResponse(data, pagingButtonInfo);
     }
-
 }

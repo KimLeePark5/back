@@ -43,7 +43,7 @@ image:
 #---- CHECK ----
 # jwt setting
 jwt:
-  secret: asdfjp298pafo1320efqw0udvnh0er0h412r08byfdq9dsvh02143908hfeqwn80fdqs0nfdqs0n412013rq0nqefn08dfas0das730732g86923
+  secret: WOSQm0RhClTbPJ//eWqAqw3+kUkKvCnE/NqYM35o1tpzYIBDaQocMDudhlZfV7tkxl39dcvE6tL809eAcRoGPLqccHb6jjhIjakMzhP8FvZGedTlSs6iHmYCLKEmf5n7YE5XpMzU+dOWau5hhJ7NmxCcyMHEtO
   access:
     expiration: 3600000
     #expiration: 1000

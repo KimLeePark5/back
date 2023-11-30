@@ -14,22 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class ThesilverApplicationTests {
 
-    @Autowired
-    EntityManager em;
 
-    @Test
-    void contextLoads() {
-        Hello hello = new Hello();
-        em.persist(hello);
-
-        JPAQueryFactory query = new JPAQueryFactory(em);
-        QHello qHello = new QHello("h");
-
-        Hello result = query
-                .selectFrom(qHello)
-                .fetchOne();
-
-
-    }
 
 }

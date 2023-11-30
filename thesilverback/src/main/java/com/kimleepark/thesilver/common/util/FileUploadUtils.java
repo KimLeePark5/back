@@ -15,31 +15,31 @@ import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.FAIL_
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.FAIL_TO_UPLOAD_FILE;
 
 public class FileUploadUtils {
+    public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) {
 
-    public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile){
-
-        try(InputStream inputStream = multipartFile.getInputStream()){
+        try(InputStream inputStream = multipartFile.getInputStream()) {
 
             Path uploadPath = Paths.get(uploadDir);
-            //업로드 경로가 존재하지 않을 시 경로 먼저 생성
-            if (!Files.exists(uploadPath))
+            /* 업로드 경로가 존재하지 않을 시 경로 먼저 생성 */
+            if(!Files.exists(uploadPath))
                 Files.createDirectories(uploadPath);
 
-            //파일명 생성
+            /* 파일명 생성 */
             String replaceFileName = fileName + "." + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
-            //파일 저장
+            /* 파일 저장 */
             Path filePath = uploadPath.resolve(replaceFileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 
             return replaceFileName;
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new ServerInternalException(FAIL_TO_UPLOAD_FILE);
         }
     }
 
-    public static void deleteFile(String uploadDir, String fileName){
+    public static void deleteFile(String uploadDir, String fileName) {
+
         try {
             Path uploadPath = Paths.get(uploadDir);
             Path filePath = uploadPath.resolve(fileName);
@@ -58,5 +58,6 @@ public class FileUploadUtils {
             e.printStackTrace();
             throw new ServerInternalException(FAIL_TO_DELETE_FILE);
         }
+
     }
 }
