@@ -43,8 +43,19 @@ public class FileUploadUtils {
         try {
             Path uploadPath = Paths.get(uploadDir);
             Path filePath = uploadPath.resolve(fileName);
-            Files.delete(filePath);
+
+            // 파일이 존재하는지 확인
+            if (Files.exists(filePath)) {
+                // 파일 삭제
+                Files.delete(filePath);
+            } else {
+                // 파일이 존재하지 않으면 로그 또는 예외 처리를 수행할 수 있습니다.
+                System.out.println("파일이 존재하지 않습니다: " + filePath);
+                // 또는 throw new NotFoundException("파일을 찾을 수 없습니다"); 등으로 예외 처리할 수 있습니다.
+            }
         } catch (IOException e) {
+            // 예외 발생 시 로그 또는 예외 처리를 수행할 수 있습니다.
+            e.printStackTrace();
             throw new ServerInternalException(FAIL_TO_DELETE_FILE);
         }
 
