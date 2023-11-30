@@ -225,6 +225,19 @@ public class ProgramService {
         }
     }
 
+    // 프로그램 삭제(관리자)
+    public void delete(Long programCode) {
+        // 프로그램 조회
+        Program program = programRepository.findById(programCode)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
+
+        // 이미지 파일 삭제
+        String profilePicture = program.getTeacher().getProfilePicture().replace(IMAGE_URL, "");
+        FileUploadUtils.deleteFile(IMAGE_DIR, profilePicture);
+
+        // 프로그램 삭제
+        programRepository.deleteById(programCode);
+    }
 
 
 }
