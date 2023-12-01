@@ -48,7 +48,7 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public Page<CustomerEmployeeResponse> getCustomerEmployees(final Integer page){
-        Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+        Page<Employee> employees = employeeRepository.findByLeave(getPageable(page), NO);
 
     public Page<CustomerEmployeesResponse> getCustomerEmployeesManager(final Integer page){
         Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
