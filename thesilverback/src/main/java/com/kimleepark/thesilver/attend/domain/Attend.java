@@ -3,23 +3,18 @@ package com.kimleepark.thesilver.attend.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.attend.domain.type.AttendType;
 import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
-import lombok.AccessLevel;
+import com.kimleepark.thesilver.employee.Employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Entity
 @Table(name = "tbl_attend")
@@ -27,15 +22,16 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Where(clause = "status = 'N'")
-@ToString
 public class Attend {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int attendNo;
 
-    @Column(nullable = false)
-    private int employeeCode;
+
+    @JoinColumn(name = "employeeCode")
+    @ManyToOne
+    private Employee employeeCode;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
@@ -65,8 +61,8 @@ public class Attend {
         return new Attend();
     }
 
-    public static void setEmp(Attend attend,int empNo){
-        attend.employeeCode = empNo;
+    public static void setEmp(Attend attend, Employee employee){
+        attend.employeeCode = employee;
     }
 
 
@@ -109,5 +105,20 @@ public class Attend {
 
         this.attendTime = (float) diff.toMinutes() /60;
 
+    }
+
+
+    @Override
+    public String toString() {
+        return "Attend{" +
+                "attendNo=" + attendNo +
+                ", attendDate=" + attendDate +
+                ", entertime=" + entertime +
+                ", leavetime=" + leavetime +
+                ", attendTime=" + attendTime +
+                ", type='" + type + '\'' +
+                ", note='" + note + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
