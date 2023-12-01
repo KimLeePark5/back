@@ -1,5 +1,7 @@
 package com.kimleepark.thesilver.employee;
 
+import com.kimleepark.thesilver.attend.domain.Attend;
+import com.kimleepark.thesilver.attend.domain.Attend;
 import com.kimleepark.thesilver.employee.type.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -111,6 +113,14 @@ public class Employee {
     @JoinColumn(name="employeeCode")
     @Fetch(FetchMode.SUBSELECT)
     private List<RankHistory> rankHistoryList;
+
+    @OneToMany(mappedBy = "employeeCode")
+    private List<Attend> attendList;
+
+
+
+
+
 
     public Employee(String employeePicture, Long rankCode, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDateTime joinDate, Team team, Rank rank, String s) {
         this.employeeName = employeeName;
