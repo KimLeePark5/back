@@ -4,13 +4,9 @@ package com.kimleepark.thesilver.attend.presentation;
 import com.kimleepark.thesilver.attend.dto.ResponseModifiedAttend;
 import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
 import com.kimleepark.thesilver.attend.dto.response.ResponseAttend;
-import com.kimleepark.thesilver.attend.dto.response.ResponseAttendAdminAndModifiedAttend;
 import com.kimleepark.thesilver.attend.dto.response.ResponseAttendType;
 import com.kimleepark.thesilver.attend.dto.response.ResponseTypeAndAttend;
 import com.kimleepark.thesilver.attend.service.AttendService;
-import com.kimleepark.thesilver.common.paging.Pagenation;
-import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
-import com.kimleepark.thesilver.common.paging.PagingResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +28,11 @@ public class AttendController {
     private final AttendService attendService;
 
     @GetMapping("/myAttend")
-    public ResponseEntity<ResponseTypeAndAttend> getEmpAttend(@RequestParam final String month){
+    public ResponseEntity<ResponseTypeAndAttend> getEmpAttend(@RequestParam final String month) throws ParseException {
         int empNo = 1;
         List<ResponseAttend> responseAttend = attendService.getEmpAttend(empNo,month);
 
-        ResponseAttendType responseAttendType = ResponseAttendType.getAttendTypeCount(responseAttend,(long)empNo);
+        ResponseAttendType responseAttendType = ResponseAttendType.getAttendTypeCount(responseAttend);
 
         log.info("responseAttend : {}", responseAttend);
         log.info("responseAttendType : {}", responseAttendType);
@@ -49,9 +45,6 @@ public class AttendController {
     @PostMapping("/enter")
     public ResponseEntity<Void> enter(){
         int empNo = 1;
-
-
-        attendService.dupcheckToday(empNo);
 
         attendService.enterTimeSave(empNo);
 
@@ -77,11 +70,9 @@ public class AttendController {
         return ResponseEntity.ok(responseAttend);
     }
 
-
-
     @PutMapping("/modifyAttend/{attendNo}")
     public ResponseEntity<Void> modifyAttend(@PathVariable final int attendNo, @RequestBody RequestAttend requestAttend){
-
+                                                                                // Requestparam
         log.info("requestAttend : {}",requestAttend);
         log.info("attendNo : {}",attendNo);
         int empNo = 2; //수정자
@@ -91,23 +82,12 @@ public class AttendController {
     }
 
     @GetMapping("/getModifiedAttend/{modifiedNo}")
-    public ResponseEntity<PagingResponse> getModifiedAttend(@RequestParam(defaultValue = "1") Integer page,@PathVariable int modifiedNo){
+    public ResponseEntity<Page<ResponseModifiedAttend>> getModifiedAttend(@RequestParam(defaultValue = "1") Integer page,@PathVariable int modifiedNo){
         Page<ResponseModifiedAttend> responseModifiedAttends = attendService.getModifiedAttend(page, modifiedNo);
-        PagingButtonInfo pagingButton = Pagenation.getPagingButtonInfo(responseModifiedAttends);
-        PagingResponse pagingResponse = PagingResponse.of(responseModifiedAttends, pagingButton);
 
 
 
-        return ResponseEntity.ok(pagingResponse);
-    }
-
-    @GetMapping("/getAttendAdmin")
-    public ResponseEntity<PagingResponse> getAttendAdmin(@RequestParam(defaultValue = "1") final Integer page){
-        ResponseAttendAdminAndModifiedAttend list = attendService.getAttendAdmin(page);
-        PagingButtonInfo button = Pagenation.getPagingButtonInfo(list.getResponseAttendAdmin());
-        PagingResponse pagingResponse = PagingResponse.of(list,button);
-
-        return ResponseEntity.ok(pagingResponse);
+        return null;
     }
 
 }
