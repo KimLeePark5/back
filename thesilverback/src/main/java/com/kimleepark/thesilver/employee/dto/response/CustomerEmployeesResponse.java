@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.employee.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.type.*;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class CustomerEmployeesResponse {
     private final String registrationNumber;
     private final String employeePhone;
     private final String employeeAddress;
+    @JsonFormat(pattern = "yyyy.MM.dd")
     private final LocalDateTime joinDate;
     private final LocalDateTime leaveDate;
     private final String leaveReason;
@@ -40,6 +42,10 @@ public class CustomerEmployeesResponse {
 
     public static CustomerEmployeesResponse from(final Employee employee){
         System.out.println(employee.getRankHistoryList());
+
+        String registrationNumber = employee.getRegistrationNumber().substring(0,2);
+        String registrationNumber2 = employee.getRegistrationNumber().substring(2,4);
+        String registrationNumber3 = employee.getRegistrationNumber().substring(4,6);
 
         List leaveHistory = employee.getLeaveHistoryList().stream().map(
                 lHistory -> {
@@ -73,7 +79,7 @@ public class CustomerEmployeesResponse {
                 employee.getPatriots(),
                 employee.getEmploymentType(),
                 employee.getWorkingStatus(),
-                employee.getRegistrationNumber(),
+                registrationNumber.concat(".").concat(registrationNumber2).concat(".").concat(registrationNumber3),
                 employee.getEmployeePhone(),
                 employee.getEmployeeAddress(),
                 employee.getJoinDate(),
