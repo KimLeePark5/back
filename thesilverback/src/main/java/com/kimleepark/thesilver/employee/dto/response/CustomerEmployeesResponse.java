@@ -14,7 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class CustomerEmployeeResponse {
+public class CustomerEmployeesResponse {
 
     private final Long employeeCode;
     private final String employeePicture;
@@ -38,7 +38,7 @@ public class CustomerEmployeeResponse {
     private final List rankHistory;
 
 
-    public static CustomerEmployeeResponse from(final Employee employee){
+    public static CustomerEmployeesResponse from(final Employee employee){
         System.out.println(employee.getRankHistoryList());
 
         List leaveHistory = employee.getLeaveHistoryList().stream().map(
@@ -62,7 +62,7 @@ public class CustomerEmployeeResponse {
 
 
 
-        return new CustomerEmployeeResponse(
+        return new CustomerEmployeesResponse(
                 employee.getEmployeeCode(),
                 employee.getEmployeePicture(),
                 employee.getRank().getRankName(),
