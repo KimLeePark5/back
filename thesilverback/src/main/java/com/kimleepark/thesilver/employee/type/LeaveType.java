@@ -15,9 +15,9 @@ public enum LeaveType {
 
     @JsonCreator
     public static LeaveType from(String value){
-        for(LeaveType leave : LeaveType.values()){
-            if(leave.getValue().equals(value)){
-                return leave;
+        for(LeaveType leaveType : LeaveType.values()){
+            if(leaveType.getValue().equals(value)){
+                return leaveType;
             }
         }
         return null;

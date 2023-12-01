@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access=PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@SQLDelete(sql = "UPDATE tbl_employee SET status = 'DELETED' WHERE employee_code = ?")
+@SQLDelete(sql = "UPDATE tbl_employee SET leave_type = 'YES' WHERE employee_code = ?")
 public class Employee {
 
     @Id
@@ -190,8 +190,6 @@ public class Employee {
                 s
         );
     }
-
-
 
 
 }
