@@ -1,20 +1,18 @@
 package com.kimleepark.thesilver.attend.dto.response;
 
-import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.attend.domain.Attend;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 @Slf4j
 @ToString
 public class ResponseAttendType {
-    private final long empNo;
     //결근
     private final int absentCount;
     //지각
@@ -26,7 +24,7 @@ public class ResponseAttendType {
     //이번달 근무시간
     private final int totalAttendTime;
 
-    public static ResponseAttendType getAttendTypeCount(List<ResponseAttend> responseAttend, Long empNo){
+    public static ResponseAttendType getAttendTypeCount(List<ResponseAttend> responseAttend){
         // 지각횟수
         int lateCount = 0;
 
@@ -55,14 +53,7 @@ public class ResponseAttendType {
                     break;
             }
         }
-        return new ResponseAttendType( empNo,absentCount,lateCount,vacationCount,leaveEarlyCount,attendTime);
-    }
 
-
-    public static ResponseAttendType getAttendTypeCountAdmin(Employee employee) {
-        List<ResponseAttend> list = employee.getAttendList().stream().map(attend ->ResponseAttend.from(attend,employee.getEmployeeCode())).collect(Collectors.toList());
-
-
-        return getAttendTypeCount(list,employee.getEmployeeCode());
+        return new ResponseAttendType(absentCount,lateCount,vacationCount,leaveEarlyCount,attendTime);
     }
 }
