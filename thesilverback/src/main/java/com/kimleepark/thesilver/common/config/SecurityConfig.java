@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/v1/programs-management/**", "/api/v1/programs/**").hasAnyRole("센터장","팀장")
 //                .antMatchers("/api/v1/**").permitAll()
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 // 로그인 필터 설정
                 .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
