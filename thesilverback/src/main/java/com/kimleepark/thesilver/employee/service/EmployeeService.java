@@ -8,7 +8,6 @@ import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeeResponse;
-import com.kimleepark.thesilver.employee.dto.CustomerEmployeeResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
 import com.kimleepark.thesilver.employee.repository.TeamRepository;
