@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.employee.service;
 
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.employee.dto.CustomerEmployeeResponse;
 
 import com.kimleepark.thesilver.employee.Rank;
 import com.kimleepark.thesilver.employee.Team;
@@ -46,6 +47,9 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
+    public Page<CustomerEmployeeResponse> getCustomerEmployees(final Integer page){
+        Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+
     public Page<CustomerEmployeesResponse> getCustomerEmployeesManager(final Integer page){
         Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
 
