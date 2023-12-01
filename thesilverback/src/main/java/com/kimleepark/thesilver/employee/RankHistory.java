@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.employee;
 import com.kimleepark.thesilver.employee.type.RankUpDownType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import javax.persistence.*;
 
