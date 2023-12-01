@@ -39,7 +39,7 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public Page<CustomerEmployeeResponse> getCustomerEmployees(final Integer page){
-        Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+        Page<Employee> employees = employeeRepository.findByLeave(getPageable(page), NO);
 
         return employees.map(employee -> CustomerEmployeeResponse.from(employee));
     }

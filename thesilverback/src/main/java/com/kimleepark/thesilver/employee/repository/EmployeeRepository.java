@@ -20,4 +20,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Employee findByEmployeeCodeAndLeave(Long employeeCode, LeaveType leaveType);
 
+
 }
