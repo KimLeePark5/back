@@ -2,13 +2,12 @@ package com.kimleepark.thesilver.employee.service;
 
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import com.kimleepark.thesilver.employee.Employee;
-
 import com.kimleepark.thesilver.employee.Rank;
 import com.kimleepark.thesilver.employee.Team;
 import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
-import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeesResponse;
+import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeeResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
 import com.kimleepark.thesilver.employee.repository.TeamRepository;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
@@ -46,23 +44,21 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CustomerEmployeesResponse> getCustomerEmployeesManager(final Integer page){
+
+    public Page<CustomerEmployeeResponse> getCustomerEmployees(final Integer page){
         Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
 
-        return employees.map(employee -> CustomerEmployeesResponse.from(employee));
+        return employees.map(employee -> CustomerEmployeeResponse.from(employee));
+
     }
 
-    public CustomerEmployeesResponse getCustomerEmployeeManager(Long employeeCodeCode) {
+    public CustomerEmployeeResponse getCustomerEmployee(Long employeeCodeCode) {
         Employee employee = employeeRepository.findByEmployeeCodeAndLeaveType(employeeCodeCode, NO);
 //                .orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CODE));
 
-        return CustomerEmployeesResponse.from(employee);
+        return CustomerEmployeeResponse.from(employee);
     }
 
-    public CustomerEmployeesResponse getCustomerEmployee(Long employeeCode) {
-        Employee employee = employeeRepository.findByEmployeeCode(employeeCode).orElseThrow();
-        return CustomerEmployeesResponse.from(employee);
-    }
 
     private String getRandomName() {
         return UUID.randomUUID().toString().replace("-", "");

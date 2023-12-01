@@ -6,7 +6,7 @@ import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
-import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeesResponse;
+import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeeResponse;
 import com.kimleepark.thesilver.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class EmployeeController {
     // 직원 정보 리스트 조회
     @GetMapping("/employees")
     public ResponseEntity<PagingResponse> getCustomerEmployees(@RequestParam(defaultValue = "1") final Integer page){
-        final Page<CustomerEmployeesResponse> employee = employeeService.getCustomerEmployeesManager(page);
+        final Page<CustomerEmployeeResponse> employee = employeeService.getCustomerEmployees(page);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(employee);
         final PagingResponse pagingResponse = PagingResponse.of(employee.getContent(), pagingButtonInfo);
 
@@ -36,18 +36,18 @@ public class EmployeeController {
 
     // 직원 정보 디테일
     @GetMapping("/employees/{employeeCode}")
-    public ResponseEntity<CustomerEmployeesResponse> getCustomerEmployees(@PathVariable final Long employeeCode) {
+    public ResponseEntity<CustomerEmployeeResponse> getCustomerEmployees(@PathVariable final Long employeeCode) {
 
-        final CustomerEmployeesResponse customerEmployeeResponse = employeeService.getCustomerEmployeeManager(employeeCode);
+        final CustomerEmployeeResponse customerEmployeeResponse = employeeService.getCustomerEmployee(employeeCode);
 
         return ResponseEntity.ok(customerEmployeeResponse);
     }
 
     //개인 정보 조회
     @GetMapping("/employee/{employeeCode}")
-    public ResponseEntity<CustomerEmployeesResponse> getCustomerEmployee(@PathVariable final Long employeeCode) {
+    public ResponseEntity<CustomerEmployeeResponse> getCustomerEmployee(@PathVariable final Long employeeCode) {
 
-        final CustomerEmployeesResponse customerEmployeeResponse = employeeService.getCustomerEmployeeManager(employeeCode);
+        final CustomerEmployeeResponse customerEmployeeResponse = employeeService.getCustomerEmployee(employeeCode);
 
         return ResponseEntity.ok(customerEmployeeResponse);
     }
