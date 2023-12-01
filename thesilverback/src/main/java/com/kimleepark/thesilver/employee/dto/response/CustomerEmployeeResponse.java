@@ -1,6 +1,5 @@
-package com.kimleepark.thesilver.employee.dto;
+package com.kimleepark.thesilver.employee.dto.response;
 
-import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.type.*;
 import lombok.Getter;
@@ -18,6 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class CustomerEmployeeResponse {
 
     private final Long employeeCode;
+    private final String employeePicture;
     private final String rank;
     private final String employeeName;
     private final GenderType gender;
@@ -33,6 +33,7 @@ public class CustomerEmployeeResponse {
     private final LocalDateTime leaveDate;
     private final String leaveReason;
     private final String team;
+    private final LeaveType leaveType;
     private final List leaveHistoryList;
     private final List rankHistory;
 
@@ -63,6 +64,7 @@ public class CustomerEmployeeResponse {
 
         return new CustomerEmployeeResponse(
                 employee.getEmployeeCode(),
+                employee.getEmployeePicture(),
                 employee.getRank().getRankName(),
                 employee.getEmployeeName(),
                 employee.getGender(),
@@ -78,6 +80,7 @@ public class CustomerEmployeeResponse {
                 employee.getLeaveDate(),
                 employee.getLeaveReason(),
                 employee.getTeam().getTeamName(),
+                employee.getLeaveType(),
                 leaveHistory,
                 rankHistory
         );
