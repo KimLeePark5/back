@@ -1,30 +1,23 @@
-package com.kimleepark.thesilver.Program.service;
+package com.kimleepark.thesilver.board.program.service;
 
-import com.kimleepark.thesilver.Program.domain.Program;
-import com.kimleepark.thesilver.Program.domain.ProgramCategory;
-import com.kimleepark.thesilver.Program.domain.Teacher;
-import com.kimleepark.thesilver.Program.domain.repository.ProgramCategoryRepository;
-import com.kimleepark.thesilver.Program.domain.repository.ProgramRepository;
-import com.kimleepark.thesilver.Program.domain.repository.TeacherRepository;
-import com.kimleepark.thesilver.Program.dto.request.ProgramCreateRequest;
-import com.kimleepark.thesilver.Program.dto.request.ProgramUpdateRequest;
-import com.kimleepark.thesilver.Program.dto.response.CustomerProgramResponse;
-import com.kimleepark.thesilver.Program.dto.response.CustomerProgramsResponse;
+import com.kimleepark.thesilver.board.program.domain.Program;
+import com.kimleepark.thesilver.board.program.domain.ProgramCategory;
+import com.kimleepark.thesilver.board.program.domain.Teacher;
+import com.kimleepark.thesilver.board.program.domain.repository.ProgramCategoryRepository;
+import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
+import com.kimleepark.thesilver.board.program.domain.repository.TeacherRepository;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
-import com.kimleepark.thesilver.common.exception.type.ExceptionCode;
-import com.kimleepark.thesilver.common.paging.Pagenation;
-import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
-import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -32,7 +25,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CATEGORY_CODE;
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
 
 @Service
@@ -43,6 +35,7 @@ public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramCategoryRepository programCategoryRepository;
     private final TeacherRepository teacherRepository;
+
 
     @Value("${image.image-url}")
     private String IMAGE_URL;
@@ -68,7 +61,7 @@ public class ProgramService {
     }
 
 
-    // 2. 프로그램 목록 조회 - 프로그램명 검색 기준, 페이징 (직원, 관리자)
+    // 2. 프로그램 목록 조회 - 프로그램명 입력 검색 기준, 페이징 (직원, 관리자)
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerProgramsByCategory(final Integer page, final String categoryName) {
         Pageable pageable = getPageable(page);
@@ -121,7 +114,7 @@ public class ProgramService {
 
             // 새로운 강사를 생성합니다.
             Teacher teacher = new Teacher();
-            teacher.setName(programRequest.getName());
+            teacher.setTeacherName(programRequest.getTeacherName());
             teacher.setBirthDate(programRequest.getBirthDate());
             teacher.setGender(programRequest.getGender());
             teacher.setPhone(programRequest.getPhone());
@@ -129,7 +122,7 @@ public class ProgramService {
             teacher.setAddress(programRequest.getAddress());
             teacher.setDetailAddress(programRequest.getDetailAddress());
             teacher.setProfilePicture(IMAGE_URL + replaceFileName); // 프로필 사진 URL 설정
-            System.out.println("새로운 강사 생성 : " + teacher.getName());
+            System.out.println("새로운 강사 생성 : " + teacher.getTeacherName());
 
             // 강사를 저장합니다.
             teacher = teacherRepository.save(teacher);
@@ -201,7 +194,7 @@ public class ProgramService {
 
             // 강사 정보 업데이트
             Teacher teacher = program.getTeacher();
-            teacher.setName(programRequest.getName());
+            teacher.setTeacherName(programRequest.getTeacherName());
             teacher.setBirthDate(programRequest.getBirthDate());
             teacher.setGender(programRequest.getGender());
             teacher.setPhone(programRequest.getPhone());
@@ -225,19 +218,25 @@ public class ProgramService {
         }
     }
 
-    // 프로그램 삭제(관리자)
+    // 6. 프로그램 삭제(관리자)
     public void delete(Long programCode) {
         // 프로그램 조회
         Program program = programRepository.findById(programCode)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
 
-        // 이미지 파일 삭제
-        String profilePicture = program.getTeacher().getProfilePicture().replace(IMAGE_URL, "");
-        FileUploadUtils.deleteFile(IMAGE_DIR, profilePicture);
+        try {
+            // 이미지 파일 삭제
+            String profilePicture = program.getTeacher().getProfilePicture().replace(IMAGE_URL, "");
+            FileUploadUtils.deleteFile(IMAGE_DIR, profilePicture);
 
-        // 프로그램 삭제
-        programRepository.deleteById(programCode);
+            // 프로그램, 카테고리, 강사 정보 삭제
+            programRepository.deleteById(programCode);
+            programCategoryRepository.deleteById(program.getCategory().getCategoryCode());
+            teacherRepository.deleteById(program.getTeacher().getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("프로그램 삭제 중 오류 발생");
+        }
     }
-
 
 }

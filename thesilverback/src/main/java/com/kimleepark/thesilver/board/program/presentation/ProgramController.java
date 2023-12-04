@@ -1,12 +1,11 @@
-package com.kimleepark.thesilver.Program.presentation;
+package com.kimleepark.thesilver.board.program.presentation;
 
 
-import com.kimleepark.thesilver.Program.domain.Teacher;
-import com.kimleepark.thesilver.Program.dto.request.ProgramCreateRequest;
-import com.kimleepark.thesilver.Program.dto.request.ProgramUpdateRequest;
-import com.kimleepark.thesilver.Program.dto.response.CustomerProgramResponse;
-import com.kimleepark.thesilver.Program.dto.response.CustomerProgramsResponse;
-import com.kimleepark.thesilver.Program.service.ProgramService;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
+import com.kimleepark.thesilver.board.program.service.ProgramService;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
@@ -48,7 +47,6 @@ public class ProgramController {
         log.info("프린시팔 getDetails {}", authentication.getDetails());
         log.info("프린시팔 getName {}", authentication.getName());
         log.info("프린시팔 getClass {}", authentication.getClass());
-
 
         return ResponseEntity.ok(pagingResponse);
     }
@@ -128,7 +126,7 @@ public class ProgramController {
         }
     }
 
-    // 프로그램 삭제(관리자)
+    // 6. 프로그램 삭제(관리자)
     @DeleteMapping("/programs/{programCode}")
     public ResponseEntity<Void> delete(@PathVariable final Long programCode) {
 

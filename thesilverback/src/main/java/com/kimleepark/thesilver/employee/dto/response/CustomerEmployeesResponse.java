@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.employee.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.type.*;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class CustomerEmployeeResponse {
+public class CustomerEmployeesResponse {
 
     private final Long employeeCode;
     private final String employeePicture;
@@ -29,6 +30,7 @@ public class CustomerEmployeeResponse {
     private final String registrationNumber;
     private final String employeePhone;
     private final String employeeAddress;
+    @JsonFormat(pattern = "yyyy.MM.dd")
     private final LocalDateTime joinDate;
     private final LocalDateTime leaveDate;
     private final String leaveReason;
@@ -38,8 +40,12 @@ public class CustomerEmployeeResponse {
     private final List rankHistory;
 
 
-    public static CustomerEmployeeResponse from(final Employee employee){
+    public static CustomerEmployeesResponse from(final Employee employee){
         System.out.println(employee.getRankHistoryList());
+
+        String registrationNumber = employee.getRegistrationNumber().substring(0,2);
+        String registrationNumber2 = employee.getRegistrationNumber().substring(2,4);
+        String registrationNumber3 = employee.getRegistrationNumber().substring(4,6);
 
         List leaveHistory = employee.getLeaveHistoryList().stream().map(
                 lHistory -> {
@@ -62,7 +68,7 @@ public class CustomerEmployeeResponse {
 
 
 
-        return new CustomerEmployeeResponse(
+        return new CustomerEmployeesResponse(
                 employee.getEmployeeCode(),
                 employee.getEmployeePicture(),
                 employee.getRank().getRankName(),
@@ -73,7 +79,7 @@ public class CustomerEmployeeResponse {
                 employee.getPatriots(),
                 employee.getEmploymentType(),
                 employee.getWorkingStatus(),
-                employee.getRegistrationNumber(),
+                registrationNumber.concat(".").concat(registrationNumber2).concat(".").concat(registrationNumber3),
                 employee.getEmployeePhone(),
                 employee.getEmployeeAddress(),
                 employee.getJoinDate(),

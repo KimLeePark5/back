@@ -1,4 +1,4 @@
-package com.kimleepark.thesilver.Program.domain;
+package com.kimleepark.thesilver.board.program.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-
-import static lombok.AccessLevel.PROTECTED;
-import static lombok.AccessLevel.PUBLIC;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_program_category")
@@ -23,9 +22,4 @@ public class ProgramCategory {
 
     @Column( nullable = false)
     private String categoryName;
-
-    // 생성자 추가
-    public ProgramCategory(String categoryName) {
-        this.categoryName = categoryName;
-    }
 }

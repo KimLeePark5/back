@@ -1,4 +1,4 @@
-package com.kimleepark.thesilver.Program.domain;
+package com.kimleepark.thesilver.board.program.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -52,8 +52,6 @@ public class Program {
     @Column(nullable = false)
     private Long employeeCode; // 직원코드
 
-
-
     public Program(Long code, ProgramCategory category, LocalDateTime startDate, LocalDateTime endDate,
                    String day, String round, LocalTime startTime, LocalTime endTime, String shortStory, Teacher teacher, Long employeeCode
     ) {
@@ -68,26 +66,6 @@ public class Program {
         this.teacher = teacher;
         this.category = category;
         this.employeeCode = employeeCode;
-
     }
-
-//    public static Program of(
-//           Long code, ProgramCategory category,
-//            LocalDateTime startDate, LocalDateTime endDate, String day, String round,
-//            LocalTime startTime, LocalTime endTime, String shortStory, Teacher teacher
-//    ) {
-//        return new Program(
-//                code,
-//                category,
-//                startDate,
-//                endDate,
-//                day,
-//                round,
-//                startTime,
-//                endTime,
-//                shortStory,
-//                teacher
-//        );
-//    }
 
 }
