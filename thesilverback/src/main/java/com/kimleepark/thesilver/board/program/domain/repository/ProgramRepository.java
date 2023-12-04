@@ -1,11 +1,12 @@
-package com.kimleepark.thesilver.Program.domain.repository;
+package com.kimleepark.thesilver.board.program.domain.repository;
 
-import com.kimleepark.thesilver.Program.domain.Program;
+import com.kimleepark.thesilver.board.journal.domain.Journal;
+import com.kimleepark.thesilver.board.program.domain.Program;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface ProgramRepository extends JpaRepository<Program, Long> {
@@ -15,6 +16,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     Page<Program> findByCategory_CategoryNameContaining(String categoryName, Pageable pageable);
     Program findByCategory_CategoryCode(Long categoryCode);
 
-
+    Optional<Object> findByCategoryCategoryNameAndRound(String categoryName, String round);
 }
 

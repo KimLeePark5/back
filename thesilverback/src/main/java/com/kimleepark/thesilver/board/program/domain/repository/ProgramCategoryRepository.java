@@ -1,6 +1,6 @@
-package com.kimleepark.thesilver.Program.domain.repository;
+package com.kimleepark.thesilver.board.program.domain.repository;
 
-import com.kimleepark.thesilver.Program.domain.ProgramCategory;
+import com.kimleepark.thesilver.board.program.domain.ProgramCategory;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
