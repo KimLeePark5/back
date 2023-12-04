@@ -1,11 +1,13 @@
 package com.kimleepark.thesilver.vacation.presentation;
 
+import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
 import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import com.kimleepark.thesilver.vacation.service.VacationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,19 +24,19 @@ public class VacationController {
     private final VacationService vacationService;
 
     /* 연차 관리 - 직원 코드로 연차 현황 조회 */
-    @GetMapping("/vacation/{employeeCode}")
-    public ResponseEntity<VacationResponse> getVacation(@PathVariable final Long employeeCode) {
+    @GetMapping("/vacation")
+    public ResponseEntity<VacationResponse> getVacation(@AuthenticationPrincipal CustomUser customUser) {
 
-        final VacationResponse vacationResponse = vacationService.getVacation(employeeCode);
+        VacationResponse vacationResponse = vacationService.getVacation(customUser);
 
         return ResponseEntity.ok(vacationResponse);
     }
 
     /* 연차 관리 - 상신 현황 조회 */
-    @GetMapping("/require/{employeeCode}")
-    public ResponseEntity<List<VacationRequireResponse>> getRequire(@PathVariable final Long employeeCode) {
+    @GetMapping("/require")
+    public ResponseEntity<List<VacationRequireResponse>> getRequire(@AuthenticationPrincipal CustomUser customUser) {
 
-        List<VacationRequireResponse> vacationRequireResponseList = vacationService.getRequire(employeeCode);
+        List<VacationRequireResponse> vacationRequireResponseList = vacationService.getRequire(customUser);
 
         return ResponseEntity.ok(vacationRequireResponseList);
     }
