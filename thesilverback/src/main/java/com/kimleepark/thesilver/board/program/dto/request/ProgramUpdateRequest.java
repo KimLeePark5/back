@@ -1,10 +1,7 @@
-package com.kimleepark.thesilver.Program.dto.request;
+package com.kimleepark.thesilver.board.program.dto.request;
 
-
-import com.kimleepark.thesilver.Program.domain.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -12,11 +9,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-
-
-@Getter
 @RequiredArgsConstructor
-public class ProgramCreateRequest {
+@Getter
+public class ProgramUpdateRequest {
 
     @Min(value = 1)
     private  Long code;
@@ -27,7 +22,7 @@ public class ProgramCreateRequest {
     private  String categoryName;
 
     @NotNull
-    private   LocalDateTime startDate;
+    private LocalDateTime startDate;
     @NotNull
     private   LocalDateTime endDate;
     @NotBlank
@@ -35,7 +30,7 @@ public class ProgramCreateRequest {
     @NotBlank
     private   String round;
     @NotNull
-    private  LocalTime startTime;
+    private LocalTime startTime;
     @NotNull
     private  LocalTime endTime;
     @NotBlank
@@ -45,7 +40,7 @@ public class ProgramCreateRequest {
 
 
     @NotBlank
-    private String name; // 강사 이름
+    private String teacherName; // 강사 이름
     @NotBlank
     private  String birthDate; // 생년월일
     @NotBlank
@@ -60,8 +55,5 @@ public class ProgramCreateRequest {
     private  String detailAddress; // 강사 상세 주소
 
     private String profilePicture; // 강사 프로필 사진
-
-
-
 
 }
