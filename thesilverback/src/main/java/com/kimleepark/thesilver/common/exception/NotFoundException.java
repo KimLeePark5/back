@@ -9,4 +9,5 @@ public class NotFoundException extends CustomException{
     public NotFoundException(final ExceptionCode exceptionCode){
         super(exceptionCode);
     }
+
 }

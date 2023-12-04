@@ -1,15 +1,12 @@
-package com.kimleepark.thesilver.Program.dto.response;
+package com.kimleepark.thesilver.board.program.dto.response;
 
-import com.kimleepark.thesilver.Program.domain.Program;
+import com.kimleepark.thesilver.board.program.domain.Program;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @NoArgsConstructor
@@ -28,7 +25,7 @@ public class CustomerProgramResponse {
     private LocalTime endTime;
     private String shortStory;
 
-    private String name;
+    private String teacherName;
     private String birthDate;
     private String gender;
     private String phone;
@@ -49,7 +46,7 @@ public class CustomerProgramResponse {
                 program.getStartTime(),
                 program.getEndTime(),
                 program.getShortStory(),
-                program.getTeacher().getName(),
+                program.getTeacher().getTeacherName(),
                 program.getTeacher().getBirthDate(),
                 program.getTeacher().getGender(),
                 program.getTeacher().getPhone(),
