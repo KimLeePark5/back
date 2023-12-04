@@ -32,6 +32,12 @@ public class ExceptionHandlingController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
+    /* 405 : BAD_REQUEST */
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ExceptionResponse> handleCustomException(CustomException ex) {
+        ExceptionResponse errorResponse = new ExceptionResponse(ex.getCode(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     /* 409 : Conflict => 충돌. 논리적으로 해당 기능을 수행할 수 없는 경우 처리 */
     @ExceptionHandler(ConflictException.class)
