@@ -37,7 +37,12 @@ public enum ExceptionCode {
     NOT_FOUND_VALID_ORDER(5001, "유효한 주문 건이 없습니다."),
 
     NOT_FOUND_REVIEW_CODE(6000, "리뷰 코드에 해당하는 리뷰가 존재하지 않습니다."),
+
     ALREADY_EXIST_REVIEW(6001, "이미  작성되어 작성할 수 없습니다.");
+
+
+    ALREADY_EXIST_REVIEW(6001, "이미 작성되어 작성할 수 없습니다."),
+    ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다.");
 
     private final int code;
     private final String message;
