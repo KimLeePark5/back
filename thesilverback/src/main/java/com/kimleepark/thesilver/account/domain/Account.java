@@ -62,6 +62,10 @@ public class Account {
         this.refreshToken = refreshToken;
     }
 
+    public void updateRandomPassword(String randomPassword) {
+        this.employeePassword = randomPassword;
+    }
+
 }
 
 
