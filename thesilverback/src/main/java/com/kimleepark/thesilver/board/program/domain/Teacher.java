@@ -1,4 +1,4 @@
-package com.kimleepark.thesilver.Program.domain;
+package com.kimleepark.thesilver.board.program.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Table(name = "tbl_teacher")
@@ -22,7 +19,7 @@ public class Teacher {
     private Long code; //프로그램 번호
 
     @Column(nullable = false)
-    private String name; // 강사 이름
+    private String teacherName; // 강사 이름
 
     @Column(nullable = false)
     private String birthDate; // 생년월일
