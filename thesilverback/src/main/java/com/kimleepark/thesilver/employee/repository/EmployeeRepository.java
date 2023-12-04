@@ -17,4 +17,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findByEmployeeCodeAndLeaveType(Long employeeCode, LeaveType leaveType);
 
     Optional<Employee> findByEmployeeCode(Long employeeCode);
+
+    Optional<Employee> findByEmployeeEmail(String employeeEmail);
 }

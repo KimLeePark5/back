@@ -2,16 +2,20 @@ package com.kimleepark.thesilver.account.presentation;
 
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.account.dto.request.ResetPasswordRequest;
+import com.kimleepark.thesilver.account.service.AccountService;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,10 +24,11 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class AccountController {
 
-    final AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @GetMapping("/accounts")
-    public String getAccounts() {
+    public String getAccounts(@AuthenticationPrincipal CustomUser customUser) {
         List<Account> result = accountRepository.findAll();
         System.out.println("result : " + result.get(1).getEmployee().getTeam().getTeamName());
 
@@ -44,15 +49,16 @@ public class AccountController {
         log.info("프린시팔 getName {}", authentication.getName());
         log.info("프린시팔 getClass {}", authentication.getClass());
 
-//        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-//        log.info("프린시팔 customUser {}", customUser);
-//
-//        log.info("프린시팔 customUser {}", customUser.getEmployeeCode());
-
-
-
+        log.info("userDetails : {}", customUser.getEmployeeCode());
 
         return "hi";
     }
 
+    @PostMapping("/password-reset")
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid final ResetPasswordRequest resetPasswordRequest) {
+        log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeNumber());
+        log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeEmail());
+        accountService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok().build();
+    }
 }

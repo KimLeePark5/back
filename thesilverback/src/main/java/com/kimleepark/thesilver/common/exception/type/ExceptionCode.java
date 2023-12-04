@@ -23,10 +23,15 @@ public enum ExceptionCode {
 
 
     // login 에러 처리
-    FAIL_LOGIN(4000, "로그인에 실패하였습니다."),
-    UNAUTHORIZED(4001, "인증 되지 않은 요청입니다."),
-    NOT_FOUND_EMPLOYEE_NUMBER(4002, "사번에 해당하는 직원이 없습니다."),
-    ACCESS_DENIED(4003, "허가 되지 않은 요청입니다."),
+    FAIL_LOGIN(9000, "로그인에 실패하였습니다."),
+    UNAUTHORIZED(9001, "인증 되지 않은 요청입니다."),
+    NOT_FOUND_EMPLOYEE_NUMBER(9002, "사번에 해당하는 직원이 없습니다."),
+    ACCESS_DENIED(9003, "허가 되지 않은 요청입니다."),
+
+    // 임시 비밀번호 발급 에러 처리
+    NOT_FOUND_EMPLOYEE_EMAIL(9101, "해당하는 이메일이 존재하지 않습니다."),
+    NOT_FOUND_ACCOUNT_NUMBER(9102, "해당하는 사번이 존재하지 않습니다."),
+    MISMATCH_NUMBER_EMAIL(9103, "사번과 이메일 주소가 일치하지 않습니다.."),
 
     NOT_FOUND_MEMBER_CODE(4004, "멤버 코드에 해당하는 유저가 없습니다."),
 
