@@ -53,8 +53,8 @@ public class SecurityConfig {
                 // 이 때 OPTIONS 메서드로 서버에 사전 요청을 보내 권한을 확인함
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/v1/programs-management/**", "/api/v1/programs/**").hasAnyRole("센터장","팀장")
-//                .antMatchers("/api/v1/**").permitAll()
-                //.anyRequest().authenticated()
+                .antMatchers("/api/v1/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 // 로그인 필터 설정
                 .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
