@@ -144,42 +144,18 @@ public class AttendService {
 
     }
 
-    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page,final String month) {
-        String date = month + "-01";
-        LocalDate start = LocalDate.parse(date);
-        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-
-        List<ModifiedAttend> modifiedAttends = modifiedAttendRepository.findAll();
+    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page) {
 
         Page<Employee> employees = employeeRepository.findAll(getPageable(page));
-
-        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
-        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
-
-        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
-
-
-        ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
-        return lists;
-
-    }
-
-    public ResponseAttendAdminAndModifiedAttend getAttendAdminByName(Integer page, String month, String name) {
-        String date = month + "-01";
-        LocalDate start = LocalDate.parse(date);
-        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-
         List<ModifiedAttend> modifiedAttends = modifiedAttendRepository.findAll();
 
-        Page<Employee> employees = employeeRepository.findByEmployeeNameContaining(getPageable(page),name);
-
-        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
+        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee));
         List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
+        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee));
 
-        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
-
-
+        log.info("responseAttendTypes : {}",responseAttendTypes.getContent());
         ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
         return lists;
+
     }
 }
