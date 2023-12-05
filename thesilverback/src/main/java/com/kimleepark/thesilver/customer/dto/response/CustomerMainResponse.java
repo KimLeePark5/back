@@ -14,7 +14,7 @@ public class CustomerMainResponse {
 
     private final Long customerCode;
     private final String name;
-    private final CustomerGender gender;
+    private final String gender;
     private final String birthDate;
     private final String primaryAddress;
     private final CustomerStatus status;
@@ -22,10 +22,12 @@ public class CustomerMainResponse {
 
 
     public static CustomerMainResponse from(final Customer customer) {
+        String genderString = (customer.getGender() == CustomerGender.FEMALE) ? "여성" : "남성";
+
         return new CustomerMainResponse(
                 customer.getCustomerCode(),
                 customer.getName(),
-                customer.getGender(),
+                genderString,
                 customer.getBirthDate(),
                 customer.getPrimaryAddress(),
                 customer.getStatus(),

@@ -37,10 +37,10 @@ public class CustomerService {
     final LicenseRepository licenseRepository;
 
     private Pageable getPageable(final Integer page) {
-        return PageRequest.of(page - 1, 2, Sort.by("customerCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
     private Pageable getPageableLicense(final Integer page) {
-        return PageRequest.of(page - 1, 2, Sort.by("licenseCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("licenseCode").descending());
     }
 
 
@@ -63,8 +63,8 @@ public class CustomerService {
         return licenses.map(license -> LicensesResponse.from(license));
     }
 
-    public Long save(CreateCustomersRequest createCustomersRequest) {
-        Customer newCustomer = Customer.of(createCustomersRequest);
+    public Long save(Long employeeCode, CreateCustomersRequest createCustomersRequest) {
+        Customer newCustomer = Customer.of(employeeCode, createCustomersRequest);
         Customer customer = customerRepository.save(newCustomer);
         return customer.getCustomerCode();
     }

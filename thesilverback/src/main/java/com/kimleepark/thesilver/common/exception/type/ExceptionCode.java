@@ -26,7 +26,7 @@ public enum ExceptionCode {
     NOT_FOUND_JOURNAL(1001, "일지를 찾지 못했습니다."),
     NOT_FOUND_EMPLOYEE_NAME(4005, "해당 직원 이름을 찾지 못했습니다."),
 
-    // login 에러 처리
+    // 인증,인가 에러 처리
     FAIL_LOGIN(9000, "로그인에 실패하였습니다."),
     UNAUTHORIZED(9001, "인증 되지 않은 요청입니다."),
     NOT_FOUND_EMPLOYEE_NUMBER(9002, "사번에 해당하는 직원이 없습니다."),
