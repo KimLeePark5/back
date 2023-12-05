@@ -43,7 +43,11 @@ public class AccountController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("userDetails : {}", customUser.getEmployeeCode());
+        log.info("customUser : {}", customUser);
+        log.info("getEmployeeCode : {}", customUser.getEmployeeCode());
+        log.info("getEmployeeName : {}", customUser.getEmployeeName());
+        log.info("getAuthorities : {}", customUser.getAuthorities());
+        log.info("getUsername : {}", customUser.getUsername());
 
         return "hi";
     }
