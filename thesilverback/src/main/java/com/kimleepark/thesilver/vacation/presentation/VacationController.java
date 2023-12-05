@@ -1,7 +1,6 @@
 package com.kimleepark.thesilver.vacation.presentation;
 
 import com.kimleepark.thesilver.jwt.CustomUser;
-import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
 import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import com.kimleepark.thesilver.vacation.service.VacationService;
@@ -27,7 +26,9 @@ public class VacationController {
     @GetMapping("/vacation")
     public ResponseEntity<VacationResponse> getVacation(@AuthenticationPrincipal CustomUser customUser) {
 
-        VacationResponse vacationResponse = vacationService.getVacation(customUser);
+        Long employeeCode = customUser.getEmployeeCode();
+
+        final VacationResponse vacationResponse = vacationService.getVacation(customUser);
 
         return ResponseEntity.ok(vacationResponse);
     }
@@ -40,5 +41,7 @@ public class VacationController {
 
         return ResponseEntity.ok(vacationRequireResponseList);
     }
+
+
 
 }

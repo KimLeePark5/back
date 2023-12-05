@@ -49,7 +49,7 @@ public class AccountController {
         log.info("프린시팔 getName {}", authentication.getName());
         log.info("프린시팔 getClass {}", authentication.getClass());
 
-        log.info("userDetails : {}", customUser.getEmployeeCode());
+//        log.info("userDetails : {}", customUser.getEmployeeCode());
 
         return "hi";
     }

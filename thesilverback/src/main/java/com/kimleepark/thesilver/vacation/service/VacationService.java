@@ -5,7 +5,6 @@ import com.kimleepark.thesilver.vacation.domain.Require;
 import com.kimleepark.thesilver.vacation.domain.Vacation;
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
 import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
-import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
 import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,4 +40,6 @@ public class VacationService {
                 .map(VacationRequireResponse::from)
                 .collect(Collectors.toList());
     }
+
+
 }
