@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Getter
 @RequiredArgsConstructor
 @Setter
-public class JournalCreateRequest {
+public class JournalUpdateRequest {
 
     @Min(value = 1)
     private Long journalCode;           // 일지 번호
@@ -33,8 +33,8 @@ public class JournalCreateRequest {
     @NotNull
     private String day;                 // 요일
 
-
-    //private Long employeeCode;          // 직원코드
+//    @Min(value = 1)
+//    private Long employeeCode;          // 직원코드
     @NotNull
     private String employeeName;        // 직원 이름
     @NotNull

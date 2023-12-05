@@ -2,12 +2,14 @@ package com.kimleepark.thesilver.board.journal.presentation;
 
 
 import com.kimleepark.thesilver.board.journal.dto.request.JournalCreateRequest;
+import com.kimleepark.thesilver.board.journal.dto.request.JournalUpdateRequest;
 import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalResponse;
 import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalsResponse;
 import com.kimleepark.thesilver.board.journal.service.JournalService;
 import com.kimleepark.thesilver.board.program.domain.Program;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
@@ -23,12 +25,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,7 +82,7 @@ public class JournalController {
         return ResponseEntity.ok(pagingResponse);
     }
 
-    // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
+    // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(직원, 관리자)
     @GetMapping("/journals/{journalCode}")
     public ResponseEntity<CustomerJournalResponse> getCustomerJournal(@PathVariable final Long journalCode) {
         // 요청된 journalCode 값 로깅
@@ -102,8 +106,8 @@ public class JournalController {
         }
     }
 
-    // 5. 일지 등록 - (참관한 직원, 관리자)
-    @PostMapping("/journals")
+    // 4. 일지 등록 - (참관한 직원, 관리자)
+    @PostMapping("/journals")  // 프로그램 스케줄에 등록된 직원만 해당 프로그램 종료시간 이후에 일지를 작성할수 있게 조건 써야함. 직원코드 와 일치하는 직원이름이 자동 조회.
     public ResponseEntity<Void> save(@RequestPart @Valid JournalCreateRequest journalRequest,
                                      @RequestPart MultipartFile journalImg) {
 
@@ -154,7 +158,6 @@ public class JournalController {
             System.out.println("강사이름 : " + teacherName);
             System.out.println("시작시간 : " + programStartTime);
             System.out.println("종료시간 : " + programEndTime);
-
 //----------------------------------------------------------------
             // 직원 이름 조회 (현재 로그인한 직원)
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -172,9 +175,13 @@ public class JournalController {
 
                 // journalRequest에 직원 이름 설정
                 journalRequest.setEmployeeName(employeeName);
+
+                // 일치하지 않으면 예외 처리
+                if (!employee.getEmployeeName().equals(journalRequest.getEmployeeName())) {
+                    throw new UnsupportedOperationException("현재 로그인한 직원의 이름과 요청한 일지에 등록된 직원의 이름이 일치하지 않습니다.");
+                }
             }
 //-------------------------------------------------------------------
-
             // 프로그램 정보가 정상적으로 조회되었으므로 일지 서비스 호출
             Long journalCode = journalService.save(journalImg, journalRequest);
 
@@ -221,7 +228,6 @@ public class JournalController {
             default:
                 throw new IllegalArgumentException("Invalid day of week: " + programDay);
         }
-
         // 일지의 날짜의 요일을 확인
         DayOfWeek observationDayOfWeek = observation.getDayOfWeek();
 
@@ -229,5 +235,53 @@ public class JournalController {
         return isWithinDateRange && observationDayOfWeek == dayOfWeek;
     }
 
+    // 5. 일지 수정
+    @PutMapping("/journals/{journalCode}") // 프로그램 일지에 등록된 직원코드와 현재 로그인한 직원 코드가 일치해야 수정 가능하게 조건 써야함. 뷰에 보일떄는 이름으로 보이기.(관리자는 다 가능)
+    public ResponseEntity<Void> update(@PathVariable final Long journalCode,
+                                       @RequestPart(required = false) final MultipartFile journalImg,
+                                       @RequestPart @Valid final JournalUpdateRequest journalRequest
+    ) {
+        try {
+            // 현재 로그인한 사용자의 권한을 확인
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            boolean isCenterDirectorOrTeamLeader = isUserCenterDirectorOrTeamLeader(authentication);
+
+            // journalService의 update 메서드 호출
+            journalService.update(journalCode, journalImg, journalRequest, isCenterDirectorOrTeamLeader);
+
+            // 일지가 성공적으로 수정되면 해당 일지 첨부파일 URI를 반환
+            return ResponseEntity.created(URI.create(String.valueOf(journalCode))).build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            //일지 수정 중 오류 발생 시 500 Internal Server Error 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private boolean isUserCenterDirectorOrTeamLeader(Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            // 모든 권한을 허용하도록 수정
+            return userDetails.getAuthorities().stream().anyMatch(authority -> true);
+        }
+        return false;
+    }
+
+    // 6. 일지 삭제(등록한 직원, 관리자) //사용자가 아무 일지나 다 삭제함;;
+    @DeleteMapping("/journals/{journalCode}")
+    public ResponseEntity<Void> delete(@PathVariable final Long journalCode) {
+
+        try {
+            journalService.delete(journalCode);
+            return ResponseEntity.noContent().build();
+        } catch (NotFoundException e) {
+            // 일지를 찾을 수 없는 경우 404 Not Found 반환
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 일지 삭제 중 오류 발생 시 500 Internal Server Error 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
