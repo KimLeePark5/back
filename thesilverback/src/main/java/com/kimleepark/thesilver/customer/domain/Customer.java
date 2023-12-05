@@ -93,7 +93,7 @@ public class Customer {
             final String guardianName,
             final String guardianRelationship,
             final String guardianPhone,
-            Long employeeCode
+            final Long employeeCode
     ) {
         this.name = name;
         this.gender = gender;
@@ -109,7 +109,7 @@ public class Customer {
         this.employeeCode = employeeCode;
     }
 
-    public static Customer of(CreateCustomersRequest createCustomersRequest) {
+    public static Customer of(Long employeeCode,CreateCustomersRequest createCustomersRequest) {
         return new Customer(
                 createCustomersRequest.getName(),
                 createCustomersRequest.getGender(),
@@ -122,7 +122,7 @@ public class Customer {
                 createCustomersRequest.getGuardianName(),
                 createCustomersRequest.getGuardianRelationship(),
                 createCustomersRequest.getGuardianPhone(),
-                1L
+                employeeCode
         );
     }
 

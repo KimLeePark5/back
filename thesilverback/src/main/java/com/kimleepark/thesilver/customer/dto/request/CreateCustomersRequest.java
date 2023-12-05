@@ -20,7 +20,11 @@ public class CreateCustomersRequest {
     @NotBlank
     private final String birthDate;
     @NotBlank
-    private final String phone;
+    private final String phone1;
+    @NotBlank
+    private final String phone2;
+    @NotBlank
+    private final String phone3;
     @NotBlank
     private final String postalCode;
     @NotBlank
@@ -30,4 +34,8 @@ public class CreateCustomersRequest {
     private final String guardianName;
     private final String guardianRelationship;
     private final String guardianPhone;
+
+    public String getPhone() {
+        return phone1 +"-"+ phone2 +"-"+ phone3;
+    }
 }
