@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.vacation.service;
 
+import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
 import com.kimleepark.thesilver.vacation.domain.Vacation;
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
@@ -24,19 +25,19 @@ public class VacationService {
     private final VacationRepository vacationRepository;
     private final RequireRepository requireRepository;
 
-    /* 연차 현황 조회 - employeeCode로 각 직원의 연차 현황 조회 */
+    /* 연차 현황 조회 - 로그인 한 직원의 연차 현황 조회 */
     @Transactional(readOnly = true)
-    public VacationResponse getVacation(final Long employeeCode) {
+    public VacationResponse getVacation(CustomUser customUser) {
 
-        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(employeeCode);
+        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser);
 
         return VacationResponse.from(vacation);
     }
 
-    /* 상신 현황 조회 - employeeCode로 각 직원의 연차 상신 현황 조회 */
-    public List<VacationRequireResponse> getRequire(Long employeeCode ) {
+    /* 상신 현황 조회 - 로그인 한 직원의 연차 상신 현황 조회 */
+    public List<VacationRequireResponse> getRequire(CustomUser customUser) {
 
-        List<Require> requireList = requireRepository.findByEmployeeEmployeeCode(employeeCode);
+        List<Require> requireList = requireRepository.findByEmployeeEmployeeCode(customUser);
 
         return  requireList.stream()
                 .map(VacationRequireResponse::from)
