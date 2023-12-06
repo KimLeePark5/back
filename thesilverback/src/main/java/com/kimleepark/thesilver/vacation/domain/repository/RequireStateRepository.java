@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RequireRepository extends JpaRepository<Require, Long> {
+public interface RequireStateRepository extends JpaRepository<Require, CustomUser> {
 
     /* 직원 코드로 연차 상신 현황 조회 */
-    List<Require> findByEmployeeEmployeeCode(CustomUser customUser);
+    Require findByEmployeeEmployeeCode(Long employeeCode);
 }

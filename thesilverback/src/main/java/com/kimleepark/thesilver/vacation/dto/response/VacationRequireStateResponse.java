@@ -2,17 +2,15 @@ package com.kimleepark.thesilver.vacation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.VacationType;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class VacationRequireResponse {
+public class VacationRequireStateResponse {
 
     private final String vacationName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -25,8 +23,9 @@ public class VacationRequireResponse {
     private final LocalDateTime reqDate;
 
 
-    public static VacationRequireResponse from(final Require require) {
-        return new VacationRequireResponse(
+
+    public static VacationRequireStateResponse from(Require require) {
+        return new VacationRequireStateResponse(
                 require.getVacationType().getVacationName(),
                 require.getStartDate(),
                 require.getEndDate(),

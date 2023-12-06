@@ -1,16 +1,11 @@
 package com.kimleepark.thesilver.vacation.service;
 
-import com.kimleepark.thesilver.jwt.CustomUser;
-import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
+import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
 import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
-import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +13,11 @@ import java.util.stream.Collectors;
 public class VacationService {
 
     private final VacationRepository vacationRepository;
-    private final RequireRepository requireRepository;
+    private final RequireStateRepository requireRepository;
+
+    private Pageable getPageable(Integer page) {
+        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
+    }
 
     /* 연차 현황 조회 - 로그인 한 직원의 연차 현황 조회 */
 //    @Transactional(readOnly = true)
@@ -30,14 +29,18 @@ public class VacationService {
 //    }
 
     /* 상신 현황 조회 - 로그인 한 직원의 연차 상신 현황 조회 */
-    public List<VacationRequireResponse> getRequire(CustomUser customUser) {
+//    public Page<VacationRequireStateResponse> getVacationRequires(Integer page, CustomUser customUser) {
+//        Pageable pageable = getPageable(page);
+//        Page<Require> requires = requireRepository.findAll(pageable);
+//
+//        List<VacationRequireStateResponse> responseList = requires.stream()
+//                .map(require -> VacationRequireStateResponse.from(require, customUser.getEmployeeCode()))
+//                .collect(Collectors.toList());
+//
+//        return new PageImpl<>(responseList, pageable, requires.getTotalElements());
+//    }
 
-        List<Require> requireList = requireRepository.findByEmployeeEmployeeCode(customUser);
-
-        return  requireList.stream()
-                .map(VacationRequireResponse::from)
-                .collect(Collectors.toList());
-    }
 
 
 }
+

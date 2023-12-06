@@ -53,8 +53,8 @@ public class SecurityConfig {
                 // 이 때 OPTIONS 메서드로 서버에 사전 요청을 보내 권한을 확인함
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/password-reset/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/productimgs/**").permitAll()
-                .antMatchers("/api/v1/programs-management/**", "/api/v1/programs/**").hasAnyRole("센터장","팀장")
+                .antMatchers(HttpMethod.GET, "/productimgs/**", "/api/v1/programs/**").permitAll()
+                .antMatchers("/api/v1/programs-management/**").hasAnyRole("센터장","팀장")
 
                 //.antMatchers("/api/v1/**").permitAll()
 
