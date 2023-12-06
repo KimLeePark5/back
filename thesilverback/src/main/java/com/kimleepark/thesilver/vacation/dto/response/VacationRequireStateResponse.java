@@ -5,11 +5,12 @@ import com.kimleepark.thesilver.vacation.domain.Require;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class UseVacationListRequest {
+public class VacationRequireStateResponse {
 
     private final String vacationName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -18,14 +19,19 @@ public class UseVacationListRequest {
     private final LocalDateTime endDate;
     private final String reqContent;
     private final RequireStatusType ReqStatus;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime reqDate;
 
-   public static UseVacationListRequest from(final Require require) {
-       return new UseVacationListRequest(
-               require.getVacationType().getVacationName(),
-               require.getStartDate(),
-               require.getEndDate(),
-               require.getReqContent(),
-               require.getReqStatus()
-       );
-   }
+
+
+    public static VacationRequireStateResponse from(Require require) {
+        return new VacationRequireStateResponse(
+                require.getVacationType().getVacationName(),
+                require.getStartDate(),
+                require.getEndDate(),
+                require.getReqContent(),
+                require.getReqStatus(),
+                require.getReqDate()
+        );
+    }
 }
