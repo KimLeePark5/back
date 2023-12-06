@@ -56,9 +56,10 @@ public class CustomerController {
     public ResponseEntity<PagingResponse> getCustomers(
             @RequestParam(defaultValue = "1") final Integer page,
             @RequestParam final String searchType,
-            @RequestParam final String searchContent) {
+            @RequestParam final String searchContent,
+            @RequestParam final String searchActiveCheck) {
 
-        CustomerSearchRequest customerSearchRequest = CustomerSearchRequest.of(searchType,searchContent);
+        CustomerSearchRequest customerSearchRequest = CustomerSearchRequest.of(searchType,searchContent,searchActiveCheck);
         log.info("customerSearchRequest : {}",customerSearchRequest);
         Page<CustomerSearchResponse> customersResult = customerService.getCustomersBySearch(page, customerSearchRequest);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(customersResult);
