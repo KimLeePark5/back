@@ -33,9 +33,14 @@ public class CreateCustomersRequest {
     private final String memo;
     private final String guardianName;
     private final String guardianRelationship;
-    private final String guardianPhone;
+    private final String guardianPhone1;
+    private final String guardianPhone2;
+    private final String guardianPhone3;
 
     public String getPhone() {
         return phone1 +"-"+ phone2 +"-"+ phone3;
+    }
+    public String getGuardianPhone() {
+        return guardianPhone1 +"-"+ guardianPhone2 +"-"+ guardianPhone3;
     }
 }
