@@ -58,6 +58,7 @@ public class SecurityConfig {
 
                 //.antMatchers("/api/v1/**").permitAll()
 
+
                 .anyRequest().authenticated()
                 .and()
                 // 로그인 필터 설정
