@@ -1,6 +1,10 @@
 package com.kimleepark.thesilver.vacation.presentation;
 
+import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.jwt.CustomUser;
+import com.kimleepark.thesilver.vacation.domain.Vacation;
+import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
 import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
 import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import com.kimleepark.thesilver.vacation.service.VacationService;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -21,14 +26,20 @@ import java.util.List;
 public class VacationController {
 
     private final VacationService vacationService;
+    private final EmployeeRepository employeeRepository;
+    private final VacationRepository vacationRepository;
 
     /* 연차 관리 - 직원 코드로 연차 현황 조회 */
     @GetMapping("/vacation")
     public ResponseEntity<VacationResponse> getVacation(@AuthenticationPrincipal CustomUser customUser) {
 
-        Long employeeCode = customUser.getEmployeeCode();
+        System.out.println("확인" + customUser.getEmployeeName());
+        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
 
-        final VacationResponse vacationResponse = vacationService.getVacation(customUser);
+        VacationResponse vacationResponse = VacationResponse.from(vacation);
+
+        System.out.println("vacationResponse : " + vacationResponse.getOccurVacation());
+
 
         return ResponseEntity.ok(vacationResponse);
     }
