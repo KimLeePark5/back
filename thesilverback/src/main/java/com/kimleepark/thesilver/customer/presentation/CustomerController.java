@@ -13,12 +13,14 @@ import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
 import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
 import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
 import com.kimleepark.thesilver.customer.service.CustomerService;
+import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,8 +65,11 @@ public class CustomerController {
     }
 
     @PostMapping("/customers")
-    public ResponseEntity<Void> save(@RequestBody @Valid CreateCustomersRequest createCustomersRequest) {
-        Long customerCode = customerService.save(createCustomersRequest);
+    public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUser customUser,
+                                     @RequestBody @Valid CreateCustomersRequest createCustomersRequest) {
+
+        System.out.println("createCustomersRequest : " + createCustomersRequest.getMemo());
+        Long customerCode = customerService.save(customUser.getEmployeeCode(), createCustomersRequest);
         System.out.println("customerCode : " + customerCode);
 
         return ResponseEntity.created(URI.create("/customers/" + customerCode)).build();
