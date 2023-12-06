@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -46,18 +47,30 @@ public class VacationController {
     }
 
     /* 연차 관리 - 상신 현황 조회 */
+//    @GetMapping("/requireState")
+//    public ResponseEntity<VacationRequireStateResponse> getRequire(@AuthenticationPrincipal CustomUser customUser) {
+//
+//        System.out.println("확인" + customUser.getEmployeeName());
+//
+//        Require require = requireStateRepository. findByEmployeeEmployeeCode(customUser.getEmployeeCode());
+//
+//        VacationRequireStateResponse vacationRequireStateResponse = VacationRequireStateResponse.from(require);
+//
+//        return ResponseEntity.ok(vacationRequireStateResponse);
+//    }
+
     @GetMapping("/requireState")
-    public ResponseEntity<VacationRequireStateResponse> getRequire(@AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<List<VacationRequireStateResponse>> getRequires(@AuthenticationPrincipal CustomUser customUser) {
 
         System.out.println("확인" + customUser.getEmployeeName());
 
-        Require require = requireStateRepository. findByEmployeeEmployeeCode(customUser.getEmployeeCode());
+        List<Require> requires = requireStateRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
 
-        VacationRequireStateResponse vacationRequireStateResponse = VacationRequireStateResponse.from(require);
+        List<VacationRequireStateResponse> vacationRequireStateResponses = requires
+                .stream()
+                .map(VacationRequireStateResponse::from)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(vacationRequireStateResponse);
+        return ResponseEntity.ok(vacationRequireStateResponses);
     }
-
-
-
 }
