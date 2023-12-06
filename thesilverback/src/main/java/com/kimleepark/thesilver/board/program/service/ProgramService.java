@@ -14,6 +14,7 @@ import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
