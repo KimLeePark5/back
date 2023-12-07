@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.kimleepark.thesilver.customer.domain.QCustomer.customer;
+import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
 
 
 public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
@@ -28,8 +29,6 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
         this.em = em;
         this.queryFactory = new JPAQueryFactory(em);
     }
-
-
 
 
     public List<CustomerSearchResponse> searchCustomersByCondition(Integer page, CustomerSearchRequest condition) {
@@ -57,18 +56,33 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
     // 동적 쿼리 조건 로직
 
     private BooleanExpression codeEq(CustomerSearchRequest condition) {
-        return condition.getSearchType().equals("고객코드") ? customer.customerCode.eq(Long.parseLong(condition.getSearchContent())) : null ;
-    }
-    private BooleanExpression nameLike(CustomerSearchRequest condition) {
-        return condition.getSearchType().equals("이름") ? customer.name.like("%"+condition.getSearchContent()+"%") : null ;
-    }
-    private BooleanExpression phoneLike(CustomerSearchRequest condition) {
-        return condition.getSearchType().equals("전화번호") ? customer.phone.like("%"+condition.getSearchContent()+"%") : null ;
-    }
-    private BooleanExpression addressLike(CustomerSearchRequest condition) {
-        return condition.getSearchType().equals("주소") ? customer.customerCode.like("%"+condition.getSearchContent()+"%") : null ;
+//        searchContent != null && searchContent.matches("\\d+")
+
+        if (condition.getSearchType().equals("고객코드")) {
+            if (condition.getSearchContent().matches("\\d+")) {
+                return customer.customerCode.eq(Long.parseLong(condition.getSearchContent()));
+            } else {
+                return customer.customerCode.eq(99999999L);
+            }
+        }
+        return null;
     }
 
+    private BooleanExpression nameLike(CustomerSearchRequest condition) {
+        return condition.getSearchType().equals("이름") ? customer.name.like("%" + condition.getSearchContent() + "%") : null;
+    }
+
+    private BooleanExpression phoneLike(CustomerSearchRequest condition) {
+        return condition.getSearchType().equals("전화번호") ? customer.phone.like("%" + condition.getSearchContent() + "%") : null;
+    }
+
+    private BooleanExpression addressLike(CustomerSearchRequest condition) {
+        return condition.getSearchType().equals("주소") ? customer.primaryAddress.like("%" + condition.getSearchContent() + "%") : null;
+    }
+
+    private BooleanExpression activeCheck(CustomerSearchRequest condition) {
+        return condition.getActiveCheck() ? null : customer.status.eq(ACTIVE);
+    }
 
 
     @Override
@@ -88,10 +102,12 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
                         codeEq(condition),
                         nameLike(condition),
                         phoneLike(condition),
-                        addressLike(condition)
+                        addressLike(condition),
+                        activeCheck(condition)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(customer.customerCode.desc())
                 .fetchResults();
 
         List<CustomerSearchResponse> content = results.getResults();
