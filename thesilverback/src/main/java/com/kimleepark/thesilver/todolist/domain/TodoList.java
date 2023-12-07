@@ -38,6 +38,8 @@ public class TodoList {
     @Enumerated(value = EnumType.STRING)
     private CompleteType todoComplete = INCOMPLETE;
 
+    private char status = 'N';
+
     public TodoList(int empNo, String content) {
         this.employeeCode = empNo;
         this.todoContent = content;

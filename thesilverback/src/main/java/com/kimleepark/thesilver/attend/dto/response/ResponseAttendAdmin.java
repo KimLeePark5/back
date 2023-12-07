@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +20,11 @@ public class ResponseAttendAdmin {
     private final String empName;
     private final List<ResponseAttend> attendList;
 
-    public static ResponseAttendAdmin from(Employee employee) {
+    public static ResponseAttendAdmin from(Employee employee,LocalDate start, LocalDate end) {
         return new ResponseAttendAdmin(
                 employee.getEmployeeCode(),
                 employee.getEmployeeName(),
-                employee.getAttendList().stream().map(attend -> ResponseAttend.from(attend, employee.getEmployeeCode())).collect(Collectors.toList())
+                employee.getAttendList().stream().filter(attend -> attend.getAttendDate().isAfter(start) && attend.getAttendDate().isBefore(end)).map(attend -> ResponseAttend.from(attend, employee.getEmployeeCode())).collect(Collectors.toList())
         );
     }
 }

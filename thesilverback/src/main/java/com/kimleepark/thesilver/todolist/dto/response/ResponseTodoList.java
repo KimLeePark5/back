@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @ToString
 @Getter
 public class ResponseTodoList {
+    private final Long todoNo;
     private final String todoContent;
     private final CompleteType todoComplete;
 
     public static ResponseTodoList from(TodoList todolist) {
-        return new ResponseTodoList(todolist.getTodoContent(),todolist.getTodoComplete());
+        return new ResponseTodoList(todolist.getTodoNo(),todolist.getTodoContent(),todolist.getTodoComplete());
     }
 }
