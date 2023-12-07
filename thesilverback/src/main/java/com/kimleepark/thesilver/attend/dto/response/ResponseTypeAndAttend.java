@@ -11,6 +11,7 @@ public class ResponseTypeAndAttend {
     private final List<ResponseAttend> responseAttend;
     private final ResponseAttendType responseAttendType;
 
+
 public static ResponseTypeAndAttend of(List<ResponseAttend> responseAttend, ResponseAttendType responseAttendType){
     return new ResponseTypeAndAttend(responseAttend, responseAttendType);
 }

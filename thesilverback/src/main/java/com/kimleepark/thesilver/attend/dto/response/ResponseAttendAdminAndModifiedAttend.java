@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 public class ResponseAttendAdminAndModifiedAttend {
 
+
     private final Page<ResponseAttendAdmin> responseAttendAdmin;
     private final List<ResponseModifiedAttend> responseModifiedAttend;
     private final Page<ResponseAttendType> responseAttendTypes;
