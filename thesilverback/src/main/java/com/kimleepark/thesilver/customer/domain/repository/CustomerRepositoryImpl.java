@@ -71,15 +71,12 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
     private BooleanExpression nameLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("이름") ? customer.name.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression phoneLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("전화번호") ? customer.phone.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression addressLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("주소") ? customer.primaryAddress.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression activeCheck(CustomerSearchRequest condition) {
         return condition.getActiveCheck() ? null : customer.status.eq(ACTIVE);
     }

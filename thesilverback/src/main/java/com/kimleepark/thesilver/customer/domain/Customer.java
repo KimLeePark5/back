@@ -138,6 +138,6 @@ public class Customer {
         this.guardianName = updateCustomersRequest.getGuardianName();
         this.guardianRelationship = updateCustomersRequest.getGuardianRelationship();
         this.guardianPhone = updateCustomersRequest.getGuardianPhone();
-        this.status = updateCustomersRequest.getStatus();
+        this.status = updateCustomersRequest.getCustomerStatus();
     }
 }
