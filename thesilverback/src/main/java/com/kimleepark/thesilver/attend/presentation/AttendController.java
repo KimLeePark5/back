@@ -106,6 +106,7 @@ public class AttendController {
 
     @GetMapping("/getAttendAdmin")
     public ResponseEntity<PagingResponse> getAttendAdmin(@RequestParam(defaultValue = "1") final Integer page, String month){
+        log.info("moon :{}",month);
         ResponseAttendAdminAndModifiedAttend list = attendService.getAttendAdmin(page,month);
 
         PagingButtonInfo button = Pagenation.getPagingButtonInfo(list.getResponseAttendAdmin());
