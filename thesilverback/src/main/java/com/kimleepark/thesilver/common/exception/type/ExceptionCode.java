@@ -18,14 +18,15 @@ public enum ExceptionCode {
     // 프로그램 에러 처리
     NOT_FOUND_PROGRAM_CODE(4005, "프로그램 코드에 해당하는 프로그램이 존재하지 않습니다."),
     NOT_FOUND_CORRECTION_CODE(4005, "프로그램 수정에 실패했습니다."),
-    NOT_FOUND_JOURNAL_CODE(4005, "프로그램 수정에 실패했습니다."),
+    NOT_FOUND_JOURNAL_CODE(4005, "일지 수정에 실패했습니다."),
 
     // 검색 에러 처리
     NOT_FOUND_MULTIPLE_LOOKUPS(4005, "검색 결과가 없습니다."),
     NOT_FOUND_PROGRAM(1001, "프로그램을 찾지 못했습니다."),
+    NOT_FOUND_JOURNAL(1001, "일지를 찾지 못했습니다."),
     NOT_FOUND_EMPLOYEE_NAME(4005, "해당 직원 이름을 찾지 못했습니다."),
 
-    // login 에러 처리
+    // 인증,인가 에러 처리
     FAIL_LOGIN(9000, "로그인에 실패하였습니다."),
     UNAUTHORIZED(9001, "인증 되지 않은 요청입니다."),
     NOT_FOUND_EMPLOYEE_NUMBER(9002, "사번에 해당하는 직원이 없습니다."),
@@ -43,7 +44,8 @@ public enum ExceptionCode {
 
     NOT_FOUND_REVIEW_CODE(6000, "리뷰 코드에 해당하는 리뷰가 존재하지 않습니다."),
 
-    ALREADY_EXIST_REVIEW(6001, "이미 작성되어 작성할 수 없습니다."),
+    ALREADY_EXIST_REVIEW(6001, "이미  작성되어 작성할 수 없습니다."),
+
     ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다.");
 
     private final int code;

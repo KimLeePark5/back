@@ -4,6 +4,7 @@ import com.kimleepark.thesilver.attachment.Attachment;
 import com.kimleepark.thesilver.board.journal.domain.Journal;
 import com.kimleepark.thesilver.board.journal.domain.repository.JournalRepository;
 import com.kimleepark.thesilver.board.journal.dto.request.JournalCreateRequest;
+import com.kimleepark.thesilver.board.journal.dto.request.JournalUpdateRequest;
 import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalResponse;
 import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalsResponse;
 import com.kimleepark.thesilver.board.participant.Participant;
@@ -12,6 +13,7 @@ import com.kimleepark.thesilver.board.program.domain.ProgramCategory;
 import com.kimleepark.thesilver.board.program.domain.Teacher;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
 import com.kimleepark.thesilver.common.exception.CustomException;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.exception.type.ExceptionCode;
@@ -27,11 +29,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,6 +51,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.*;
+import static org.springframework.http.ResponseEntity.*;
 
 
 @Slf4j
@@ -168,7 +177,7 @@ public class JournalService {
         );
     }
 
-    // 5. 일지 등록 - (참관한 직원, 관리자)
+    // 4. 일지 등록 - (참관한 직원, 관리자)
     public Long save(MultipartFile journalImg, JournalCreateRequest journalRequest) {
         try {
             // 이미지 파일 저장
@@ -207,6 +216,11 @@ public class JournalService {
                     .collect(Collectors.toList());
             journal.setParticipants(participants);
 
+            // 참가자들을 저장합니다.
+
+
+            System.out.println("참가자 설정 및 일지 저장 : " + participants.size() + "명, 일지 코드: " + journal.getJournalCode());
+
             // 새로운 일지를 생성하고, 기타 세부 정보를 설정한 후 저장합니다.
             journal.setSubProgress(journalRequest.getSubProgress());
             journal.setObserve(journalRequest.getObserve());
@@ -214,8 +228,6 @@ public class JournalService {
             journal.setNote(journalRequest.getNote());
             journal.setObservation(journalRequest.getObservation());
             journal.setProgramTopic(journalRequest.getProgramTopic());
-
-            System.out.println("참가자 설정 : " + participants.size() + "명");
 
             // 직원과 프로그램 엔터티 설정
             String employeeName = journalRequest.getEmployeeName();
@@ -272,5 +284,112 @@ public class JournalService {
         return replaceFileName;
     }
 
+    // 5. 일지 수정
+    public void update(final Long journalCode, final MultipartFile journalImg, final JournalUpdateRequest journalRequest, boolean isCenterDirectorOrTeamLeader) {
+        try {
+            // 프로그램 조회
+            Program program = (Program) programRepository.findByCategoryCategoryNameAndRound(journalRequest.getCategoryName(), journalRequest.getRound())
+                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
+
+            // 일지 조회
+            Journal journal = journalRepository.findById(journalCode)
+                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_JOURNAL_CODE));
+
+            // 이미지 수정 시 새로운 이미지 저장 후 기존 이미지 삭제 로직 필요함
+            if (journalImg != null) {
+                // 새로운 이미지 저장
+                String replaceFileName = saveImageFile(journalImg);
+
+                // 기존 이미지 삭제
+                FileUploadUtils.deleteFile(IMAGE_DIR, journal.getAttachments().get(0).getUrl().replace(IMAGE_URL, ""));
+
+                // 일지 첨부파일 URL 업데이트
+                journal.getAttachments().get(0).setUrl(replaceFileName);
+                System.out.println("이미지 수정 완료: " + replaceFileName);
+            }
+
+            // 정보 업데이트
+            journal.setSubProgress(journalRequest.getSubProgress());
+            journal.setObserve(journalRequest.getObserve());
+            journal.setRating(journalRequest.getRating());
+            journal.setNote(journalRequest.getNote());
+            journal.setObservation(journalRequest.getObservation());
+            journal.setProgramTopic(journalRequest.getProgramTopic());
+            System.out.println("일지 정보 업데이트 완료");
+
+            // 참가자 업데이트
+            List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(", "))
+                    .map(participantName -> {
+                        Customer customer = (Customer) customerRepository.findByName(participantName)
+                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
+                        return new Participant(journal, customer);
+                    })
+                    .collect(Collectors.toList());
+            journal.setParticipants(participants);
+            System.out.println("참가자 업데이트 완료: " + participants.size() + "명");
+
+            // 직원 업데이트
+            String employeeName = journalRequest.getEmployeeName();
+            Employee employee = (Employee) employeeRepository.findByEmployeeName(employeeName)
+                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_EMPLOYEE_NAME));
+            System.out.println("직원 업데이트 완료: " + employee.getEmployeeName());
+
+            // 현재 사용자가 직원 이름을 기반으로 일지를 업데이트할 권한이 있는지 확인
+            if (!isCenterDirectorOrTeamLeader && !isCurrentUserJournalEmployee(employeeName)
+                    && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                    .anyMatch(role -> role.getAuthority().equalsIgnoreCase("센터장") || role.getAuthority().equalsIgnoreCase("팀장"))) {
+                throw new RuntimeException("권한 거부: 현재 사용자는 이 일지를 업데이트할 권한이 없습니다");
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("유저 권한: " + authentication.getAuthorities());
+
+
+            // 프로그램 업데이트
+            journal.setProgram(program);
+            System.out.println("프로그램 업데이트 완료: " + program.getCode());
+
+            // 일지를 저장하여 업데이트 반영
+            journalRepository.save(journal);
+            System.out.println("일지 저장 완료");
+
+        } catch (NotFoundException e) {
+            log.error("프로그램 또는 일지를 찾을 수 없습니다.", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("일지 수정 중 오류 발생", e);
+            throw new RuntimeException("일지 수정 중 오류 발생");
+        }
+    }
+
+    // 현재 사용자가 일지의 직원인지 확인하는 도우미 메서드
+    private boolean isCurrentUserJournalEmployee(String requestedEmployeeName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername().equals(requestedEmployeeName);
+        }
+        return false;
+    }
+
+    // 6. 일지 삭제(등록한 직원, 관리자)
+    public void delete(Long journalCode) {
+        // 일지 조회
+        Journal journal = journalRepository.findById(journalCode)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_JOURNAL));
+
+        try {
+            // 이미지 파일 삭제
+            String url = journal.getAttachments().get(0).getUrl().replace(IMAGE_URL, "");
+            FileUploadUtils.deleteFile(IMAGE_DIR, url);
+
+            //  정보 삭제
+            journalRepository.delete(journal);
+            System.out.println("프로그램 삭제 완료");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("프로그램 삭제 중 오류 발생");
+        }
+    }
 
 }

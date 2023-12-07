@@ -12,13 +12,16 @@ import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramRespon
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
-import io.jsonwebtoken.io.IOException;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.PageImpl;
+import com.kimleepark.thesilver.common.util.FileUploadUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
