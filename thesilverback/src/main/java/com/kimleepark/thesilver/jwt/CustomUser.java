@@ -8,16 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUser extends User {
 
     private final Long employeeCode;
+    private final String employeeName;
 
-    public CustomUser(Long employeeCode, UserDetails userDetails) {
+    public CustomUser(Long employeeCode, String employeeName, UserDetails userDetails) {
         super(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
         this.employeeCode = employeeCode;
-
+        this.employeeName = employeeName;
     }
 
-    public static CustomUser of(Long employeeCode, UserDetails userDetails) {
+    public static CustomUser of(Long employeeCode,String employeeName, UserDetails userDetails) {
         return new CustomUser(
                 employeeCode,
+                employeeName,
                 userDetails
         );
     }

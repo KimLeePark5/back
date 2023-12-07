@@ -168,7 +168,7 @@ public class JwtService {
                 .roles(employee.getRank().getRankName())
                 .build();
 
-        CustomUser customUser = CustomUser.of(account.getEmployee().getEmployeeCode(), userDetails);
+        CustomUser customUser = CustomUser.of(account.getEmployee().getEmployeeCode(),account.getEmployee().getEmployeeName(), userDetails);
 
         Authentication authentication
                 = new UsernamePasswordAuthenticationToken(customUser, null, customUser.getAuthorities());

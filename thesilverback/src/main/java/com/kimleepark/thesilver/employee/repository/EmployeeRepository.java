@@ -21,8 +21,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Object> findByEmployeeName(String employeeName);
 
     Optional<Employee> findByEmployeeEmail(String employeeEmail);
-    @EntityGraph(attributePaths = {"rank","team"})
-    Page<Employee> findByEmployeeNameContaining(Pageable pageable, String name);
-
-
 }

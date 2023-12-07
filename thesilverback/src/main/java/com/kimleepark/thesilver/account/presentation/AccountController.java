@@ -42,14 +42,12 @@ public class AccountController {
         System.out.println("Hashed Password: " + hashedPassword);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("프린시팔 getPrincipal {}", authentication.getPrincipal());
-        log.info("프린시팔 getCredentials {}", authentication.getCredentials());
-        log.info("프린시팔 getAuthorities {}", authentication.getAuthorities());
-        log.info("프린시팔 getDetails {}", authentication.getDetails());
-        log.info("프린시팔 getName {}", authentication.getName());
-        log.info("프린시팔 getClass {}", authentication.getClass());
 
-        log.info("userDetails : {}", customUser.getEmployeeCode());
+        log.info("customUser : {}", customUser);
+        log.info("getEmployeeCode : {}", customUser.getEmployeeCode());
+        log.info("getEmployeeName : {}", customUser.getEmployeeName());
+        log.info("getAuthorities : {}", customUser.getAuthorities());
+        log.info("getUsername : {}", customUser.getUsername());
 
         return "hi";
     }

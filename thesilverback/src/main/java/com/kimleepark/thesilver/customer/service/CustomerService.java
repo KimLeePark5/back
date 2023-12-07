@@ -8,9 +8,11 @@ import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
+import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
 import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
+import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
 import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CUSTOMER_CODE;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
@@ -37,10 +36,13 @@ public class CustomerService {
     final LicenseRepository licenseRepository;
 
     private Pageable getPageable(final Integer page) {
-        return PageRequest.of(page - 1, 2, Sort.by("customerCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
     private Pageable getPageableLicense(final Integer page) {
-        return PageRequest.of(page - 1, 2, Sort.by("licenseCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("licenseCode").descending());
+    }
+    private Pageable getPageableCustomers(final Integer page) {
+        return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
 
 
@@ -49,6 +51,12 @@ public class CustomerService {
         Page<Customer> customers = customerRepository.findByStatus(getPageable(page), ACTIVE);
         log.info("커스토머스 {}", customers);
         return customers.map(customer -> CustomerMainResponse.from(customer));
+    }
+
+    //     쿼리dsl 활용 코드
+    public Page<CustomerSearchResponse> getCustomersBySearch (Integer page, CustomerSearchRequest customerSearchRequest) {
+        Page<CustomerSearchResponse> customersResult = customerRepository.searchCustomersPage(getPageableCustomers(page), customerSearchRequest);
+        return customersResult;
     }
 
     public CustomerResponse getCustomer (final Long customerCode) {
@@ -63,8 +71,8 @@ public class CustomerService {
         return licenses.map(license -> LicensesResponse.from(license));
     }
 
-    public Long save(CreateCustomersRequest createCustomersRequest) {
-        Customer newCustomer = Customer.of(createCustomersRequest);
+    public Long save(Long employeeCode, CreateCustomersRequest createCustomersRequest) {
+        Customer newCustomer = Customer.of(employeeCode, createCustomersRequest);
         Customer customer = customerRepository.save(newCustomer);
         return customer.getCustomerCode();
     }
@@ -90,4 +98,8 @@ public class CustomerService {
     public void deleteLicense(Long licenseCode) {
         licenseRepository.deleteById(licenseCode);
     }
+
+
+
+
 }
