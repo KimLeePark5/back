@@ -64,6 +64,7 @@ public class AttendController {
         LocalDate today = LocalDate.now();
 
         log.info("today : {}",today);
+        log.info("today : {}",today);
 
         attendService.leaveTimeSave(empNo, today);
 
