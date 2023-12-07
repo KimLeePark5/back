@@ -7,6 +7,7 @@ import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.todolist.dto.response.ResponseTodoList;
 import com.kimleepark.thesilver.todolist.service.TodoListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class TodolistController {
     private final TodoListService todoListService;
     @GetMapping("/todoList")
-    public ResponseEntity<PagingResponse> getTodoLists(Integer page){
+    public ResponseEntity<PagingResponse> getTodoLists(Integer page,String day){
+        log.info("day : {}",day);
         int empNo = 1;
-        Page<ResponseTodoList> pageTodoList = todoListService.getTodoLists(page,empNo);
+        Page<ResponseTodoList> pageTodoList = todoListService.getTodoLists(page,empNo,day);
         PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(pageTodoList);
 
         PagingResponse pagingResponse = PagingResponse.of(pageTodoList,pagingButtonInfo);
