@@ -59,9 +59,8 @@ public class ResponseAttendType {
     }
 
 
-    public static ResponseAttendType getAttendTypeCountAdmin(Employee employee,LocalDate start, LocalDate end) {
-
-        List<ResponseAttend> list = employee.getAttendList().stream().filter(att -> att.getAttendDate().isAfter(start)&&att.getAttendDate().isBefore(end)).map(attend ->ResponseAttend.from(attend,employee.getEmployeeCode())).collect(Collectors.toList());
+    public static ResponseAttendType getAttendTypeCountAdmin(Employee employee) {
+        List<ResponseAttend> list = employee.getAttendList().stream().map(attend ->ResponseAttend.from(attend,employee.getEmployeeCode())).collect(Collectors.toList());
 
 
         return getAttendTypeCount(list,employee.getEmployeeCode());
