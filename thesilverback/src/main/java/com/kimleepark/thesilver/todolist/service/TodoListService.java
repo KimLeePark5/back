@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,9 +22,9 @@ public class TodoListService {
     private Pageable getPageable(int page) {
         return PageRequest.of(page-1,4);
     }
-    public Page<ResponseTodoList> getTodoLists(int page, int empNo,String day) {
-        LocalDate date = LocalDate.parse(day);
-        Page<TodoList> todoLists = todoListRepository.findByEmployeeCodeAndTodoDate(getPageable(page),empNo,date);
+    public Page<ResponseTodoList> getTodoLists(int page, int empNo) {
+
+        Page<TodoList> todoLists = todoListRepository.findByEmployeeCode(getPageable(page),empNo);
 
         log.info("todolist : {}",todoLists.getContent());
 
