@@ -48,7 +48,7 @@ public class Attend {
 
     private String type;
 
-    private String note = "";
+    private String note = "null";
 
     @Enumerated(EnumType.STRING)
     private AttendType status = AttendType.N;
@@ -73,7 +73,7 @@ public class Attend {
         this.leavetime = LocalTime.now();
     }
 
-    public void setAttendTime(int attendTime) {
+    public void setAttendTime(float attendTime) {
         this.attendTime = attendTime;
     }
 
