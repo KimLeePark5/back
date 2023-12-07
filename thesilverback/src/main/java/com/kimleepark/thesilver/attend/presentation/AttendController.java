@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1")
 @RestController
@@ -93,33 +92,18 @@ public class AttendController {
 
     @GetMapping("/getModifiedAttend/{modifiedNo}")
     public ResponseEntity<PagingResponse> getModifiedAttend(@RequestParam(defaultValue = "1") Integer page,@PathVariable int modifiedNo){
-
         Page<ResponseModifiedAttend> responseModifiedAttends = attendService.getModifiedAttend(page, modifiedNo);
-
         PagingButtonInfo pagingButton = Pagenation.getPagingButtonInfo(responseModifiedAttends);
-
         PagingResponse pagingResponse = PagingResponse.of(responseModifiedAttends, pagingButton);
+
 
 
         return ResponseEntity.ok(pagingResponse);
     }
 
     @GetMapping("/getAttendAdmin")
-    public ResponseEntity<PagingResponse> getAttendAdmin(@RequestParam(defaultValue = "1") final Integer page, String month){
-        log.info("moon :{}",month);
-        ResponseAttendAdminAndModifiedAttend list = attendService.getAttendAdmin(page,month);
-
-        PagingButtonInfo button = Pagenation.getPagingButtonInfo(list.getResponseAttendAdmin());
-
-        PagingResponse pagingResponse = PagingResponse.of(list,button);
-
-        return ResponseEntity.ok(pagingResponse);
-    }
-
-    @GetMapping("/getAttendAdminByEmpName")
-    public ResponseEntity<PagingResponse> getAttendAdminByName(@RequestParam(defaultValue = "1") final Integer page, String month,String name){
-
-        ResponseAttendAdminAndModifiedAttend list = attendService.getAttendAdminByName(page,month,name);
+    public ResponseEntity<PagingResponse> getAttendAdmin(@RequestParam(defaultValue = "1") final Integer page){
+        ResponseAttendAdminAndModifiedAttend list = attendService.getAttendAdmin(page);
         PagingButtonInfo button = Pagenation.getPagingButtonInfo(list.getResponseAttendAdmin());
         PagingResponse pagingResponse = PagingResponse.of(list,button);
 
