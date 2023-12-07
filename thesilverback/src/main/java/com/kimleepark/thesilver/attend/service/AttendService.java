@@ -91,11 +91,11 @@ public class AttendService {
         if (now.isBefore(leaveEarly)) {
             attend.updateNote(EARLY_LEAVE);
         }
-
         attend.setLeaveTime();
 
+
         Duration diff = Duration.between(attend.getEntertime(), attend.getLeavetime());
-        float attendTime = (float) diff.toMinutesPart() / 60;
+        int attendTime =  diff.toHoursPart();
         attend.setAttendTime(attendTime);
     }
 
@@ -130,7 +130,7 @@ public class AttendService {
     }
 
     private Pageable getPageable(int currentPage) {
-        return PageRequest.of(currentPage - 1, 6);
+        return PageRequest.of(currentPage - 1, 10);
     }
 
 
@@ -144,18 +144,43 @@ public class AttendService {
 
     }
 
-    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page) {
+    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page,final String month) {
 
-        Page<Employee> employees = employeeRepository.findAll(getPageable(page));
+        String date = month + "-01";
+        LocalDate start = LocalDate.parse(date).minusDays(1);
+        LocalDate end = LocalDate.parse(date).plusMonths(1);
+
         List<ModifiedAttend> modifiedAttends = modifiedAttendRepository.findAll();
 
-        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee));
-        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
-        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee));
+        Page<Employee> employees = employeeRepository.findAll(getPageable(page));
 
-        log.info("responseAttendTypes : {}",responseAttendTypes.getContent());
+        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
+        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
+
+        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
+
+
         ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
         return lists;
 
+    }
+
+    public ResponseAttendAdminAndModifiedAttend getAttendAdminByName(Integer page, String month, String name) {
+        String date = month + "-01";
+        LocalDate start = LocalDate.parse(date);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+        List<ModifiedAttend> modifiedAttends = modifiedAttendRepository.findAll();
+
+        Page<Employee> employees = employeeRepository.findByEmployeeNameContaining(getPageable(page),name);
+
+        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
+        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
+
+        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
+
+
+        ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
+        return lists;
     }
 }
