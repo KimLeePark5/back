@@ -21,6 +21,7 @@ public class ResponseAttendAdmin {
     private final List<ResponseAttend> attendList;
 
     public static ResponseAttendAdmin from(Employee employee,LocalDate start, LocalDate end) {
+
         return new ResponseAttendAdmin(
                 employee.getEmployeeCode(),
                 employee.getEmployeeName(),

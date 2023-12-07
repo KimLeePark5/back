@@ -26,6 +26,7 @@ public class ResponseAttend {
     private final String type;
     private final String note;
 
+
     public static ResponseAttend from(Attend attend,Long empNo){
         return new ResponseAttend(
                 attend.getEmployeeCode().getEmployeeCode(),
