@@ -1,20 +1,11 @@
 package com.kimleepark.thesilver.vacation.service;
 
-import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.Vacation;
-import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
+import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
 import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
-import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
-import com.kimleepark.thesilver.vacation.dto.response.VacationRequireResponse;
-import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,24 +13,34 @@ import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.*;
 public class VacationService {
 
     private final VacationRepository vacationRepository;
-    private final RequireRepository requireRepository;
+    private final RequireStateRepository requireRepository;
 
-    /* 연차 현황 조회 - employeeCode로 각 직원의 연차 현황 조회 */
-    @Transactional(readOnly = true)
-    public VacationResponse getVacation(final Long employeeCode) {
-
-        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(employeeCode);
-
-        return VacationResponse.from(vacation);
+    private Pageable getPageable(Integer page) {
+        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
     }
 
-    /* 상신 현황 조회 - employeeCode로 각 직원의 연차 상신 현황 조회 */
-    public List<VacationRequireResponse> getRequire(Long employeeCode ) {
+    /* 연차 현황 조회 - 로그인 한 직원의 연차 현황 조회 */
+//    @Transactional(readOnly = true)
+//    public VacationResponse getVacation(CustomUser customUser) {
+//
+//        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser);
+//
+//        return VacationResponse.from(vacation);
+//    }
 
-        List<Require> requireList = requireRepository.findByEmployeeEmployeeCode(employeeCode);
+    /* 상신 현황 조회 - 로그인 한 직원의 연차 상신 현황 조회 */
+//    public Page<VacationRequireStateResponse> getVacationRequires(Integer page, CustomUser customUser) {
+//        Pageable pageable = getPageable(page);
+//        Page<Require> requires = requireRepository.findAll(pageable);
+//
+//        List<VacationRequireStateResponse> responseList = requires.stream()
+//                .map(require -> VacationRequireStateResponse.from(require, customUser.getEmployeeCode()))
+//                .collect(Collectors.toList());
+//
+//        return new PageImpl<>(responseList, pageable, requires.getTotalElements());
+//    }
 
-        return  requireList.stream()
-                .map(VacationRequireResponse::from)
-                .collect(Collectors.toList());
-    }
+
+
 }
+

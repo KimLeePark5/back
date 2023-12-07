@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.vacation.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import lombok.AccessLevel;
@@ -33,9 +34,11 @@ public class Require {
     private Employee employee;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startDate;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endDate;
 
     @Column(nullable = false)

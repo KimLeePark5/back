@@ -38,15 +38,16 @@ public class ProgramController {
         final Page<CustomerProgramsResponse> programs = programService.getCustomerPrograms(page);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(programs);
         final PagingResponse pagingResponse = PagingResponse.of(programs.getContent(), pagingButtonInfo);
+        log.info("GET 요청 확인");
 
         // 테스트 ~~
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("프린시팔 getPrincipal {}", authentication.getPrincipal());
-        log.info("프린시팔 getCredentials {}", authentication.getCredentials());
-        log.info("프린시팔 getAuthorities {}", authentication.getAuthorities());
-        log.info("프린시팔 getDetails {}", authentication.getDetails());
-        log.info("프린시팔 getName {}", authentication.getName());
-        log.info("프린시팔 getClass {}", authentication.getClass());
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        log.info("프린시팔 getPrincipal {}", authentication.getPrincipal());
+//        log.info("프린시팔 getCredentials {}", authentication.getCredentials());
+//        log.info("프린시팔 getAuthorities {}", authentication.getAuthorities());
+//        log.info("프린시팔 getDetails {}", authentication.getDetails());
+//        log.info("프린시팔 getName {}", authentication.getName());
+//        log.info("프린시팔 getClass {}", authentication.getClass());
 
         return ResponseEntity.ok(pagingResponse);
     }
