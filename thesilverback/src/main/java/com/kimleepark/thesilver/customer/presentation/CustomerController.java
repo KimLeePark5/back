@@ -9,26 +9,18 @@ import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
-import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
-import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
-import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
-import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
+import com.kimleepark.thesilver.customer.dto.response.*;
 import com.kimleepark.thesilver.customer.service.CustomerService;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -82,8 +74,12 @@ public class CustomerController {
     @GetMapping("/customers/licenses/{customerCode}")
     public ResponseEntity<PagingResponse> getLicenses(@PathVariable Long customerCode, @RequestParam(defaultValue = "1") Integer page) {
         Page<LicensesResponse> licenses = customerService.getLicenses(customerCode, page);
+        CustomerResponse customer = customerService.getCustomer(customerCode);
+
+        LicenseCustomerResponse licenseCustomerResponse = LicenseCustomerResponse.of(licenses,customer);
+
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(licenses);
-        final PagingResponse pagingResponse = PagingResponse.of(licenses.getContent(), pagingButtonInfo);
+        final PagingResponse pagingResponse = PagingResponse.of(licenseCustomerResponse, pagingButtonInfo);
         return ResponseEntity.ok(pagingResponse);
     }
 
