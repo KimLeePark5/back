@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RequireStatusType {
 
-    PASS("결재완료"),
+    PASS("결재 완료"),
     PROCEED("상신중"),
     RETURN("반려");
 
