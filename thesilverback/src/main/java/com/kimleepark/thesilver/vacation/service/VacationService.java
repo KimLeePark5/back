@@ -12,6 +12,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.PASS;
 
 @Service
@@ -23,15 +25,16 @@ public class VacationService {
     private final UsedVacationRepository usedVacationRepository;
 
     private Pageable getPageable(Integer page) {
-        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("reqDate").descending());
     }
 
     /* 연차 사용 리스트 조회 */
     @Transactional(readOnly = true)
     public Page<UsedVacationListResponse> getUsedVacations(final Integer page, final CustomUser customUser) {
-        Page<Require> requires = usedVacationRepository.findByEmployeeEmployeeCodeAndReqStatus(getPageable(page), customUser.getEmployeeCode(), PASS);
+
+        LocalDateTime today = LocalDateTime.now();
+        Page<Require> requires = usedVacationRepository.findByEmployeeEmployeeCodeAndReqStatusAndEndDateBefore(getPageable(page), customUser.getEmployeeCode(), PASS, today);
 
         return requires.map(require -> UsedVacationListResponse.from(require));
     }
 }
-

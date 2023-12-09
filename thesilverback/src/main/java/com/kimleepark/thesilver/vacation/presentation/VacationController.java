@@ -77,24 +77,9 @@ public class VacationController {
     }
 
     /* 연차 관리 - 사용한 연차 리스트 조회 */
-//    @GetMapping("/usedVacation")
-//    public ResponseEntity<List<UsedVacationListResponse>> getUsedVacations(@AuthenticationPrincipal CustomUser customUser) {
-//
-//        System.out.println("확인" + customUser.getEmployeeName());
-//
-//        List<Require> requires = usedVacationRepository.findByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode());
-//
-//        List<UsedVacationListResponse> usedVacationListResponse = requires
-//                .stream()
-//                .map(UsedVacationListResponse::from)
-//                .collect(Collectors.toList());
-//
-//        return ResponseEntity.ok(usedVacationListResponse);
-//    }
-
     @GetMapping("/usedVacation")
     public ResponseEntity<PagingResponse> getUsedVacation(@AuthenticationPrincipal CustomUser customUser,
-                                                           @RequestParam(defaultValue = "1") final Integer page) {
+                                                          @RequestParam(defaultValue = "1") final Integer page) {
 
         final Page<UsedVacationListResponse> requires = vacationService.getUsedVacations(page, customUser);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(requires);
