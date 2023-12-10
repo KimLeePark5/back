@@ -14,7 +14,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class CreateLicensesRequest {
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate startDate;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
