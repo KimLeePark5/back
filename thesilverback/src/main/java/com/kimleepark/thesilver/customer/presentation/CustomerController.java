@@ -105,6 +105,9 @@ public class CustomerController {
     @PostMapping("/customers/licenses/{customerCode}")
     public ResponseEntity<Void> saveLicenses(@PathVariable Long customerCode,
                                              @RequestBody @Valid CreateLicensesRequest createLicensesRequest) {
+        System.out.println("customerCode : " + customerCode);
+        System.out.println("createLicensesRequest : " + createLicensesRequest);
+
         Long licenseCode = customerService.saveLicenses(customerCode, createLicensesRequest);
         System.out.println("customerCode : " + licenseCode);
 

@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.login.service;
 
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.type.LeaveType;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_EMPLOYEE_NUMBER;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
 
 @Service
@@ -24,7 +26,7 @@ public class LoginService implements UserDetailsService  {
     public UserDetails loadUserByUsername(String employeeNumber) throws UsernameNotFoundException {
 
         Account account = accountRepository.findByEmployeeNumber(employeeNumber)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 아이디가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_EMPLOYEE_NUMBER));
 
         Long employeeCode = account.getEmployee().getEmployeeCode();
 
