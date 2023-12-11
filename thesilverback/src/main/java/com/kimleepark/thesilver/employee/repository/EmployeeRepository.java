@@ -27,4 +27,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findByEmployeeNameContaining(Pageable pageable, String name);
 
 
+    Optional<Object> findTeamLeaderByTeamTeamCode(Long teamCode);
 }

@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.vacation.domain;
 import com.kimleepark.thesilver.employee.Employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
@@ -16,7 +17,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "tbl_sign")
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@EntityListeners(AutoCloseable.class)
+@EntityListeners(AuditingEntityListener.class)
 public class Sign {
 
     @Id
@@ -29,7 +30,7 @@ public class Sign {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employeeCode")
-    private Employee employee;
+    private Employee employee; // 결재자
 
     @Column
     private String signStatus;
@@ -49,16 +50,13 @@ public class Sign {
     @Column
     private LocalDateTime cancelDate;
 
-    public Sign(Long signNo, Require require, Employee employee, String signStatus, String returnCause, String cancelCause, LocalDate approveDate, LocalDateTime returnDate, LocalDateTime cancelDate) {
-        SignNo = signNo;
-        this.require = require;
+    public Sign(Require savedRequire, Employee employee) {
+        this.require = savedRequire;
         this.employee = employee;
-        this.signStatus = signStatus;
-        this.returnCause = returnCause;
-        this.cancelCause = cancelCause;
-        this.approveDate = approveDate;
-        this.returnDate = returnDate;
-        this.cancelDate = cancelDate;
+    }
+
+    public static Sign of(Require savedRequire, Employee employee) {
+        return new Sign(savedRequire, employee);
     }
 }
 
