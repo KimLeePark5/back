@@ -66,6 +66,9 @@ public class Account {
         this.employeePassword = randomPassword;
     }
 
+    public void increaseAttemptCount() {this.attemptCount += 1;}
+
+    public void resetAttemptCount() {this.attemptCount = 0;}
 }
 
 
