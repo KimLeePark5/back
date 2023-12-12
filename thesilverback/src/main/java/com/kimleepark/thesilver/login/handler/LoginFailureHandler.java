@@ -35,7 +35,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
         String errorMessage;
 
-        if (exception.getMessage().equals("사번에 해당하는 직원이 없습니다.")) {
+        if (exception.getMessage().equals("사번에 해당하는 직원을 찾을 수 없습니다.")) {
             response.getWriter().write(objectMapper.writeValueAsString(new ExceptionResponse(NOT_FOUND_EMPLOYEE_NUMBER)));
         } else if (exception.getMessage().equals("비밀번호 5회 오류로 잠금된 계정입니다.")) {
             response.getWriter().write(objectMapper.writeValueAsString(new ExceptionResponse(MANY_LOGIN_ATTEMPTS)));

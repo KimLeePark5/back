@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.account.presentation;
 
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.account.dto.request.ChangePasswordRequest;
 import com.kimleepark.thesilver.account.dto.request.ResetPasswordRequest;
 import com.kimleepark.thesilver.account.service.AccountService;
 import com.kimleepark.thesilver.employee.Employee;
@@ -65,6 +66,16 @@ public class AccountController {
         log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeNumber());
         log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeEmail());
         accountService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password-change")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal CustomUser customUser,
+                                               @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        log.info("changePasswordRequest : {}", changePasswordRequest );
+        String currentEmployeeNumber = customUser.getUsername();
+        accountService.changePassword(currentEmployeeNumber,changePasswordRequest);
+
         return ResponseEntity.ok().build();
     }
 }

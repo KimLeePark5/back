@@ -66,7 +66,7 @@ public class License {
         this.status = status;
     }
 
-    public static License of(Customer customer, CreateLicensesRequest createLicensesRequest) {
+    public static License of(Long employeeCode, Customer customer, CreateLicensesRequest createLicensesRequest) {
         LicenseStatus status = ACTIVE;
         LocalDate today = LocalDate.now();
 
@@ -82,7 +82,7 @@ public class License {
                 customer,
                 createLicensesRequest.getStartDate(),
                 createLicensesRequest.getEndDate(),
-                1L,
+                employeeCode,
                 status);
     }
 }

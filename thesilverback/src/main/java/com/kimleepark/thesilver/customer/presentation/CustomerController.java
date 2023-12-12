@@ -95,20 +95,25 @@ public class CustomerController {
     }
 
     @PutMapping("/customers/{customerCode}")
-    public ResponseEntity<Void> update(@PathVariable Long customerCode,
+    public ResponseEntity<Void> update(@AuthenticationPrincipal CustomUser customUser,
+                                       @PathVariable Long customerCode,
                                        @RequestBody @Valid UpdateCustomersRequest updateCustomersRequest) {
-        customerService.update(customerCode, updateCustomersRequest);
+        Long employeeCode = customUser.getEmployeeCode();
+        customerService.update(employeeCode, customerCode, updateCustomersRequest);
 
         return ResponseEntity.created(URI.create("/customers/" + customerCode)).build();
     }
 
     @PostMapping("/customers/licenses/{customerCode}")
-    public ResponseEntity<Void> saveLicenses(@PathVariable Long customerCode,
+    public ResponseEntity<Void> saveLicenses(@AuthenticationPrincipal CustomUser customUser,
+                                             @PathVariable Long customerCode,
                                              @RequestBody @Valid CreateLicensesRequest createLicensesRequest) {
         System.out.println("customerCode : " + customerCode);
         System.out.println("createLicensesRequest : " + createLicensesRequest);
 
-        Long licenseCode = customerService.saveLicenses(customerCode, createLicensesRequest);
+        Long employeeCode = customUser.getEmployeeCode();
+
+        Long licenseCode = customerService.saveLicenses(employeeCode, customerCode, createLicensesRequest);
         System.out.println("customerCode : " + licenseCode);
 
         return ResponseEntity.created(URI.create("/customers/" + licenseCode)).build();
