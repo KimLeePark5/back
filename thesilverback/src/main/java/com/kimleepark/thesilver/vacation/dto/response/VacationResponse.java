@@ -14,13 +14,15 @@ public class VacationResponse {
     private final String employeeName;
     private final Long occurVacation;
     private final Long useVacation;
+    private final Long remainingVacation;
 
 
     public static VacationResponse from(final Vacation vacation) {
         return new VacationResponse(
                 vacation.getEmployee().getEmployeeName(),
                 vacation.getOccurVacation(),
-                vacation.getUseVacation()
+                vacation.getUseVacation(),
+                vacation.getOccurVacation() - vacation.getUseVacation()
         );
     }
 }

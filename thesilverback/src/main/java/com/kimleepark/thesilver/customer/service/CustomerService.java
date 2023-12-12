@@ -39,7 +39,7 @@ public class CustomerService {
         return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
     private Pageable getPageableLicense(final Integer page) {
-        return PageRequest.of(page - 1, 5, Sort.by("licenseCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
     }
     private Pageable getPageableCustomers(final Integer page) {
         return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());

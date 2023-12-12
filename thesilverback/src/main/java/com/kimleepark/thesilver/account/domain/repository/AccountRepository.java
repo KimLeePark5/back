@@ -13,8 +13,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @EntityGraph(attributePaths = {"employee"})
     List<Account> findAll();
 
-
     Optional<Account> findByEmployeeNumber(String employeeNumber);
 
     Optional<Account> findByRefreshToken(String refreshToken);
+
 }

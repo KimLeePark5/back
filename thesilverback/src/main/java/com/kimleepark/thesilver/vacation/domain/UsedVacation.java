@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.vacation.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tbl_require")
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Getter
 @EntityListeners(AutoCloseable.class)
 public class UsedVacation {

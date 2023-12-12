@@ -9,8 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UsedVacationRepository extends JpaRepository<Require, CustomUser> {
-    Page<Require> findByEmployeeEmployeeCodeAndReqStatus(Pageable pageable, Long employeeCode, RequireStatusType reqstatus);
+    Page<Require> findByEmployeeEmployeeCodeAndReqStatusAndEndDateBefore(Pageable pageable, Long employeeCode, RequireStatusType reqstatus, LocalDateTime today);
 }

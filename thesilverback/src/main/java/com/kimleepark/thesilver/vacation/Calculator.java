@@ -12,7 +12,7 @@ public class Calculator { // 입사일 기준으로 if문을 돌려서 매일 �
             // 현재 날짜를 가져오기
             LocalDate currentDate = LocalDate.now();
 
-            // 입사일을 LocalDate 객체로 변환 1qq1`      1`  aQ1`
+            // 입사일을 LocalDate 객체로 변환
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate joinDateObj = LocalDate.parse(joinDate, formatter);
 
@@ -55,5 +55,4 @@ public class Calculator { // 입사일 기준으로 if문을 돌려서 매일 �
             int annualVacationDays = calculateVacation(joinDate, workingDaysInMonth, accountingYearStart);
             System.out.println("연차 일수: " + annualVacationDays);
         }
-
 }
