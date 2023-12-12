@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
@@ -27,5 +29,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findByEmployeeNameContaining(Pageable pageable, String name);
 
 
+
+    @Query("SELECT DISTINCT e.employeeName FROM Employee e")
+    List<String> findAllEmployeeName();
+
     Optional<Object> findTeamLeaderByTeamTeamCode(Long teamCode);
+
 }

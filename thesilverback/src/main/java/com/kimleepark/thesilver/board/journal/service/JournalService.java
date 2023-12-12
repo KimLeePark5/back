@@ -14,6 +14,7 @@ import com.kimleepark.thesilver.board.program.domain.Teacher;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.CustomException;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.exception.type.ExceptionCode;
@@ -26,6 +27,7 @@ import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -69,30 +71,28 @@ public class JournalService {
     private String IMAGE_URL;
     @Value("${image.image-dir}")
     private String IMAGE_DIR;
-    private Journal journal;
+
 
     private Pageable getPageable(Integer page) {return PageRequest.of(page - 1, 10, Sort.by("journalCode").descending());}
 
     // 1. 일지 목록 조회
     @Transactional(readOnly = true)
     public Page<CustomerJournalsResponse> getCustomerProgramJournals(Integer page) {
-        Pageable pageable = getPageable(page);
 
-        Page<Journal> journals = journalRepository.findAllBy(pageable);
+        Page<Journal> journals = journalRepository.findAllBy(getPageable(page));
 
-        List<CustomerJournalsResponse> responseList = journals.stream()
-                .map(CustomerJournalsResponse::from)
-                .collect(Collectors.toList());
+//        List<CustomerJournalsResponse> responseList = journals.stream()
+//                .map(CustomerJournalsResponse::from)
+//                .collect(Collectors.toList());
 
-        return new PageImpl<>(responseList, pageable, journals.getTotalElements());
+//        return new PageImpl<>(responseList, pageable, journals.getTotalElements());
+        return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
     // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (직원, 프로그램 카테고리, 참관 일자)
     @Transactional(readOnly = true)
     public Page<CustomerJournalsResponse> getJournalsByMultipleCriteria(
             Integer page, String employeeCode, Long programCategoryCode, LocalDate observation) {
-
-        Pageable pageable = getPageable(page);
 
         // 다중 검색 기준에 따라 동적으로 쿼리를 생성
         Specification<Journal> spec = Specification.where(null);
@@ -121,17 +121,30 @@ public class JournalService {
             });
         }
 
-        Page<Journal> journals = journalRepository.findAll(spec, pageable);
+        Page<Journal> journals = journalRepository.findAll(spec, getPageable(page));
 
         if (journals.isEmpty()) {
             throw new CustomException(ExceptionCode.NOT_FOUND_MULTIPLE_LOOKUPS);
         }
 
-        List<CustomerJournalsResponse> responseList = journals.stream()
-                .map(CustomerJournalsResponse::from)
-                .collect(Collectors.toList());
+//        List<CustomerJournalsResponse> responseList = journals.stream()
+//                .map(CustomerJournalsResponse::from)
+//                .collect(Collectors.toList());
 
-        return new PageImpl<>(responseList, pageable, journals.getTotalElements());
+        //return new PageImpl<>(responseList, getPageable(page), journals.getTotalElements());
+        return journals.map(journal -> CustomerJournalsResponse.from(journal));
+    }
+
+    //2-1. 다중 검색 셀렉트 바 (직원 이름)
+    @Transactional(readOnly = true)
+    public List<String> getEmployeeName() {
+        return employeeRepository.findAllEmployeeName();
+    }
+
+    //2-1. 다중 검색 셀렉트 바 (카테고리 이름)
+    @Transactional(readOnly = true)
+    public List<String> getCategoryName() {
+        return programRepository.findAllCategoryName(); // 고유한 카테고리 이름을 가져오는 리포지토리 메서드를 가정합니다.
     }
 
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
@@ -158,6 +171,11 @@ public class JournalService {
         // CustomerJournalResponse.from 메서드에서 어떻게 변환되는지 로그합니다.
         log.debug("Converting Journal to CustomerJournalResponse: {}", CustomerJournalResponse.from(journal));
 
+        // 해당 일지에 있는 모든 첨부파일의 URL을 리스트로 가져옴
+        List<String> attachmentUrls = journal.getAttachments().stream()
+                .map(Attachment::getUrl)
+                .collect(Collectors.toList());
+
         // 생성된 participantNames를 CustomerJournalResponse 생성자에 추가하여 반환합니다.
         return new CustomerJournalResponse(
                 journal.getProgram().getCategory().getCategoryName(),
@@ -173,9 +191,11 @@ public class JournalService {
                 journal.getObserve(),
                 journal.getRating(),
                 journal.getNote(),
-                participantNames
+                participantNames,
+                attachmentUrls
         );
     }
+
 
     // 4. 일지 등록 - (참관한 직원, 관리자)
     public Long save(MultipartFile journalImg, JournalCreateRequest journalRequest) {
@@ -206,22 +226,38 @@ public class JournalService {
             System.out.println("첨부파일 설정 : " + attachments.getUrl());
 
             // 참가자 엔터티 생성 및 설정
-            Journal finalJournal = journal;
-            List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(", "))
+//            Journal finalJournal = journal;
+//            List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(", "))
+//                    .map(participantName -> {
+//                        Customer customer = (Customer) customerRepository.findByName(participantName)
+//                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
+//                        return new Participant(finalJournal, customer);
+//                    })
+//                    .collect(Collectors.toList());
+//            journal.setParticipants(participants);
+
+            // 참가자 엔터티 생성 및 설정
+            List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(","))
                     .map(participantName -> {
-                        Customer customer = (Customer) customerRepository.findByName(participantName)
+                        Customer customer = (Customer) customerRepository.findByName(participantName.trim())
                                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
-                        return new Participant(finalJournal, customer);
+                        return new Participant(customer);
                     })
                     .collect(Collectors.toList());
-            journal.setParticipants(participants);
 
-            // 참가자들을 저장합니다.
 
 
             System.out.println("참가자 설정 및 일지 저장 : " + participants.size() + "명, 일지 코드: " + journal.getJournalCode());
 
             // 새로운 일지를 생성하고, 기타 세부 정보를 설정한 후 저장합니다.
+//            journal.setSubProgress(journalRequest.getSubProgress());
+//            journal.setObserve(journalRequest.getObserve());
+//            journal.setRating(journalRequest.getRating());
+//            journal.setNote(journalRequest.getNote());
+//            journal.setObservation(journalRequest.getObservation());
+//            journal.setProgramTopic(journalRequest.getProgramTopic());
+            journal = new Journal();
+            journal.setJournalCode(journalRequest.getJournalCode());
             journal.setSubProgress(journalRequest.getSubProgress());
             journal.setObserve(journalRequest.getObserve());
             journal.setRating(journalRequest.getRating());
@@ -232,6 +268,9 @@ public class JournalService {
             // 직원과 프로그램 엔터티 설정
             String employeeName = journalRequest.getEmployeeName();
             log.info("직원 이름으로 조회를 시도합니다: {}", employeeName);
+
+            // 참가자들 설정
+            journal.setParticipants(participants);
 
             Employee employee = (Employee) employeeRepository.findByEmployeeName(journalRequest.getEmployeeName())
                     .orElseThrow(() -> {

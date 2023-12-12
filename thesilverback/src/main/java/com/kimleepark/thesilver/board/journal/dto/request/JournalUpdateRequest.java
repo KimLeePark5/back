@@ -33,7 +33,7 @@ public class JournalUpdateRequest {
     @NotNull
     private String day;                 // 요일
 
-//    @Min(value = 1)
+    //    @Min(value = 1)
 //    private Long employeeCode;          // 직원코드
     @NotNull
     private String employeeName;        // 직원 이름
