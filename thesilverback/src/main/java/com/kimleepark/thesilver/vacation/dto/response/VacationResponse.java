@@ -17,12 +17,13 @@ public class VacationResponse {
     private final Long remainingVacation;
 
 
-    public static VacationResponse from(final Vacation vacation) {
+    public static VacationResponse from(final Vacation vacation, Long passedReqCount) {
         return new VacationResponse(
                 vacation.getEmployee().getEmployeeName(),
                 vacation.getOccurVacation(),
-                vacation.getUseVacation(),
+                passedReqCount, // reqStatus가 PASS 상태인 요청의 갯수
                 vacation.getOccurVacation() - vacation.getUseVacation()
         );
     }
+
 }

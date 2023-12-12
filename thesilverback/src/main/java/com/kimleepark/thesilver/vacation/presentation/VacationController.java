@@ -49,21 +49,15 @@ public class VacationController {
         System.out.println("확인" + customUser.getEmployeeName());
         // 연차 정보 확인
         Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
-        VacationResponse vacationResponse = VacationResponse.from(vacation);
 
-        // 발생 연차, 사용 연차 조회
-//        Long occurVacationCount = vacationService.getOccurVacationCount(customUser);
-//        Long useVacationCount = vacationService.getCountByEmployeeCode(customUser);
+        // 'PASS' 상태인 휴가 요청의 갯수 조회
+        Long passedReqCount = requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), "PASS");
 
-        System.out.println("vacationResponse : " + vacationResponse.getOccurVacation());
-
-        // 잔여 연차 계산 (occurVacation - useVacation)
-//        Long remainingVacationCount = occurVacationCount - useVacationCount;
-//
-//        VacationResponse vacationResponse = new VacationResponse(occurVacationCount, useVacationCount, remainingVacationCount);
+        VacationResponse vacationResponse = VacationResponse.from(vacation, passedReqCount);
 
         return ResponseEntity.ok(vacationResponse);
     }
+
 
     /* 연차 상신하기 */
     @PostMapping("/require") // 등록

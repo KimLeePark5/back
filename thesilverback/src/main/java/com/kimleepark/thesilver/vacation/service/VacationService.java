@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.kimleepark.thesilver.vacation.domain.QRequire.require;
+import static com.kimleepark.thesilver.vacation.domain.QVacation.vacation;
 import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.PASS;
 import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.PROCEED;
 
@@ -32,9 +33,7 @@ import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.PR
 public class VacationService {
 
 
-    //private final UsedVacationRepository usedVacationRepository;
     private final RequireRepository requireRepository;
-    private final VacationRepository vacationRepository;
     private final VacationTypeRepository vacationTypeRepository;
     private final EmployeeRepository employeeRepository;
     private final SignRepository signRepository;
@@ -43,27 +42,10 @@ public class VacationService {
         return PageRequest.of(page - 1, 5, Sort.by("reqDate").descending());
     }
 
-    /* 결재 완료 된 연차 카운트 하여 사용 연차로 반영하기 */
-    @Transactional(readOnly = true)
-    public Long getCountByEmployeeCode(final CustomUser customUser) {
-        // 사용 연차 조회
-        return requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), RequireStatusType.PASS);
-    }
-
-    @Transactional(readOnly = true)
-    public Long getOccurVacationCount(final CustomUser customUser) {
-        // 발생 연차 조회
-        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
-        return vacation != null ? vacation.getOccurVacation() : 0L;
-    }
-
-    /* 연차 상신하기 */
-//    public Long save(CustomUser customUser, CreateRequireRequest createRequireRequest) {
-//        Require newRequire = Require.of(customUser, createRequireRequest);
-//
-//        System.out.println("customUser나오나요? : " + customUser );
-//        Require require = requireRepository.save(newRequire);
-//        return require.getReqNo();
+//    @Transactional(readOnly = true)
+//    public Long getPassedRequireCount(final CustomUser customUser) {
+//        // 'PASS' 상태인 휴가 요청의 갯수 조회
+//        return requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), "PASS");
 //    }
 
     /* 연차 상신 */
@@ -117,6 +99,7 @@ public class VacationService {
         // 가져온 require를 RequireStateAdminResponse 변환하여 반환
         return requires.map(require -> RequireStateAdminResponse.from(require));
     }
+
 
 
 }
