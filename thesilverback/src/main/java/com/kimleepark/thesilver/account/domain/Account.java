@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 import static com.kimleepark.thesilver.account.domain.type.AccountChangeStatus.UNCHANGED;
 import static com.kimleepark.thesilver.account.domain.type.AccountStatus.ACTIVE;
+import static com.kimleepark.thesilver.account.domain.type.AccountStatus.INACTIVE;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -69,6 +70,12 @@ public class Account {
     public void increaseAttemptCount() {this.attemptCount += 1;}
 
     public void resetAttemptCount() {this.attemptCount = 0;}
+
+    public void setInactive() {this.status = INACTIVE;}
+
+    public void changePassword(String hashedNewPassword) {this.employeePassword = hashedNewPassword;}
+
+    public void activeStatus() {this.status = ACTIVE;}
 }
 
 

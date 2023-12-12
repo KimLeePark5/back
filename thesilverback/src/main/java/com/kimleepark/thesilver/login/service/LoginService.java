@@ -1,7 +1,10 @@
 package com.kimleepark.thesilver.login.service;
 
 import com.kimleepark.thesilver.account.domain.Account;
+import com.kimleepark.thesilver.account.domain.LoginHistory;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.account.domain.repository.LoginHistoryRepository;
+import com.kimleepark.thesilver.account.domain.type.AccountStatus;
 import com.kimleepark.thesilver.common.exception.ConflictException;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.employee.Employee;
@@ -28,6 +31,7 @@ public class LoginService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
+    private final LoginHistoryRepository loginHistoryRepository;
 
     @Override
     public UserDetails loadUserByUsername(String employeeNumber) throws UsernameNotFoundException {
@@ -44,6 +48,7 @@ public class LoginService implements UserDetailsService {
         if (!employeeRank.equals("센터장")) {
             account.increaseAttemptCount();
         }
+        System.out.println("임시확인");
 
 
         Long employeeCode = account.getEmployee().getEmployeeCode();
@@ -61,5 +66,15 @@ public class LoginService implements UserDetailsService {
         account.resetAttemptCount();
     }
 
+    public AccountStatus getAccountStatus(String userName) {
+        AccountStatus accountStatus = accountRepository.findByEmployeeNumber(userName).get().getStatus();
+        return accountStatus;
+    }
 
+
+    public void saveLoginHistory(String employeeNumber, String ip) {
+        Employee employee = accountRepository.findByEmployeeNumber(employeeNumber).get().getEmployee();
+        LoginHistory loginHistory = LoginHistory.of(employee, ip);
+        loginHistoryRepository.save(loginHistory);
+    }
 }

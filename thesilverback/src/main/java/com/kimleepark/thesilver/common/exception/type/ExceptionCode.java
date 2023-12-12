@@ -38,6 +38,8 @@ public enum ExceptionCode {
     NOT_FOUND_EMPLOYEE_EMAIL(9101, "해당하는 이메일이 존재하지 않습니다."),
     NOT_FOUND_ACCOUNT_NUMBER(9102, "해당하는 사번이 존재하지 않습니다."),
     MISMATCH_NUMBER_EMAIL(9103, "사번과 이메일 주소가 일치하지 않습니다.."),
+    // 비밀번호 변경 에러 처리
+    NOT_FOUND_CURRENT_PASSWORD(9104,"현재 비밀번호가 일치하지 않습니다."),
     // 라이센스 에러 처리
     START_IS_AFTER_END(9201, "종료 날짜가 시작 날짜보다 빠릅니다."),
 

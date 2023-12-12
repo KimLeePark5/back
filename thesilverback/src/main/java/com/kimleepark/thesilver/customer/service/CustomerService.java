@@ -77,15 +77,15 @@ public class CustomerService {
         return customer.getCustomerCode();
     }
 
-    public void update(Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
+    public void update(Long employeeCode, Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
         Customer findCustomer = customerRepository.findById(customerCode).orElseThrow();
-        findCustomer.update(updateCustomersRequest);
+        findCustomer.update(employeeCode, updateCustomersRequest);
     }
 
-    public Long saveLicenses(Long customerCode, CreateLicensesRequest createLicensesRequest) {
+    public Long saveLicenses(Long employeeCode, Long customerCode, CreateLicensesRequest createLicensesRequest) {
 
         Customer customer = customerRepository.findById(customerCode).orElseThrow();
-        License newLicense = License.of(customer,createLicensesRequest);
+        License newLicense = License.of(employeeCode, customer, createLicensesRequest);
 
         License license = licenseRepository.save(newLicense);
         return license.getLicenseCode();
