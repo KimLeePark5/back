@@ -6,12 +6,12 @@ import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
 import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class UsedVacationListResponse {
+public class RequireStateAdminResponse {
+
 
     private final String vacationName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -22,18 +22,20 @@ public class UsedVacationListResponse {
     private final RequireStatusType ReqStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime reqDate;
+    private final Long teamCode;
+
+    public static RequireStateAdminResponse from(Require require) {
 
 
+        return new RequireStateAdminResponse(
 
-
-    public static UsedVacationListResponse from(Require require) {
-        return new UsedVacationListResponse(
                 require.getVacationType().getVacationName(),
                 require.getStartDate(),
                 require.getEndDate(),
                 require.getReqContent(),
                 require.getReqStatus(),
-                require.getReqDate()
+                require.getReqDate(),
+                require.getEmployee().getTeam().getTeamCode()
         );
     }
 }

@@ -19,7 +19,7 @@ public class LicensesResponse {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate endDate;
     private final LicenseStatus status;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDateTime registDate;
 
     public static LicensesResponse from(License license) {

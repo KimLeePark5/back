@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
 import com.kimleepark.thesilver.jwt.filter.JwtAuthenticationFilter;
 import com.kimleepark.thesilver.jwt.handler.JwtAccessDeniedHandler;
 import com.kimleepark.thesilver.jwt.handler.JwtAuthenticationEntryPoint;
@@ -119,7 +120,7 @@ public class SecurityConfig {
 
     /* 로그인 성공 핸들러 빈 등록 */
     @Bean
-    public LoginSuccessHandler loginSuccessHandler() { return new LoginSuccessHandler(jwtService); }
+    public LoginSuccessHandler loginSuccessHandler() { return new LoginSuccessHandler(jwtService, loginService); }
 
     /* 로그인 필터 빈 등록 */
     @Bean

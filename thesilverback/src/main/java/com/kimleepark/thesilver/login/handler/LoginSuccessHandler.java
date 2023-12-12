@@ -1,9 +1,13 @@
 package com.kimleepark.thesilver.login.handler;
 
+import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.jwt.service.JwtService;
+import com.kimleepark.thesilver.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -20,9 +24,11 @@ import java.util.stream.Collectors;
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final LoginService loginService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
 
         /* 로그인 성공 후 저장 된 인증 객체에서 정보를 꺼낸다. */
         Map<String, String> employeeInfo = getEmployeeInfo(authentication);
@@ -30,6 +36,10 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("authentication : {}", authentication.getCredentials());
         log.info("authentication : {}", authentication.getAuthorities());
         log.info("로그인 성공 후 인증 객체에서 꺼낸 정보 : {}", employeeInfo);
+
+        // 로그인 시도 횟수 초기화
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        loginService.resetAttemptCount(userDetails.getUsername());
 
         /* access token과 refresh token 생성 */
         String accessToken = jwtService.createAccessToken(employeeInfo);
@@ -58,6 +68,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         return Map.of(
                 "employeeNumber", userDetails.getUsername(),
                 "employeeRole", employeeRole
-                );
+        );
     }
 }

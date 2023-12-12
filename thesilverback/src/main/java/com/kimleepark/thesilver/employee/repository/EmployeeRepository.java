@@ -29,6 +29,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findByEmployeeNameContaining(Pageable pageable, String name);
 
 
+
     @Query("SELECT DISTINCT e.employeeName FROM Employee e")
     List<String> findAllEmployeeName();
+
+    Optional<Object> findTeamLeaderByTeamTeamCode(Long teamCode);
+
 }
