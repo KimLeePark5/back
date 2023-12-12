@@ -3,6 +3,13 @@ package com.kimleepark.thesilver.vacation.presentation;
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
+
+import com.kimleepark.thesilver.jwt.CustomUser;
+import com.kimleepark.thesilver.vacation.domain.Require;
+import com.kimleepark.thesilver.vacation.domain.Vacation;
+import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
+import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
+
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
@@ -10,11 +17,14 @@ import com.kimleepark.thesilver.vacation.domain.Vacation;
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
 import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
 import com.kimleepark.thesilver.vacation.dto.request.CreateRequireRequest;
+
 import com.kimleepark.thesilver.vacation.dto.response.UsedVacationListResponse;
 import com.kimleepark.thesilver.vacation.dto.response.*;
 import com.kimleepark.thesilver.vacation.service.VacationService;
 import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +32,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
 import java.net.URI;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

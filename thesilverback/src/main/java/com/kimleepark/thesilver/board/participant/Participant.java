@@ -31,5 +31,22 @@ public class Participant {
     public Participant(Journal journal, Customer customer) {
         this.journal = journal;
         this.customer = customer;
+        // 양방향 연관관계를 설정할 때, Journal 엔터티에도 해당 참가자를 추가하는 것이 좋습니다.
+        if (journal != null && !journal.getParticipants().contains(this)) {
+            journal.getParticipants().add(this);
+        }
+    }
+
+    public Participant(Customer customer) {
+        this.customer = customer;
+    }
+
+    // Journal 설정 메서드 추가
+    public void setJournal(Journal journal) {
+        this.journal = journal;
+        // 양방향 연관관계를 설정할 때, Journal 엔터티에도 해당 참가자를 추가하는 것이 좋습니다.
+        if (journal != null && !journal.getParticipants().contains(this)) {
+            journal.getParticipants().add(this);
+        }
     }
 }

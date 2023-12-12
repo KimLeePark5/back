@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
 
@@ -82,6 +83,21 @@ public class JournalController {
         return ResponseEntity.ok(pagingResponse);
     }
 
+    //2-1. 다중 검색 셀렉트 바 (직원 이름)
+    @GetMapping("/journals/employeeName")
+    public ResponseEntity<List<String>> getEmployeeName() {
+        List<String> employeeName = journalService.getEmployeeName();
+        return ResponseEntity.ok(employeeName);
+    }
+
+    //2-2. 다중 검색 셀렉트 바 (카테고리 이름)
+    @GetMapping("/journals/categoryName")
+    public ResponseEntity<List<String>> getCategoryName() {
+        List<String> categoryName = journalService.getCategoryName();
+        return ResponseEntity.ok(categoryName);
+    }
+
+
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(직원, 관리자)
     @GetMapping("/journals/{journalCode}")
     public ResponseEntity<CustomerJournalResponse> getCustomerJournal(@PathVariable final Long journalCode) {
@@ -95,6 +111,7 @@ public class JournalController {
             // 조회된 결과를 ResponseEntity로 감싸서 반환합니다.
             log.info("Journal response: {}", response);
             return ResponseEntity.ok(response);
+
         } catch (NotFoundException ex) {
             // NotFoundException이 발생하면 해당 일지가 없다는 응답을 반환합니다.
             log.error("Journal not found for code: {}", journalCode);
@@ -266,6 +283,7 @@ public class JournalController {
         }
         return false;
     }
+
 
     // 6. 일지 삭제(등록한 직원, 관리자) //사용자가 아무 일지나 다 삭제함;;
     @DeleteMapping("/journals/{journalCode}")
