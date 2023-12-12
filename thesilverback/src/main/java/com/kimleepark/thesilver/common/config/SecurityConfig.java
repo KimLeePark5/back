@@ -39,7 +39,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-
         return http
                 // CSRF 설정 비활성화
                 .csrf()
@@ -54,7 +53,8 @@ public class SecurityConfig {
                 // 이 때 OPTIONS 메서드로 서버에 사전 요청을 보내 권한을 확인함
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/password-reset/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/productimgs/**", "/api/v1/programs/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/programimgs/**").permitAll() //이미지 요청
+                .antMatchers(HttpMethod.GET, "/api/v1/programs/**", "/api/v1/journals/**").permitAll()
                 .antMatchers("/api/v1/programs-management/**").hasAnyRole("센터장","팀장")
 
                 //.antMatchers("/api/v1/**").permitAll()
