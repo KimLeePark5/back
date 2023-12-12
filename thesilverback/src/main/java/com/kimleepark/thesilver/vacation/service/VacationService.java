@@ -2,10 +2,6 @@ package com.kimleepark.thesilver.vacation.service;
 
 import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
-import com.kimleepark.thesilver.vacation.domain.repository.UsedVacationRepository;
-import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
-import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
 import com.kimleepark.thesilver.vacation.dto.response.UsedVacationListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
