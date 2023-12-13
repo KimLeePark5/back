@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.customer.domain.repository;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
 
+
 import com.kimleepark.thesilver.customer.dto.response.QCustomerSearchResponse;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+
 
 import static com.kimleepark.thesilver.customer.domain.QCustomer.customer;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;

@@ -3,26 +3,27 @@ package com.kimleepark.thesilver.vacation.domain.type;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum RequireStatusType {
+public enum SignStatusType {
 
     PASS("결재완료"),
-    PROCEED("상신중"),
+    PROCEED("상신"),
     RETURN("반려");
 
     private final String value;
 
-    RequireStatusType(String value) { this.value = value; }
+    SignStatusType(String value) {
+        this.value = value;
+    }
 
     @JsonCreator
-    public static RequireStatusType from(String value) {
-        for(RequireStatusType reqStatus : RequireStatusType.values()) {
-            if(reqStatus.getValue().equals(value)) {
-                return reqStatus;
+    public static SignStatusType from(String value) {
+        for (SignStatusType signStatus : SignStatusType.values()) {
+            if (signStatus.getValue().equals(value)) {
+                return signStatus;
             }
         }
         return null;
     }
-
 
     @JsonValue
     public String getValue() {

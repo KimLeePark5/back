@@ -1,8 +1,11 @@
 package com.kimleepark.thesilver.vacation.domain;
 
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
+import com.kimleepark.thesilver.vacation.domain.type.SignStatusType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -17,6 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "tbl_sign")
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class Sign {
 
@@ -33,7 +37,8 @@ public class Sign {
     private Employee employee; // 결재자
 
     @Column
-    private String signStatus;
+    @Enumerated(value = EnumType.STRING)
+    private SignStatusType signStatus;
 
     @Column
     private String returnCause;
@@ -50,13 +55,14 @@ public class Sign {
     @Column
     private LocalDateTime cancelDate;
 
-    public Sign(Require savedRequire, Employee employee) {
+    public Sign(Require savedRequire, Employee employee, SignStatusType signStatus) {
         this.require = savedRequire;
         this.employee = employee;
+        this.signStatus = signStatus;
     }
 
-    public static Sign of(Require savedRequire, Employee employee) {
-        return new Sign(savedRequire, employee);
+    public static Sign of(Require savedRequire, Employee employee, SignStatusType signStatus) {
+        return new Sign(savedRequire, employee, SignStatusType.PROCEED);
     }
 }
 

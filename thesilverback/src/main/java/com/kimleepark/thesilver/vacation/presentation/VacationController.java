@@ -7,15 +7,12 @@ import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
 import com.kimleepark.thesilver.vacation.domain.Vacation;
-import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
+
 import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
 
-import com.kimleepark.thesilver.employee.Employee;
-import com.kimleepark.thesilver.jwt.CustomUser;
-import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.Vacation;
+
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
-import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
+import com.kimleepark.thesilver.vacation.domain.type.SignStatusType;
 import com.kimleepark.thesilver.vacation.dto.request.CreateRequireRequest;
 
 import com.kimleepark.thesilver.vacation.dto.response.UsedVacationListResponse;
@@ -28,9 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,9 +40,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.validation.Valid;
 import java.net.URI;
-
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,9 +65,13 @@ public class VacationController {
         Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
 
         // 'PASS' 상태인 휴가 요청의 갯수 조회
-        Long passedReqCount = requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), "PASS");
+        Long passedReqCount = vacationService.getPassedRequireCount(customUser);
 
-        VacationResponse vacationResponse = VacationResponse.from(vacation, passedReqCount);
+        System.out.println("PASS상태인 휴가 요청 갯수는? : "+ passedReqCount );
+
+        VacationResponse vacationResponse = VacationResponse.from(vacation, passedReqCount, customUser);
+
+        log.info("customUser 권한: {}", vacationResponse.getAuthorities());
 
         return ResponseEntity.ok(vacationResponse);
     }
@@ -80,7 +81,9 @@ public class VacationController {
     @PostMapping("/require") // 등록
     public ResponseEntity<Void> save(@RequestBody @Validated CreateRequireRequest createRequireRequest,
                                      @AuthenticationPrincipal CustomUser customUser) {
+        System.out.println("확인" + customUser.getEmployeeName());
        vacationService.save(createRequireRequest, customUser);
+
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -115,16 +118,18 @@ public class VacationController {
     }
 
     /* 직원 상신 현황 조회 - 관리자 */
-    @GetMapping("/requireStateAdmin")
+    @GetMapping("/ProceedRequireAdmin")
     public ResponseEntity<PagingResponse> getTeamRequires(@AuthenticationPrincipal CustomUser customUser,
-                                                          @RequestParam(defaultValue = "1") final Integer page) {
+                                                          @RequestParam(defaultValue = "1") final Integer page,
+                                                          @RequestParam final String signStatus) {
 
+        log.info("확인 : {}", signStatus);
 
-        final Page<RequireStateAdminResponse> requires = vacationService.getTeamRequires(page, customUser);
+        final Page<RequireStateAdminResponse> requires = vacationService.getTeamRequires(page, customUser, signStatus);
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(requires);
         final PagingResponse pagingResponse = PagingResponse.of(requires.getContent(), pagingButtonInfo);
 
         return ResponseEntity.ok(pagingResponse);
-
     }
+
 }
