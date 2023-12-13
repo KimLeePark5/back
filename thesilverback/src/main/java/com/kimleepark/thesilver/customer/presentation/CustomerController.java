@@ -5,6 +5,8 @@ import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
 import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
+import com.kimleepark.thesilver.customer.dto.graphData.FirstGraphData;
+import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
@@ -81,6 +83,18 @@ public class CustomerController {
         final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(licenses);
         final PagingResponse pagingResponse = PagingResponse.of(licenseCustomerResponse, pagingButtonInfo);
         return ResponseEntity.ok(pagingResponse);
+    }
+
+    @GetMapping("/customers/graph")
+    public ResponseEntity<CustomerGraphResponse> getCustomersGraphData() {
+        // 월별 신규 고객 등록 수 - where 6개월, where 연령대
+//        SecondGraphData secondGraphData = customerService.getSecondGraphData();
+
+        // 전체 고객 수 - where 지역, where 연령대
+
+        // 누적 고객 등록 수
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/customers")
