@@ -6,6 +6,8 @@ import com.kimleepark.thesilver.customer.domain.License;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
 import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
+import com.kimleepark.thesilver.customer.dto.graphData.FirstGraphData;
+import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
@@ -100,6 +102,8 @@ public class CustomerService {
     }
 
 
-
-
+    // 그래프 데이터 가공
+//    public SecondGraphData getSecondGraphData() {
+//        customerRepository.findByStatus()
+//    }
 }
