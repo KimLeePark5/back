@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ public class ResponseAttendType {
         int attendTime = 0;
 
         for(ResponseAttend attend : responseAttend){
+
             attendTime += attend.getAttendTime();
             switch (attend.getNote()){
                 case "지각" : lateCount += 1;
@@ -64,7 +66,6 @@ public class ResponseAttendType {
     public static ResponseAttendType getAttendTypeCountAdmin(Employee employee,LocalDate start, LocalDate end) {
 
         List<ResponseAttend> list = employee.getAttendList().stream().filter(att -> att.getAttendDate().isAfter(start)&&att.getAttendDate().isBefore(end)).map(attend ->ResponseAttend.from(attend,employee.getEmployeeCode())).collect(Collectors.toList());
-
 
         return getAttendTypeCount(list,employee.getEmployeeCode());
     }

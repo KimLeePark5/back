@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/productimgs/**", "/api/v1/programs/**").permitAll()
                 .antMatchers("/api/v1/programs-management/**").hasAnyRole("센터장","팀장")
 
-                //.antMatchers("/api/v1/**").permitAll()
+                .antMatchers("/api/v1/**").permitAll()
 
 //                .antMatchers("/api/v1/**").permitAll()ㄷ
 
