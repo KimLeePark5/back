@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResponseAttendAdmin {
     private final Long empCode;
+    private final String empRank;
+    private final String team;
     private final String empName;
     private final List<ResponseAttend> attendList;
 
@@ -24,6 +26,8 @@ public class ResponseAttendAdmin {
 
         return new ResponseAttendAdmin(
                 employee.getEmployeeCode(),
+                employee.getRank().getRankName(),
+                employee.getTeam().getTeamName(),
                 employee.getEmployeeName(),
                 employee.getAttendList().stream().filter(attend -> attend.getAttendDate().isAfter(start) && attend.getAttendDate().isBefore(end)).map(attend -> ResponseAttend.from(attend, employee.getEmployeeCode())).collect(Collectors.toList())
         );

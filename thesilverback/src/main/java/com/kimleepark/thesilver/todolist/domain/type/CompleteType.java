@@ -14,7 +14,6 @@ public enum CompleteType {
     }
 
 
-
     @JsonValue
     public String getValue() {
         return value;

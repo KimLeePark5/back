@@ -18,8 +18,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Employee findByEmployeeCodeAndLeaveType(Long employeeCode, LeaveType leaveType);
 
-
-
     Optional<Employee> findByEmployeeCode(Long employeeCode);
 
     Optional<Object> findByEmployeeName(String employeeName);
@@ -28,6 +26,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @EntityGraph(attributePaths = {"rank","team"})
     Page<Employee> findByEmployeeNameContaining(Pageable pageable, String name);
 
+    Page<Employee> findAllByOrderByTeam(Pageable pageable);
 
 
     @Query("SELECT DISTINCT e.employeeName FROM Employee e")
