@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class Employee {
     private EmploymentType employmentType;
 
     @Column(nullable = false)
-    private LocalDateTime joinDate;
+    private LocalDate joinDate;
 
     @Column
     private LocalDateTime leaveDate;
@@ -100,7 +101,7 @@ public class Employee {
     @Column
     private LeaveType leaveType;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="team_code")
     private Team team;
 
@@ -117,36 +118,51 @@ public class Employee {
     @OneToMany(mappedBy = "employeeCode")
     private List<Attend> attendList;
 
-
-
-
-
-
-    public Employee(String employeePicture, Long rankCode, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDateTime joinDate, Team team, Rank rank, String s) {
-        this.employeeName = employeeName;
-        this.registrationNumber = registrationNumber;
-        this.workingStatus = workingStatus;
-        this.employeeEmail = employeeEmail;
-        this.employeeAddress = employeeAddress;
-        this.gender = gender;
-        this.disability = disability;
-        this.marriage = marriage;
-        this.patriots = patriots;
-        this.employmentType = employmentType;
-        this.joinDate = joinDate;
-        this.employeePhone = employeePhone;
-        this.employeePicture = employeePicture;
-        this.rank = rank;
-        this.leaveType = leaveType;
-        this.team = team;
+    public Employee(Rank rankCode, Team teamCode, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDate joinDate) {
+        this.rank=rankCode;
+        this.team=teamCode;
+        this.employeeName=employeeName;
+        this.employeeEmail=employeeEmail;
+        this.gender=gender;
+        this.disability=disability;
+        this.marriage=marriage;
+        this.patriots=patriots;
+        this.employmentType=employmentType;
+        this.workingStatus=workingStatus;
+        this.leaveType=leaveType;
+        this.registrationNumber=registrationNumber;
+        this.employeePhone=employeePhone;
+        this.employeeAddress=employeeAddress;
+        this.joinDate=joinDate;
     }
 
+    public static Employee of(final Rank rankCode, final Team teamCode, final String employeeName, final String employeeEmail,
+                              final GenderType gender, final DisabilityType disability, final MarriageType marriage, final PatriotsType patriots,
+                              final EmploymentType employmentType, final WorkingType workingStatus, final LeaveType leaveType, final String registrationNumber,
+                              final String employeePhone, final String employeeAddress, final LocalDate joinDate)
+    {return new Employee(
+            rankCode,
+            teamCode,
+            employeeName,
+            employeeEmail,
+            gender,
+            disability,
+            marriage,
+            patriots,
+            employmentType,
+            workingStatus,
+            leaveType,
+            registrationNumber,
+            employeePhone,
+            employeeAddress,
+            joinDate
+    );}
 
     public void updateEmployeePicture(String employeePicture) {
         this.employeePicture = employeePicture;
     }
 
-    public void updates(String employeePicture, Rank rank, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDateTime joinDate, LocalDateTime leaveDate, String leaveReason, Team team) {
+    public void updates(String employeePicture, Rank rank, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDate joinDate, LocalDateTime leaveDate, String leaveReason, Team team) {
         this.employeePicture = employeePicture;
         this.rank = rank;
         this.employeeName = employeeName;
@@ -172,29 +188,11 @@ public class Employee {
         this.employeePhone = employeePhone;
         this.employeeAddress = employeeAddress;
     }
-
-    public static Employee of(
-            final String employeePicture, final Long rankCode, final String employeeName, final String employeeEmail, final GenderType gender, final DisabilityType disability, final MarriageType marriage, final PatriotsType patriots, final EmploymentType employmentType, final WorkingType workingStatus, final LeaveType leaveType, final String registrationNumber, final String employeePhone, String employeeAddress, final LocalDateTime joinDate, final Team team, final Rank rank, final String s) {
-        return new Employee(
-                employeePicture,
-                rankCode,
-                employeeName,
-                employeeEmail,
-                gender,
-                disability,
-                marriage,
-                patriots,
-                employmentType,
-                workingStatus,
-                leaveType,
-                registrationNumber,
-                employeePhone,
-                employeeAddress,
-                joinDate,
-                team,
-                rank,
-                s
-        );
+    public void imgupdate(String employeePicture){
+        this.employeePicture = employeePicture;
     }
 
+
+    public void imgupdates(String employeePicture) { this.employeePicture = employeePicture;
+    }
 }
