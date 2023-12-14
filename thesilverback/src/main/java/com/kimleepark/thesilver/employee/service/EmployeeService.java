@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.employee.service;
 
+import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import com.kimleepark.thesilver.employee.Employee;
 
@@ -13,6 +14,7 @@ import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
 import com.kimleepark.thesilver.employee.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CATEGORY_CODE;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
 
 @Service
@@ -68,19 +71,10 @@ public class EmployeeService {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public void updates(final Long employeeCode, final MultipartFile employeePicture, final EmployeesUpdateRequest employeesUpdateRequest) {
+    public void updates(final Long employeeCode, final MultipartFile multipartFile, final EmployeesUpdateRequest employeesUpdateRequest) {
         Employee employee = employeeRepository.findByEmployeeCodeAndLeaveType(employeeCode, NO);
 //                .orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CODE));
-
         /* 이미지 수정 시 새로운 이미지 저장 후 기존 이미지 삭제 로직 필요 */
-        if(employeePicture != null) {
-            /* 새로 입력 된 이미지 저장 */
-            String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), employeePicture);
-            /* 기존 이미지 삭제 */
-            FileUploadUtils.deleteFile(IMAGE_DIR, employee.getEmployeePicture().replace(IMAGE_URL, ""));
-            /* entity 정보 변경 */
-            employee.updateEmployeePicture(IMAGE_URL + replaceFileName);
-        }
         Rank rank = rankRepository.findById(employeesUpdateRequest.getRankCode()).orElseThrow(()-> new IllegalArgumentException());
         Team team = teamRepository.findById(employeesUpdateRequest.getTeamCode()).orElseThrow(()-> new IllegalArgumentException());
 
@@ -105,6 +99,17 @@ public class EmployeeService {
                 employeesUpdateRequest.getLeaveReason(),
                 team
         );
+        if(multipartFile != null) {
+//            /* 새로 입력 된 이미지 저장 */
+//            String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), multipartFile);
+//            /* 기존 이미지 삭제 */
+//            FileUploadUtils.deleteFile(IMAGE_DIR, employee.getEmployeePicture().replace(IMAGE_URL, ""));
+//            /* entity 정보 변경 */
+//            employee.updateEmployeePicture(IMAGE_URL + replaceFileName);
+            String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), multipartFile);
+            employee.imgupdates(IMAGE_URL + replaceFileName);
+        }
+
     }
 
     public void update(Long employeeCode, EmployeeUpdateRequest employeeUpdateRequest) {
@@ -122,40 +127,40 @@ public class EmployeeService {
         employeeRepository.deleteById(employeeCode);
     }
 
-    public Long save(MultipartFile employeePicture, EmployeesCreateRequest employeesCreateRequest) {
-        /* 전달 된 파일을 서버의 지정 경로에 저장 */
-            String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), employeePicture);
+    public Long save(final MultipartFile multipartFile, final EmployeesCreateRequest employeesCreateRequest) {
+        Rank rank = rankRepository.findById(employeesCreateRequest.getRankCode()).orElseThrow(() -> new IllegalArgumentException());
+        Team team = teamRepository.findById(employeesCreateRequest.getTeamCode()).orElseThrow(() -> new IllegalArgumentException());
 
-//        Optional<Team> team = teamRepository.findById(employeesCreateRequest.getTeamCode());
-//                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CATEGORY_CODE))
+            /* 전달 된 파일을 서버의 지정 경로에 저장 */
+//        Optional<Team> team = teamRepository.findById(employeesCreateRequest.getTeamCode())
+//                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CATEGORY_CODE));
 
-        Rank rank = rankRepository.findById(employeesCreateRequest.getRankCode()).orElseThrow(()-> new IllegalArgumentException());
-        Team team = teamRepository.findById(employeesCreateRequest.getTeamCode()).orElseThrow(()-> new IllegalArgumentException());
+                final Employee newEmployee = Employee.of(
+                        rank,
+                        team,
+                        employeesCreateRequest.getEmployeeName(),
+                        employeesCreateRequest.getEmployeeEmail(),
+                        employeesCreateRequest.getGender(),
+                        employeesCreateRequest.getDisability(),
+                        employeesCreateRequest.getMarriage(),
+                        employeesCreateRequest.getPatriots(),
+                        employeesCreateRequest.getEmploymentType(),
+                        employeesCreateRequest.getWorkingStatus(),
+                        employeesCreateRequest.getLeaveType(),
+                        employeesCreateRequest.getRegistrationNumber(),
+                        employeesCreateRequest.getEmployeePhone(),
+                        employeesCreateRequest.getEmployeeAddress(),
+                        employeesCreateRequest.getJoinDate()
+                );
 
-        final Employee newEmployee = Employee.of(
-                employeesCreateRequest.getEmployeePicture(),
-                employeesCreateRequest.getRankCode(),
-                employeesCreateRequest.getEmployeeName(),
-                employeesCreateRequest.getEmployeeEmail(),
-                employeesCreateRequest.getGender(),
-                employeesCreateRequest.getDisability(),
-                employeesCreateRequest.getMarriage(),
-                employeesCreateRequest.getPatriots(),
-                employeesCreateRequest.getEmploymentType(),
-                employeesCreateRequest.getWorkingStatus(),
-                employeesCreateRequest.getLeaveType(),
-                employeesCreateRequest.getRegistrationNumber(),
-                employeesCreateRequest.getEmployeePhone(),
-                employeesCreateRequest.getEmployeeAddress(),
-                employeesCreateRequest.getJoinDate(),
-                team,
-                rank,
-                IMAGE_URL + replaceFileName
-        );
+        if(multipartFile != null) {
+            String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), multipartFile);
+                newEmployee.imgupdate(IMAGE_URL + replaceFileName);}
 
-        final Employee employee = employeeRepository.save(newEmployee);
+                final Employee employee = employeeRepository.save(newEmployee);
 
-        return employee.getEmployeeCode();
-    }
+            return employee.getEmployeeCode();
+
+        }
 
 }

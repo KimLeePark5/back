@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
 public class EmployeesCreateRequest {
 
-    private final String employeePicture;
     @NotNull
     private final Long rankCode;
     @NotBlank
@@ -41,8 +41,7 @@ public class EmployeesCreateRequest {
 
     private final String employeeAddress;
     @NotNull
-    private final LocalDateTime joinDate;
+    private final LocalDate joinDate;
     @NotNull
-    @Min(value = 99)
     private final Long teamCode;
 }
