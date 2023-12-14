@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.account.service;
 
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.account.dto.request.ChangePasswordRequest;
 import com.kimleepark.thesilver.account.dto.request.ResetPasswordRequest;
 import com.kimleepark.thesilver.common.exception.ConflictException;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
@@ -44,7 +45,10 @@ public class AccountService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT_NUMBER));
 
         if(employeeByEmail.getEmployeeEmail().equals(accountByEmployeeNumber.getEmployee().getEmployeeEmail())) {
+            accountByEmployeeNumber.setInactive();
+
             // 임시 비밀번호 생성 및 메일 발송
+            // 10자리 랜덤 숫자를 기반으로 임시 비밀번호 생성
             String randomPassword = generateRandomPassword(10);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String encodedPassword = passwordEncoder.encode(randomPassword);
@@ -71,4 +75,23 @@ public class AccountService {
         return password.toString();
     }
 
+    public void changePassword(String currentEmployeeNumber, ChangePasswordRequest changePasswordRequest) {
+        // BCryptPasswordEncoder 생성
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        // 현재 비밀번호 일치 확인
+        String inputPassword = changePasswordRequest.getCurrentPassword();
+        String hashedNewPassword = encoder.encode(changePasswordRequest.getNewPassword());
+        Account account = accountRepository.findByEmployeeNumber(currentEmployeeNumber).get();
+        String employeePassword = account.getEmployeePassword();
+
+        log.info("확인 : {}", changePasswordRequest.getCurrentPassword());
+
+        if (encoder.matches(inputPassword, employeePassword)) {
+            account.changePassword(hashedNewPassword);
+            account.activeStatus();
+        } else {
+            throw new NotFoundException(NOT_FOUND_CURRENT_PASSWORD);
+        }
+    }
 }

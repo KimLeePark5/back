@@ -24,7 +24,7 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject("TheSilver 임시 비밀번호 안내");
             String emailMessage =
-                    "<div style=\"font-family: 'Nanum Gothic', Arial, sans-serif; text-align: center; background-color: #f0f0f0; padding: 20px;\">" +
+                    "<div style=\"font-family: 'Nanum Gothic', Arial, sans-serif; text-align: center; background-color: #f0f0f0; padding:20px; padding-bottom: 50px;\">" +
                             "<h1 style='color: #333; font-size: 24px; margin-bottom: 10px;'>TheSilver 임시 비밀번호 안내</h1>" +
                             "<p style='color: #555; font-size: 16px;'>안녕하세요. TheSilver에서 임시 비밀번호를 안내드립니다.<br> 로그인 후 반드시 비밀번호를 변경해주세요.<br></p>" +
                             "<br>" +

@@ -14,6 +14,7 @@ import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -52,50 +54,51 @@ public class ProgramService {
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerPrograms(Integer page) {
 
-        Pageable pageable = getPageable(page);
-        Page<Program> programs = programRepository.findAll(pageable);
 
-        List<CustomerProgramsResponse> responseList = programs.stream()
-                .map(CustomerProgramsResponse::from)
-                .collect(Collectors.toList());
+        Page<Program> programs = programRepository.findAll(getPageable(page));
 
-        return new PageImpl<>(responseList, pageable, responseList.size());
+//        List<CustomerProgramsResponse> responseList = programs.stream()
+//                .map(CustomerProgramsResponse::from)
+//                .collect(Collectors.toList());
+
+        return programs.map(program -> CustomerProgramsResponse.from(program));
     }
 
 
     // 2. 프로그램 목록 조회 - 프로그램명 입력 검색 기준, 페이징 (직원, 관리자)
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerProgramsByCategory(final Integer page, final String categoryName) {
-        Pageable pageable = getPageable(page);
 
         // 입력된 카테고리명
         System.out.println("입력된 카테고리명 Searching programs with category name: " + categoryName);
 
-        Page<Program> programs = programRepository.findByCategory_CategoryNameContaining(categoryName, pageable);
+        Page<Program> programs = programRepository.findByCategory_CategoryNameContaining(categoryName, getPageable(page));
 
         // 검색된 프로그램 수
         System.out.println("검색된 프로그램 수 Found " + programs.getTotalElements() + " programs."); // 디버깅용 프린트
 
-        List<CustomerProgramsResponse> responseList = programs.stream()
-                .map(CustomerProgramsResponse::from)
-                .collect(Collectors.toList());
+//        List<CustomerProgramsResponse> responseList = programs.stream()
+//                .map(CustomerProgramsResponse::from)
+//                .collect(Collectors.toList());
 
-        return new PageImpl<>(responseList, pageable, responseList.size());
+        return programs.map(program -> CustomerProgramsResponse.from(program));
     }
 
 
-    // 3. 프로그램 상세 조회 - category_code 로 프로그램 1개 조회(고객, 관리자)
+    // 3. 프로그램 상세 조회 - code 로 프로그램 1개 조회(고객, 관리자)
     @Transactional(readOnly = true)
-    public CustomerProgramResponse getCustomerProgram(final Long categoryCode) {
+    public CustomerProgramResponse getCustomerProgram(final Long code) {
 
-        // Category Code로 프로그램 조회
-        Optional<Program> optionalProgram = Optional.ofNullable(programRepository.findByCategory_CategoryCode(categoryCode));
+        // 프로그램 코드로 프로그램 조회
+        Optional<Program> optionalProgram = Optional.ofNullable(programRepository.findByCode(code));
+
         // Optional이 비어있다면 NotFoundException을 던집니다.
         Program program = optionalProgram.orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
 
         // 프로그램을 CustomerProgramResponse로 변환하여 반환
         return CustomerProgramResponse.from(program);
     }
+
 
 
     // 4. 프로그램 등록 (관리자)

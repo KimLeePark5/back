@@ -23,6 +23,7 @@ public enum RequireStatusType {
         return null;
     }
 
+
     @JsonValue
     public String getValue() {
         return value;

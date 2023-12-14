@@ -6,11 +6,15 @@ import com.kimleepark.thesilver.customer.domain.License;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
 import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
+import com.kimleepark.thesilver.customer.dto.graphData.FirstGraphData;
+import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
+import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
 import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
+import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
 import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CUSTOMER_CODE;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
@@ -40,7 +41,10 @@ public class CustomerService {
         return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
     private Pageable getPageableLicense(final Integer page) {
-        return PageRequest.of(page - 1, 5, Sort.by("licenseCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
+    }
+    private Pageable getPageableCustomers(final Integer page) {
+        return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
 
 
@@ -49,6 +53,12 @@ public class CustomerService {
         Page<Customer> customers = customerRepository.findByStatus(getPageable(page), ACTIVE);
         log.info("커스토머스 {}", customers);
         return customers.map(customer -> CustomerMainResponse.from(customer));
+    }
+
+    //     쿼리dsl 활용 코드
+    public Page<CustomerSearchResponse> getCustomersBySearch (Integer page, CustomerSearchRequest customerSearchRequest) {
+        Page<CustomerSearchResponse> customersResult = customerRepository.searchCustomersPage(getPageableCustomers(page), customerSearchRequest);
+        return customersResult;
     }
 
     public CustomerResponse getCustomer (final Long customerCode) {
@@ -69,15 +79,15 @@ public class CustomerService {
         return customer.getCustomerCode();
     }
 
-    public void update(Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
+    public void update(Long employeeCode, Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
         Customer findCustomer = customerRepository.findById(customerCode).orElseThrow();
-        findCustomer.update(updateCustomersRequest);
+        findCustomer.update(employeeCode, updateCustomersRequest);
     }
 
-    public Long saveLicenses(Long customerCode, CreateLicensesRequest createLicensesRequest) {
+    public Long saveLicenses(Long employeeCode, Long customerCode, CreateLicensesRequest createLicensesRequest) {
 
         Customer customer = customerRepository.findById(customerCode).orElseThrow();
-        License newLicense = License.of(customer,createLicensesRequest);
+        License newLicense = License.of(employeeCode, customer, createLicensesRequest);
 
         License license = licenseRepository.save(newLicense);
         return license.getLicenseCode();
@@ -90,4 +100,10 @@ public class CustomerService {
     public void deleteLicense(Long licenseCode) {
         licenseRepository.deleteById(licenseCode);
     }
+
+
+    // 그래프 데이터 가공
+//    public SecondGraphData getSecondGraphData() {
+//        customerRepository.findByStatus()
+//    }
 }

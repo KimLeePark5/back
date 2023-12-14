@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,11 +22,11 @@ public class TodoListService {
     private final TodoListRepository todoListRepository;
 
     private Pageable getPageable(int page) {
-        return PageRequest.of(page-1,4);
+        return PageRequest.of(page-1,9);
     }
-    public Page<ResponseTodoList> getTodoLists(int page, int empNo) {
-
-        Page<TodoList> todoLists = todoListRepository.findByEmployeeCode(getPageable(page),empNo);
+    public Page<ResponseTodoList> getTodoLists(int page, long empNo,String day) {
+        LocalDate date = LocalDate.parse(day);
+        Page<TodoList> todoLists = todoListRepository.findByEmployeeCodeAndTodoDate(getPageable(page),empNo,date);
 
         log.info("todolist : {}",todoLists.getContent());
 
@@ -36,12 +38,18 @@ public class TodoListService {
         todoList.updateContent(content);
     }
 
-    public void postTodoList(int empNo, String content) {
+    public void postTodoList(long empNo, String content) {
         TodoList  newTodolist = TodoList.of(empNo,content);
         todoListRepository.save(newTodolist);
     }
 
     public void deleteTodo(Long todoNo) {
         todoListRepository.deleteById(todoNo);
+    }
+
+    public void modifyTodoList(Long todoNo, String message) {
+        TodoList todo = todoListRepository.findById(todoNo).orElseThrow(()->new IllegalArgumentException());
+        todo.updateComplete(message);
+
     }
 }

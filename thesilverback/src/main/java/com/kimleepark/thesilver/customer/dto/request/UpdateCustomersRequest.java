@@ -18,7 +18,11 @@ public class UpdateCustomersRequest {
     @NotBlank
     private final String birthDate;
     @NotBlank
-    private final String phone;
+    private final String phone1;
+    @NotBlank
+    private final String phone2;
+    @NotBlank
+    private final String phone3;
     @NotBlank
     private final String postalCode;
     @NotBlank
@@ -27,7 +31,17 @@ public class UpdateCustomersRequest {
     private final String memo;
     private final String guardianName;
     private final String guardianRelationship;
-    private final String guardianPhone;
+    private final String guardianPhone1;
+    private final String guardianPhone2;
+    private final String guardianPhone3;
     @NotNull
-    private final CustomerStatus status;
+    private final CustomerStatus customerStatus;
+
+    public String getPhone() {
+        return phone1 +"-"+ phone2 +"-"+ phone3;
+    }
+    public String getGuardianPhone() {
+        return guardianPhone1 +"-"+ guardianPhone2 +"-"+ guardianPhone3;
+    }
+
 }

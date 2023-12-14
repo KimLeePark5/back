@@ -20,6 +20,7 @@ public class ResponseModifiedAttend {
     private final String note;
     private final String type;
 
+
     public static ResponseModifiedAttend from(ModifiedAttend history) {
         return new ResponseModifiedAttend(
                 history.getAttendNo(),

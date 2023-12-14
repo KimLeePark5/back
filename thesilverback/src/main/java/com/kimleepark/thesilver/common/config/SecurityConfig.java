@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
 import com.kimleepark.thesilver.jwt.filter.JwtAuthenticationFilter;
 import com.kimleepark.thesilver.jwt.handler.JwtAccessDeniedHandler;
 import com.kimleepark.thesilver.jwt.handler.JwtAuthenticationEntryPoint;
@@ -53,11 +54,14 @@ public class SecurityConfig {
                 // 이 때 OPTIONS 메서드로 서버에 사전 요청을 보내 권한을 확인함
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/password-reset/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/productimgs/**").permitAll()
-                .antMatchers("/api/v1/programs-management/**", "/api/v1/programs/**").hasAnyRole("센터장","팀장")
+                .antMatchers(HttpMethod.GET, "/programimgs/**").permitAll() //이미지 요청
+                .antMatchers(HttpMethod.GET, "/api/v1/programs/**", "/api/v1/journals/**").permitAll()
+                .antMatchers("/api/v1/programs-management/**").hasAnyRole("센터장","팀장")
 
-//                .antMatchers("/api/v1/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/programimgs/**").permitAll()
+                .antMatchers("/api/v1/**").permitAll()
+
+//                .antMatchers("/api/v1/**").permitAll()ㄷ
+
                 .anyRequest().authenticated()
                 .and()
                 // 로그인 필터 설정
@@ -116,7 +120,7 @@ public class SecurityConfig {
 
     /* 로그인 성공 핸들러 빈 등록 */
     @Bean
-    public LoginSuccessHandler loginSuccessHandler() { return new LoginSuccessHandler(jwtService); }
+    public LoginSuccessHandler loginSuccessHandler() { return new LoginSuccessHandler(jwtService, loginService); }
 
     /* 로그인 필터 빈 등록 */
     @Bean

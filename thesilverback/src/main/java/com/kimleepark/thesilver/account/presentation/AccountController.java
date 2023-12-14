@@ -2,8 +2,11 @@ package com.kimleepark.thesilver.account.presentation;
 
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
+import com.kimleepark.thesilver.account.dto.request.ChangePasswordRequest;
 import com.kimleepark.thesilver.account.dto.request.ResetPasswordRequest;
 import com.kimleepark.thesilver.account.service.AccountService;
+import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ public class AccountController {
 
     private final AccountRepository accountRepository;
     private final AccountService accountService;
+    private final EmployeeRepository employeeRepository;
 
     @GetMapping("/accounts")
     public String getAccounts(@AuthenticationPrincipal CustomUser customUser) {
@@ -49,6 +53,11 @@ public class AccountController {
         log.info("getAuthorities : {}", customUser.getAuthorities());
         log.info("getUsername : {}", customUser.getUsername());
 
+        Long teamCode = employeeRepository.findByEmployeeCode(customUser.getEmployeeCode()).get().getTeam().getTeamCode();
+        log.info("teamCode : {}", teamCode);
+
+
+
         return "hi";
     }
 
@@ -57,6 +66,16 @@ public class AccountController {
         log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeNumber());
         log.info("resetPasswordRequest : {}", resetPasswordRequest.getEmployeeEmail());
         accountService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password-change")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal CustomUser customUser,
+                                               @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        log.info("changePasswordRequest : {}", changePasswordRequest );
+        String currentEmployeeNumber = customUser.getUsername();
+        accountService.changePassword(currentEmployeeNumber,changePasswordRequest);
+
         return ResponseEntity.ok().build();
     }
 }
