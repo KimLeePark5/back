@@ -12,7 +12,15 @@ import java.util.Map;
 @Getter
 @RequiredArgsConstructor
 public class CustomerGraphResponse {
-    private final Map<String,List<FirstGraphData>> firstGraphData;
+//    private final Map<String,List<FirstGraphData>> firstGraphData;
+    private final List<FirstGraphData> firstGraphData;
     private final List<SecondGraphData> secondGraphData;
     private final List<ThirdGraphData> thirdGraphData;
+
+    public static CustomerGraphResponse from(List<FirstGraphData> firstGraphData,
+                                             List<SecondGraphData> secondGraphData,
+                                             List<ThirdGraphData> thirdGraphData) {
+        return new CustomerGraphResponse(firstGraphData, secondGraphData,thirdGraphData);
+
+    }
 }

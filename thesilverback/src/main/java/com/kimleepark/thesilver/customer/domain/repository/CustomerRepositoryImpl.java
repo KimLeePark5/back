@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.customer.domain.repository;
 
+import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
 
@@ -7,6 +8,7 @@ import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
 import com.kimleepark.thesilver.customer.dto.response.QCustomerSearchResponse;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
@@ -115,4 +117,6 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
 
         return new PageImpl<>(content, pageable, total);
     }
+
+
 }

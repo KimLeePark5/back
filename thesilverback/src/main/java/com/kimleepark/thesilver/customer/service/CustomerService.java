@@ -5,17 +5,14 @@ import com.kimleepark.thesilver.customer.domain.Customer;
 import com.kimleepark.thesilver.customer.domain.License;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
 import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
-import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
 import com.kimleepark.thesilver.customer.dto.graphData.FirstGraphData;
 import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
+import com.kimleepark.thesilver.customer.dto.graphData.ThirdGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.request.UpdateCustomersRequest;
-import com.kimleepark.thesilver.customer.dto.response.CustomerMainResponse;
-import com.kimleepark.thesilver.customer.dto.response.CustomerResponse;
-import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
-import com.kimleepark.thesilver.customer.dto.response.LicensesResponse;
+import com.kimleepark.thesilver.customer.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CUSTOMER_CODE;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
@@ -102,8 +101,19 @@ public class CustomerService {
     }
 
 
-    // 그래프 데이터 가공
-//    public SecondGraphData getSecondGraphData() {
-//        customerRepository.findByStatus()
-//    }
+//     그래프 데이터 가공
+    public CustomerGraphResponse getCustomersGraphData() {
+
+        // Second Graph Data
+        List<SecondGraphData> secondGraphData = customerRepository.getSecondGraphData();
+
+        // Third Graph Data
+        List<ThirdGraphData> thirdGraphData = customerRepository.getThirdGraphData();
+
+        // First Graph Data
+        List<FirstGraphData> firstGraphData = customerRepository.getFirstGraphData();
+
+        return CustomerGraphResponse.from(firstGraphData, secondGraphData,thirdGraphData);
+
+    }
 }
