@@ -2,6 +2,8 @@ package com.kimleepark.thesilver.customer.domain.repository;
 
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
 import com.kimleepark.thesilver.customer.dto.response.CustomerSearchResponse;
+
+
 import com.kimleepark.thesilver.customer.dto.response.QCustomerSearchResponse;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+
 
 import static com.kimleepark.thesilver.customer.domain.QCustomer.customer;
 import static com.kimleepark.thesilver.customer.domain.type.CustomerStatus.ACTIVE;
@@ -71,15 +74,12 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
     private BooleanExpression nameLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("이름") ? customer.name.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression phoneLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("전화번호") ? customer.phone.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression addressLike(CustomerSearchRequest condition) {
         return condition.getSearchType().equals("주소") ? customer.primaryAddress.like("%" + condition.getSearchContent() + "%") : null;
     }
-
     private BooleanExpression activeCheck(CustomerSearchRequest condition) {
         return condition.getActiveCheck() ? null : customer.status.eq(ACTIVE);
     }

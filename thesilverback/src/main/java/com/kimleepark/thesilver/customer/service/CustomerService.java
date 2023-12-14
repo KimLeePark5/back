@@ -6,6 +6,8 @@ import com.kimleepark.thesilver.customer.domain.License;
 import com.kimleepark.thesilver.customer.domain.repository.CustomerRepository;
 import com.kimleepark.thesilver.customer.domain.repository.LicenseRepository;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
+import com.kimleepark.thesilver.customer.dto.graphData.FirstGraphData;
+import com.kimleepark.thesilver.customer.dto.graphData.SecondGraphData;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
 import com.kimleepark.thesilver.customer.dto.request.CreateLicensesRequest;
 import com.kimleepark.thesilver.customer.dto.request.CustomerSearchRequest;
@@ -39,7 +41,7 @@ public class CustomerService {
         return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
     }
     private Pageable getPageableLicense(final Integer page) {
-        return PageRequest.of(page - 1, 5, Sort.by("licenseCode").descending());
+        return PageRequest.of(page - 1, 5, Sort.by("startDate").descending());
     }
     private Pageable getPageableCustomers(final Integer page) {
         return PageRequest.of(page - 1, 5, Sort.by("customerCode").descending());
@@ -77,15 +79,15 @@ public class CustomerService {
         return customer.getCustomerCode();
     }
 
-    public void update(Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
+    public void update(Long employeeCode, Long customerCode, UpdateCustomersRequest updateCustomersRequest) {
         Customer findCustomer = customerRepository.findById(customerCode).orElseThrow();
-        findCustomer.update(updateCustomersRequest);
+        findCustomer.update(employeeCode, updateCustomersRequest);
     }
 
-    public Long saveLicenses(Long customerCode, CreateLicensesRequest createLicensesRequest) {
+    public Long saveLicenses(Long employeeCode, Long customerCode, CreateLicensesRequest createLicensesRequest) {
 
         Customer customer = customerRepository.findById(customerCode).orElseThrow();
-        License newLicense = License.of(customer,createLicensesRequest);
+        License newLicense = License.of(employeeCode, customer, createLicensesRequest);
 
         License license = licenseRepository.save(newLicense);
         return license.getLicenseCode();
@@ -100,6 +102,8 @@ public class CustomerService {
     }
 
 
-
-
+    // 그래프 데이터 가공
+//    public SecondGraphData getSecondGraphData() {
+//        customerRepository.findByStatus()
+//    }
 }

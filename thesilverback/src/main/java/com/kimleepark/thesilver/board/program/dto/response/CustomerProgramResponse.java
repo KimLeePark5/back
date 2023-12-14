@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.board.program.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.board.program.domain.Program;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,15 +14,19 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class CustomerProgramResponse {
 
-    private Long categoryCode;
+
     private String categoryName;
 
     private Long code;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endDate;
     private String day;
     private String round;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
     private String shortStory;
 
@@ -36,7 +41,6 @@ public class CustomerProgramResponse {
 
     public static CustomerProgramResponse from(Program program){
         return new CustomerProgramResponse(
-                program.getCategory().getCategoryCode(),
                 program.getCategory().getCategoryName(),
                 program.getCode(),
                 program.getStartDate(),

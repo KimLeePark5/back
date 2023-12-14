@@ -40,15 +40,6 @@ public class ProgramController {
         final PagingResponse pagingResponse = PagingResponse.of(programs.getContent(), pagingButtonInfo);
         log.info("GET 요청 확인");
 
-        // 테스트 ~~
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        log.info("프린시팔 getPrincipal {}", authentication.getPrincipal());
-//        log.info("프린시팔 getCredentials {}", authentication.getCredentials());
-//        log.info("프린시팔 getAuthorities {}", authentication.getAuthorities());
-//        log.info("프린시팔 getDetails {}", authentication.getDetails());
-//        log.info("프린시팔 getName {}", authentication.getName());
-//        log.info("프린시팔 getClass {}", authentication.getClass());
-
         return ResponseEntity.ok(pagingResponse);
     }
 
@@ -88,15 +79,15 @@ public class ProgramController {
     }
 
     // 3. 프로그램 상세 조회 - category_code 로 프로그램 1개 조회(고객, 관리자)
-    @GetMapping("/programs/{categoryCode}")
-    public ResponseEntity<CustomerProgramResponse> getCustomerProgram(@PathVariable final Long categoryCode) {
+    @GetMapping("/programs/{code}")
+    public ResponseEntity<CustomerProgramResponse> getCustomerProgram(@PathVariable final Long code) {
 
-        final CustomerProgramResponse customerProgramResponse = programService.getCustomerProgram(categoryCode);
+        final CustomerProgramResponse customerProgramResponse = programService.getCustomerProgram(code);
 
         return ResponseEntity.ok(customerProgramResponse);
     }
 
-     //4. 프로그램 등록 (관리자)
+    //4. 프로그램 등록 (관리자)
      @PostMapping("/programs")
      public ResponseEntity<Void> save(@RequestPart @Valid ProgramCreateRequest programRequest,
                                       @RequestPart MultipartFile teacherImg) {

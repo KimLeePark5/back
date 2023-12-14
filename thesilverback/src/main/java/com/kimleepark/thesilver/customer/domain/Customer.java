@@ -126,7 +126,7 @@ public class Customer {
         );
     }
 
-    public void update(UpdateCustomersRequest updateCustomersRequest) {
+    public void update(Long employeeCode, UpdateCustomersRequest updateCustomersRequest) {
         this.name = updateCustomersRequest.getName();
         this.gender = updateCustomersRequest.getGender();
         this.birthDate = updateCustomersRequest.getBirthDate();
@@ -138,6 +138,7 @@ public class Customer {
         this.guardianName = updateCustomersRequest.getGuardianName();
         this.guardianRelationship = updateCustomersRequest.getGuardianRelationship();
         this.guardianPhone = updateCustomersRequest.getGuardianPhone();
-        this.status = updateCustomersRequest.getStatus();
+        this.status = updateCustomersRequest.getCustomerStatus();
+        this.employeeCode = employeeCode;
     }
 }

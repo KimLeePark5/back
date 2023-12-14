@@ -3,22 +3,24 @@ package com.kimleepark.thesilver.vacation.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tbl_require")
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Getter
-@EntityListeners(AutoCloseable.class)
+@Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Require {
 
     @Id
@@ -48,7 +50,27 @@ public class Require {
     @Enumerated(value = EnumType.STRING)
     private RequireStatusType reqStatus;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime reqDate;
 
+
+    public Require(VacationType vacationType, Employee employee, LocalDateTime startDate, LocalDateTime endDate, String reqContent, RequireStatusType reqStatus) {
+        this.vacationType = vacationType;
+        this.employee = employee;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.reqContent = reqContent;
+        this.reqStatus = reqStatus;
+    }
+
+    public static Require of(VacationType vacationType, Employee employee, LocalDateTime startDate, LocalDateTime endDate, String reqContent, RequireStatusType reqStatus) {
+        return new Require(
+                vacationType,
+                employee,
+                startDate,
+                endDate,
+                reqContent,
+                reqStatus);
+    }
 }

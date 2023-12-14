@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tbl_vacation")
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Getter
 @EntityListeners(AutoCloseable.class)
 public class Vacation {

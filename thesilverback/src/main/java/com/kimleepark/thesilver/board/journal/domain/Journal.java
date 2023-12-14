@@ -37,24 +37,28 @@ public class Journal {
     @Column(nullable = false)
     private String programTopic; // 프로그램 주제
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)          //프로그램
     @JoinColumn(name = "code")
     private Program program;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)          //직원
     @JoinColumn(name = "employeeCode")
     private Employee employee;
 
     // mappedBy 속성은 양방향 관계에서 사용되어 어떤 필드가 연관 관계의 주인(Owner)인지를 나타냄
-    @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
     //@JoinColumn(name = "participantCode") //@JoinColumn는 외래키 지정하는데 mappedBy랑 같이 쓰면 안됨
-    private List<Participant> participants;
+    //private List<Participant> participants;        //참석자들
+
+    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>(); // 참석자들
+
 
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();       // 첨부파일들
 
     public Journal(Long journalCode, String subProgress, String observe, String rating, String note,
-                   LocalDate observation, String programTopic, Program program, Employee employee, List<Participant> participants
+                   LocalDate observation, String programTopic, Program program, Employee employee, List<Participant> participants, List<Attachment> attachments
     ) {
         this.journalCode = journalCode;
         this.subProgress = subProgress;
@@ -66,6 +70,16 @@ public class Journal {
         this.program = program;
         this.employee = employee;
         this.participants = participants;
+        this.attachments = attachments;
+    }
+
+    // 참석자들 설정
+    public void setParticipants(List<Participant> participants) {
+        this.participants.clear();
+        if (participants != null) {
+            this.participants.addAll(participants);
+            participants.forEach(participant -> participant.setJournal(this));
+        }
     }
 
     public void setJournalCode(Long journalCode) {
