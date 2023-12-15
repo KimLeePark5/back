@@ -6,6 +6,7 @@ import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
 
 import com.kimleepark.thesilver.vacation.domain.Sign;
+import com.kimleepark.thesilver.vacation.domain.Vacation;
 import com.kimleepark.thesilver.vacation.domain.VacationType;
 import com.kimleepark.thesilver.vacation.domain.repository.*;
 import com.kimleepark.thesilver.vacation.domain.type.SignStatusType;
@@ -13,6 +14,7 @@ import com.kimleepark.thesilver.vacation.dto.response.RequireStateAdminResponse;
 
 import com.kimleepark.thesilver.vacation.dto.response.UsedVacationListResponse;
 import com.kimleepark.thesilver.vacation.dto.request.CreateRequireRequest;
+import com.kimleepark.thesilver.vacation.dto.response.VacationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -37,6 +39,7 @@ public class VacationService {
 
 
     private final RequireRepository requireRepository;
+    private final VacationRepository vacationRepository;
     private final VacationTypeRepository vacationTypeRepository;
     private final EmployeeRepository employeeRepository;
     private final SignRepository signRepository;
@@ -45,11 +48,33 @@ public class VacationService {
         return PageRequest.of(page - 1, 5, Sort.by("reqDate").descending());
     }
 
+
     @Transactional(readOnly = true)
-    public Long getPassedRequireCount(final CustomUser customUser) {
+    public VacationResponse getVacation(CustomUser customUser) {
+
+        // 연차 정보 확인
+        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
+
         // 'PASS' 상태인 휴가 요청의 갯수 조회
-        return requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), PASS);
+        Long passedReqCount = requireRepository.countByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), PASS);
+
+        //로그인 유저
+        Employee loginUser = employeeRepository.getReferenceById(customUser.getEmployeeCode());
+
+        // 결재자 정보
+        Employee approver = null;
+
+        if(loginUser.getRank().getRankCode() == 3) {
+            approver = employeeRepository.findByTeamAndRankRankCode(loginUser.getTeam(), 2L);
+        } else {
+            approver = employeeRepository.findByRankRankCode(1L);
+        }
+
+
+        return VacationResponse.from(vacation, passedReqCount, customUser, approver);
     }
+
+
 
     /* 연차 상신 */
     @Transactional
@@ -118,4 +143,5 @@ public class VacationService {
 //
 
     }
+
 }
