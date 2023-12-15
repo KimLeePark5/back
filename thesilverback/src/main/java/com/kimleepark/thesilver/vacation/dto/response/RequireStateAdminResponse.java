@@ -2,6 +2,7 @@ package com.kimleepark.thesilver.vacation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
 
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
