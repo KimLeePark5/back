@@ -26,9 +26,9 @@ public class Attachment {
     @Column(nullable = false)
     private Long seperation;           // 구분
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "journalCode")
-    private Journal journal;         // 일지
+    private Journal journal;        // 일지
 
     @Column(nullable = false)
     private Long reqNo;                // 상신 번호

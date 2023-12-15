@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class CustomerProgramsResponse {
 
     private String categoryName; // 카테고리 프로그램 이름
