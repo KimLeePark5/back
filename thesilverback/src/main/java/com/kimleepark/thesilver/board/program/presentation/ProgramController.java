@@ -10,12 +10,14 @@ import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
+import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -121,7 +123,6 @@ public class ProgramController {
     // 6. 프로그램 삭제(관리자)
     @DeleteMapping("/programs/{programCode}")
     public ResponseEntity<Void> delete(@PathVariable final Long programCode) {
-
         try {
             programService.delete(programCode);
             return ResponseEntity.noContent().build();
@@ -133,6 +134,16 @@ public class ProgramController {
             // 프로그램 삭제 중 오류 발생 시 500 Internal Server Error 반환
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    // 7. 본인 프로그램 조회(직원) 메인에 조회하는용
+    @GetMapping("/program/myProgram")
+    public ResponseEntity<Void> getMyProgram(@AuthenticationPrincipal CustomUser customUser){
+
+        programService.getMyProgram(customUser.getEmployeeCode());
+
+
+        return null;
     }
 
 }
