@@ -28,6 +28,7 @@ public class CustomerJournalResponse {
     private LocalTime startTime;        // 수업 시작 시간
     private LocalTime endTime;           // 수업 종료 시간
     private String day;                 // 요일
+//    private Long employeeCode;        // 직원 코드
     private String employeeName;        // 직원 이름
     private String teacherName;         // 강사 이름
     private String subProgress;          //프로그램 진행 사항
@@ -36,6 +37,7 @@ public class CustomerJournalResponse {
     private String note;                //비고
     private String participantNames; // 참가자들의 이름을 쉼표로 구분하여 이어서 저장하는 문자열
     private List<String> attachmentUrls;  // 첨부파일 URL 리스트
+
 
     public static CustomerJournalResponse from(Journal journal) {
 
@@ -60,6 +62,7 @@ public class CustomerJournalResponse {
                 journal.getProgram().getStartTime(),
                 journal.getProgram().getEndTime(),
                 journal.getProgram().getDay(),
+//                journal.getProgram().getEmployeeCode(),
                 journal.getEmployee().getEmployeeName(),
                 journal.getProgram().getTeacher().getTeacherName(),
                 journal.getSubProgress(),

@@ -126,7 +126,7 @@ public class JournalController {
     // 4. 일지 등록 - (참관한 직원, 관리자)
     @PostMapping("/journals")  // 프로그램 스케줄에 등록된 직원만 해당 프로그램 종료시간 이후에 일지를 작성할수 있게 조건 써야함. 직원코드 와 일치하는 직원이름이 자동 조회.
     public ResponseEntity<Void> save(@RequestPart @Valid JournalCreateRequest journalRequest,
-                                     @RequestPart MultipartFile journalImg) {
+                                     @RequestPart List<MultipartFile> journalImages) {
 
         try {
             // 프로그램 정보 가져오기
@@ -200,7 +200,7 @@ public class JournalController {
             }
 //-------------------------------------------------------------------
             // 프로그램 정보가 정상적으로 조회되었으므로 일지 서비스 호출
-            Long journalCode = journalService.save(journalImg, journalRequest);
+            Long journalCode = journalService.save(journalImages, journalRequest);
 
             System.out.println("일지가 성공적으로 저장되었습니다. 일지 코드: " + journalCode);
 
