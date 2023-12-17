@@ -113,7 +113,7 @@ public class Customer {
         return new Customer(
                 createCustomersRequest.getName(),
                 createCustomersRequest.getGender(),
-                createCustomersRequest.getBirthDate(),
+                createCustomersRequest.getParsedBirthDate(),
                 createCustomersRequest.getPhone(),
                 createCustomersRequest.getPostalCode(),
                 createCustomersRequest.getPrimaryAddress(),
@@ -129,7 +129,7 @@ public class Customer {
     public void update(Long employeeCode, UpdateCustomersRequest updateCustomersRequest) {
         this.name = updateCustomersRequest.getName();
         this.gender = updateCustomersRequest.getGender();
-        this.birthDate = updateCustomersRequest.getBirthDate();
+        this.birthDate = updateCustomersRequest.getParsedBirthDate();
         this.phone = updateCustomersRequest.getPhone();
         this.postalCode = updateCustomersRequest.getPostalCode();
         this.primaryAddress = updateCustomersRequest.getPrimaryAddress();
