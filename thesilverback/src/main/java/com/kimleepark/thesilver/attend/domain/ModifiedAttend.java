@@ -33,18 +33,24 @@ public class ModifiedAttend {
     private LocalTime afterEntertime;
     private LocalTime beforeLeavetime;
     private LocalTime afterLeavetime;
-    private String note;
-    private String type;
+    private String beforeNote;
+    private String afterNote;
+    private String beforeType;
+    private String afterType;
 
-    public ModifiedAttend(Attend attend, Employee empNo, LocalTime beforeEntertime, LocalTime afterEnterTime, LocalTime beforLeavetime, LocalTime AfterLeaveTime, String note, String type) {
+    public ModifiedAttend(Attend attend, Employee empNo, LocalTime beforeEntertime, LocalTime afterEnterTime,
+                          LocalTime beforLeavetime, LocalTime AfterLeaveTime, String beforeNote,String afterNote,
+                          String beforeType, String afterType) {
         this.attendNo = attend.getAttendNo();
         this.employeeCode = empNo;
         this.beforeEntertime = beforeEntertime;
         this.afterEntertime = afterEnterTime;
         this.beforeLeavetime = beforLeavetime;
         this.afterLeavetime = AfterLeaveTime;
-        this.note = note;
-        this.type = type;
+        this.beforeNote = beforeNote;
+        this.afterNote = afterNote;
+        this.beforeType = beforeType;
+        this.afterType = afterType;
     }
 
     public static ModifiedAttend of(Attend attend, RequestAttend requestAttend, Employee empNo) {
@@ -55,7 +61,9 @@ public class ModifiedAttend {
                 requestAttend.getEnterTime(),
                 attend.getLeavetime(),
                 requestAttend.getLeaveTime(),
+                attend.getNote(),
                 requestAttend.getNote(),
+                attend.getType(),
                 requestAttend.getType()
         );
     }
