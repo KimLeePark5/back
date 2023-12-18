@@ -9,8 +9,12 @@ import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalRespon
 import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalsResponse;
 import com.kimleepark.thesilver.board.participant.Participant;
 import com.kimleepark.thesilver.board.program.domain.Program;
+import com.kimleepark.thesilver.board.program.domain.ProgramCategory;
 import com.kimleepark.thesilver.board.program.domain.Teacher;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.CustomException;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.exception.type.ExceptionCode;
@@ -22,22 +26,34 @@ import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.*;
+import static org.springframework.http.ResponseEntity.*;
 
 
 @Slf4j
@@ -65,6 +81,11 @@ public class JournalService {
 
         Page<Journal> journals = journalRepository.findAllBy(getPageable(page));
 
+//        List<CustomerJournalsResponse> responseList = journals.stream()
+//                .map(CustomerJournalsResponse::from)
+//                .collect(Collectors.toList());
+
+//        return new PageImpl<>(responseList, pageable, journals.getTotalElements());
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
@@ -105,6 +126,12 @@ public class JournalService {
         if (journals.isEmpty()) {
             throw new CustomException(ExceptionCode.NOT_FOUND_MULTIPLE_LOOKUPS);
         }
+
+//        List<CustomerJournalsResponse> responseList = journals.stream()
+//                .map(CustomerJournalsResponse::from)
+//                .collect(Collectors.toList());
+
+        //return new PageImpl<>(responseList, getPageable(page), journals.getTotalElements());
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
@@ -169,37 +196,45 @@ public class JournalService {
         );
     }
 
+
     // 4. 일지 등록 - (참관한 직원, 관리자)
-    public Long save(List<MultipartFile> journalImages, JournalCreateRequest journalRequest) {
+    public Long save(MultipartFile journalImg, JournalCreateRequest journalRequest) {
         try {
             // 이미지 파일 저장
-            Set<String> existingFileNames = new HashSet<>();
-            Journal journal = new Journal();
+            String replaceFileName = saveImageFile(journalImg);
+            System.out.println("이미지 파일 저장 : " + replaceFileName);
 
-            // 각 이미지를 처리합니다.
-            for (MultipartFile journalImg : journalImages) {
-                String originalFileName = journalImg.getOriginalFilename();
-                System.out.println("이미지 파일 저장: " + originalFileName);
-
-                // 중복 체크
-                if (!existingFileNames.add(originalFileName)) {
-                    throw new DuplicateAttachmentException("Duplicate attachment found: " + originalFileName);
-                }
-
-                Attachment attachment = new Attachment();
-                attachment.setUrl(originalFileName);
-                attachment.setSeperation(1L); // 구분 설정, 예시로 1L로 설정
-
-                // 각 첨부파일을 일지에 추가
-                journal.addAttachment(attachment);
-
-
-//                // 일지가 존재하는지 확인하고, 없으면 새로운 일지를 생성합니다.
-//                journal = journalRepository.findByJournalCode(journalRequest.getJournalCode())
-//                        .orElseGet(Journal::new);
-            }
+            // 일지가 존재하는지 확인하고, 없으면 새로운 일지를 생성합니다.
+            Journal journal = journalRepository.findByJournalCode(journalRequest.getJournalCode())
+                    .orElseGet(() -> {
+                        Journal newJournal = new Journal();
+                        newJournal.setJournalCode(journalRequest.getJournalCode());
+                        return newJournal;
+                    });
 
             System.out.println("일지 존재하는지 조회 없으면 생성 : " + journal.getJournalCode());
+
+            // 첨부파일 엔터티 생성 및 설정
+            Attachment attachments = new Attachment();
+            attachments.setUrl(replaceFileName);
+            attachments.setSeperation(1L); // 구분 설정, 예시로 1L로 설정
+
+            // 첨부파일과 일지 연관 설정
+            attachments.setJournal(journal);
+            journal.setAttachments(Collections.singletonList(attachments));
+
+            System.out.println("첨부파일 설정 : " + attachments.getUrl());
+
+            // 참가자 엔터티 생성 및 설정
+//            Journal finalJournal = journal;
+//            List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(", "))
+//                    .map(participantName -> {
+//                        Customer customer = (Customer) customerRepository.findByName(participantName)
+//                                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
+//                        return new Participant(finalJournal, customer);
+//                    })
+//                    .collect(Collectors.toList());
+//            journal.setParticipants(participants);
 
             // 참가자 엔터티 생성 및 설정
             List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(","))
@@ -210,9 +245,17 @@ public class JournalService {
                     })
                     .collect(Collectors.toList());
 
+
+
             System.out.println("참가자 설정 및 일지 저장 : " + participants.size() + "명, 일지 코드: " + journal.getJournalCode());
 
             // 새로운 일지를 생성하고, 기타 세부 정보를 설정한 후 저장합니다.
+//            journal.setSubProgress(journalRequest.getSubProgress());
+//            journal.setObserve(journalRequest.getObserve());
+//            journal.setRating(journalRequest.getRating());
+//            journal.setNote(journalRequest.getNote());
+//            journal.setObservation(journalRequest.getObservation());
+//            journal.setProgramTopic(journalRequest.getProgramTopic());
             journal = new Journal();
             journal.setJournalCode(journalRequest.getJournalCode());
             journal.setSubProgress(journalRequest.getSubProgress());
@@ -227,6 +270,8 @@ public class JournalService {
             log.info("직원 이름으로 조회를 시도합니다: {}", employeeName);
 
             // 참가자들 설정
+            journal.setParticipants(participants);
+
             Employee employee = (Employee) employeeRepository.findByEmployeeName(journalRequest.getEmployeeName())
                     .orElseThrow(() -> {
                         // 직원이 없을 경우 예외
@@ -254,6 +299,8 @@ public class JournalService {
 
             // 프로그램 설정
             journal.setProgram(program);
+
+            System.out.println("프로그램 설정 : " + program.getCode());
 
             // 일지를 저장합니다.
             journal = journalRepository.save(journal);
@@ -293,16 +340,10 @@ public class JournalService {
                 String replaceFileName = saveImageFile(journalImg);
 
                 // 기존 이미지 삭제
-                FileUploadUtils.deleteFile(IMAGE_DIR, journal.getAttachments().iterator().next().getUrl().replace(IMAGE_URL, ""));
+                FileUploadUtils.deleteFile(IMAGE_DIR, journal.getAttachments().get(0).getUrl().replace(IMAGE_URL, ""));
 
                 // 일지 첨부파일 URL 업데이트
-                Attachment attachment = new Attachment();
-                attachment.setUrl(replaceFileName);
-                attachment.setSeperation(1L); // 구분 설정, 예시로 1L로 설정
-
-                // 각 첨부파일을 일지에 추가
-                journal.addAttachment(attachment);
-
+                journal.getAttachments().get(0).setUrl(replaceFileName);
                 System.out.println("이미지 수정 완료: " + replaceFileName);
             }
 
@@ -375,18 +416,18 @@ public class JournalService {
         // 일지 조회
         Journal journal = journalRepository.findById(journalCode)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_JOURNAL));
+
         try {
-            // 모든 첨부파일 삭제
-            for (Attachment attachment : journal.getAttachments()) {
-                String url = attachment.getUrl().replace(IMAGE_URL, "");
-                FileUploadUtils.deleteFile(IMAGE_DIR, url);
-            }
-            // 정보 삭제
+            // 이미지 파일 삭제
+            String url = journal.getAttachments().get(0).getUrl().replace(IMAGE_URL, "");
+            FileUploadUtils.deleteFile(IMAGE_DIR, url);
+
+            //  정보 삭제
             journalRepository.delete(journal);
-            System.out.println("일지 삭제 완료");
+            System.out.println("프로그램 삭제 완료");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("일지 삭제 중 오류 발생");
+            throw new RuntimeException("프로그램 삭제 중 오류 발생");
         }
     }
 

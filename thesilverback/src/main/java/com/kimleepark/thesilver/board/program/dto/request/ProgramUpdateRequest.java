@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -23,9 +22,9 @@ public class ProgramUpdateRequest {
     private  String categoryName;
 
     @NotNull
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @NotNull
-    private   LocalDate endDate;
+    private   LocalDateTime endDate;
     @NotBlank
     private   String day;
     @NotBlank

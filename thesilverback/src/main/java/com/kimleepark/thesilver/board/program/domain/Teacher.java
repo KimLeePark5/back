@@ -43,17 +43,17 @@ public class Teacher {
     private String profilePicture; // 강사 프로필 사진
 
 
-    public Teacher(Long code, String teacherName, String birthDate, String gender, String phone, String postNo, String address, String detailAddress, String profilePicture) {
-        this.code = code;
-        this.teacherName = teacherName;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.phone = phone;
-        this.postNo = postNo;
-        this.address = address;
-        this.detailAddress = detailAddress;
-        this.profilePicture = profilePicture;
-    }
+//    public Teacher(Long code, String name, String birthDate, String gender, String phone, String postNo, String address, String detailAddress, String profilePicture) {
+//        this.code = code;
+//        this.name = name;
+//        this.birthDate = birthDate;
+//        this.gender = gender;
+//        this.phone = phone;
+//        this.postNo = postNo;
+//        this.address = address;
+//        this.detailAddress = detailAddress;
+//        this.profilePicture = profilePicture;
+//    }
 
 
 }

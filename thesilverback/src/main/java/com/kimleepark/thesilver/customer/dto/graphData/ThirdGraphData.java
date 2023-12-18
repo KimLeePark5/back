@@ -3,9 +3,11 @@ package com.kimleepark.thesilver.customer.dto.graphData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-public interface ThirdGraphData {
+@Getter
+@RequiredArgsConstructor
+public class ThirdGraphData {
 
-    String getMonth();
-    Long getCountFemale();
-    Long getCountMale();
+    private final String month;
+    private final int countFemale;
+    private final int countMale;
 }

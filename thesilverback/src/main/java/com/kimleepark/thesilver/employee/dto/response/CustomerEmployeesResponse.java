@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.employee.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.Rank;
 import com.kimleepark.thesilver.employee.Team;
@@ -35,6 +36,7 @@ public class CustomerEmployeesResponse {
     private final String employeeAddress;
     @JsonFormat(pattern = "yyyy.MM.dd")
     private final LocalDate joinDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDateTime leaveDate;
     private final String leaveReason;
     private final Team team;
@@ -43,6 +45,7 @@ public class CustomerEmployeesResponse {
     private final List rankHistory;
     private final String registrationNumberFull;
     private final String employeeEmail;
+    private final Account account;
 
 
     public static CustomerEmployeesResponse from(final Employee employee){
@@ -97,7 +100,8 @@ public class CustomerEmployeesResponse {
                 leaveHistory,
                 rankHistory,
                 employee.getRegistrationNumber(),
-                employee.getEmployeeEmail()
+                employee.getEmployeeEmail(),
+                employee.getAccount()
         );
     }
 

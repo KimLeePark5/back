@@ -3,7 +3,6 @@ package com.kimleepark.thesilver.jwt.service;
 import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
-import com.kimleepark.thesilver.common.exception.ServerInternalException;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.jwt.CustomUser;
 import io.jsonwebtoken.Claims;
@@ -31,7 +30,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.EXPIRED_ACCESS_TOKEN;
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_EMPLOYEE_NUMBER;
 
 
@@ -135,15 +133,11 @@ public class JwtService {
     }
 
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("확인입니다");
         getAccessToken(request)
                 .filter(this::isValidToken)
-                .ifPresentOrElse(accessToken -> getMemberId(accessToken)
+                .ifPresent(accessToken -> getMemberId(accessToken)
                         .ifPresent(employeeNumber -> accountRepository.findByEmployeeNumber(employeeNumber)
-                                .ifPresent(this::saveAuthentication)),
-                        () -> {
-                            throw new ServerInternalException(EXPIRED_ACCESS_TOKEN);
-                        } );
+                                .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
 

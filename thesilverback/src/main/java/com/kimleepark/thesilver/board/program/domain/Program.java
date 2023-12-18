@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -22,10 +21,10 @@ public class Program {
     private Long code; // 프로그램 번호
 
     @Column(nullable = false)
-    private LocalDate startDate; // 시작일
+    private LocalDateTime startDate; // 시작일
 
     @Column(nullable = false)
-    private LocalDate endDate; // 종료일
+    private LocalDateTime endDate; // 종료일
 
     @Column(nullable = false)
     private String day; // 요일
@@ -53,7 +52,7 @@ public class Program {
     @Column(nullable = false)
     private Long employeeCode; // 직원코드
 
-    public Program(Long code, ProgramCategory category, LocalDate startDate, LocalDate endDate,
+    public Program(Long code, ProgramCategory category, LocalDateTime startDate, LocalDateTime endDate,
                    String day, String round, LocalTime startTime, LocalTime endTime, String shortStory, Teacher teacher, Long employeeCode
     ) {
         this.code = code;

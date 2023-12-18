@@ -1,18 +1,21 @@
 package com.kimleepark.thesilver.employee.service;
 
-import com.kimleepark.thesilver.common.exception.NotFoundException;
+import com.kimleepark.thesilver.account.domain.Account;
+import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import com.kimleepark.thesilver.employee.Employee;
 
 import com.kimleepark.thesilver.employee.Rank;
 import com.kimleepark.thesilver.employee.Team;
 import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
+import com.kimleepark.thesilver.employee.dto.request.EmployeesAccountUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeesResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
 import com.kimleepark.thesilver.employee.repository.TeamRepository;
+import com.kimleepark.thesilver.employee.type.GenderType;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +27,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 
-import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CATEGORY_CODE;
+import static com.kimleepark.thesilver.employee.type.GenderType.MEN;
+import static com.kimleepark.thesilver.employee.type.GenderType.WOMAN;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
+import static com.kimleepark.thesilver.employee.type.LeaveType.valueOf;
+
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +46,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RankRepository rankRepository;
     private final TeamRepository teamRepository;
+    private final AccountRepository accountRepository;
 
     @Value("${image.image-url}")
     private String IMAGE_URL;
@@ -122,6 +131,13 @@ public class EmployeeService {
         );
     }
 
+    public void empPwdUpdate(Long employeeCode) {
+        Employee employee = employeeRepository.findByEmployeeCodeAndLeaveType(employeeCode, NO);
+        Account account = accountRepository.findByEmployeeEmployeeCode(employee.getEmployeeCode()).orElseThrow(()->new IllegalArgumentException());
+
+        account.resetPwd();
+    }
+
     public void delete(Long employeeCode) {
 
         employeeRepository.deleteById(employeeCode);
@@ -163,4 +179,35 @@ public class EmployeeService {
 
         }
 
+    @Transactional(readOnly = true)
+    public Page<CustomerEmployeesResponse> getCustomerEmployeesSearch(final Integer page, String searchCategory, String searchValue) {
+        Page<Employee> employees=null;
+
+        GenderType gender =
+                searchValue.equals("남")||searchValue.equals("남성")||searchValue.equals("남자") ?
+                        MEN : searchValue.equals("여")||searchValue.equals("여성")||searchValue.equals("여자") ?
+                        WOMAN : null;
+
+        if(searchCategory.equals("employeeCode")){
+           employees = employeeRepository.findByEmployeeCodeLikeAndLeaveType(getPageable(page), Long.valueOf(searchValue), NO);
+        } else if(searchCategory.equals("rankCode")){
+            employees = employeeRepository.findByRankRankNameContainingAndLeaveType(getPageable(page), searchValue, NO);
+        } else if(searchCategory.equals("employeeName")){
+            employees = employeeRepository.findByEmployeeNameContainingAndLeaveType(getPageable(page), searchValue, NO);
+        } else if(searchCategory.equals("gender")){
+          employees = employeeRepository.findByGenderLikeAndLeaveType(getPageable(page), gender, NO);
+        } else if(searchCategory.equals("joinDate")){
+           employees = employeeRepository.findByJoinDateAndLeaveType(getPageable(page), searchValue, NO);
+        } else {
+           employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+        }
+
+        return employees.map(employee -> CustomerEmployeesResponse.from(employee));
+    }
+
+
+
+//        Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+//        return employees.map(employee -> CustomerEmployeesResponse.from(employee));
+//    }
 }

@@ -28,10 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if(request.getRequestURI().equals("/api/v1/password-reset")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
 
         /* 1. 사용자 헤더에서 Refresh Token 추출 */
@@ -54,9 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         * - AccessToken 유효성 확인
         * */
         if(refreshToken == null) {
-            log.info("확인");
             jwtService.checkAccessTokenAndAuthentication(request, response, filterChain);
-            log.info("확인2");
         }
 
     }
