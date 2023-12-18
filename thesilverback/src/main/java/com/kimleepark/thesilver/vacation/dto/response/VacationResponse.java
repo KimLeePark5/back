@@ -21,7 +21,9 @@ public class VacationResponse {
 
 
 
+
     public static VacationResponse from(final Vacation vacation, Double passedReqCount, CustomUser customUser, Employee approver){
+
 
         return new VacationResponse(
                 vacation.getEmployee().getEmployeeName(),

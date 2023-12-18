@@ -10,8 +10,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 
+import static com.kimleepark.thesilver.todolist.domain.type.CompleteType.COMPLETE;
 import static com.kimleepark.thesilver.todolist.domain.type.CompleteType.INCOMPLETE;
 
 @Entity
@@ -31,7 +33,7 @@ public class TodoList {
     @CreatedDate
     private LocalDate todoDate;
 
-    private int employeeCode;
+    private long employeeCode;
 
     private String todoContent;
 
@@ -40,17 +42,26 @@ public class TodoList {
 
     private char status = 'N';
 
-    public TodoList(int empNo, String content) {
+    public TodoList(long empNo, String content) {
         this.employeeCode = empNo;
         this.todoContent = content;
     }
 
-    public static TodoList of(int empNo, String content) {
+    public static TodoList of(long empNo, String content) {
         return new TodoList(empNo, content);
     }
 
 
     public void updateContent(String content) {
         this.todoContent = content;
+    }
+
+    public void updateComplete(String message) {
+        if(message.equals("COMPLETE")){
+            this.todoComplete = COMPLETE;
+        }else if(message.equals("INCOMPLETE")){
+            this.todoComplete = INCOMPLETE;
+        }
+
     }
 }

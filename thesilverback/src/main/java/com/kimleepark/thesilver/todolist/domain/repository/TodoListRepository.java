@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 
 public interface TodoListRepository extends JpaRepository<TodoList,Long> {
-    Page<TodoList> findByEmployeeCodeAndTodoDate(Pageable pageable, int empNo, LocalDate date);
+    Page<TodoList> findByEmployeeCodeAndTodoDate(Pageable pageable, Long empNo, LocalDate date);
 }

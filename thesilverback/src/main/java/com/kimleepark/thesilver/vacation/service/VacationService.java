@@ -59,6 +59,7 @@ public class VacationService {
         Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
 
 
+
         // 'PASS' 상태인 휴가 요청의 일수 카운트
         List<Require> passedRequires = requireRepository.findByEmployeeEmployeeCodeAndReqStatus(customUser.getEmployeeCode(), PASS);
 
@@ -87,18 +88,19 @@ public class VacationService {
             }
         }
 
+
         //로그인 유저
         Employee loginUser = employeeRepository.getReferenceById(customUser.getEmployeeCode());
 
         // 결재자 정보
         Employee approver = null;
 
+
         if (loginUser.getRank().getRankCode() == 3) {
             approver = employeeRepository.findByTeamAndRankRankCode(loginUser.getTeam(), 2L);
         } else {
             approver = employeeRepository.findByRankRankCode(1L);
         }
-
 
         return VacationResponse.from(vacation, passedReqCount, customUser, approver);
     }
@@ -173,7 +175,7 @@ public class VacationService {
 
     }
 
-    /* 연차 상신 결재하기 */
+    /* 연차 결재 */
     @Transactional
     public void updatePass(final Long reqNo) {
 
@@ -192,7 +194,8 @@ public class VacationService {
         requireRepository.save(require);
         signRepository.save(sign);
     }
-
+  
+   /* 연차 반려 */
     @Transactional
     public void updateReturn(final Long reqNo, UpdateRequireRequest updateRequireRequest) {
 
@@ -212,6 +215,8 @@ public class VacationService {
         signRepository.save(sign);
     }
 
+
+    /* 연차 취소 */
     @Transactional
     public void updateCancel(final Long reqNo, UpdateRequireRequest updateRequireRequest) {
 

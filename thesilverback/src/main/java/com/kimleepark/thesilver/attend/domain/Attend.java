@@ -16,6 +16,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static com.kimleepark.thesilver.attend.domain.type.AttendType.N;
+
 @Entity
 @Table(name = "tbl_attend")
 @EntityListeners(AuditingEntityListener.class)
@@ -51,7 +53,10 @@ public class Attend {
     private String note = "";
 
     @Enumerated(EnumType.STRING)
-    private AttendType status = AttendType.N;
+    private AttendType status = N;
+
+
+
 
     public static final String LATE = "지각";
     public static final String OVERTIME = "연장근무";
@@ -69,6 +74,7 @@ public class Attend {
     public void updateType() {
         this.type = OVERTIME;
     }
+
     public void setLeaveTime(){
         this.leavetime = LocalTime.now();
     }
@@ -79,9 +85,9 @@ public class Attend {
 
     public void updateNote(String note) {
         switch(note){
-            case "EARLY_LEAVE" : this.updateNote(LEAVE_EARLY);
+            case "EARLY_LEAVE" : this.note = LEAVE_EARLY;
             break;
-            case "LATE" : this.updateNote(LATE);
+            case "LATE" : this.note = LATE;
             break;
 
         }
@@ -98,12 +104,21 @@ public class Attend {
             this.type = requestAttend.getType();
         }
         if(requestAttend.getNote() != null){
-            this.note = requestAttend.getNote();
+            if(requestAttend.getNote().equals("기본")) {
+                this.note = "";
+            }else{
+                this.note = requestAttend.getNote();
+            }
         }
 
+        if(requestAttend.getEnterTime() != null || requestAttend.getLeaveTime() != null){
         Duration diff = Duration.between(this.entertime,this.leavetime);
+        this.attendTime = ((float) diff.toMinutes() /60)-1 ;
 
-        this.attendTime = (float) diff.toMinutes() /60;
+
+        }
+
+
 
     }
 
@@ -120,5 +135,24 @@ public class Attend {
                 ", note='" + note + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public void putEnterTime() {
+        this.entertime = LocalTime.now();
+    }
+
+    public void updateLate() {
+        this.note = LATE;
+    }
+    public void updateLeaveEarly(){
+        this.note = LEAVE_EARLY;
+    }
+
+    public void updateMorningOff() {
+        this.note = "오전반차";
+    }
+
+    public void updateafternoonoff() {
+        this.note = "오후반차";
     }
 }

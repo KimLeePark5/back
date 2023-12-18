@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 @RequiredArgsConstructor
 @Getter
@@ -42,5 +45,16 @@ public class CreateCustomersRequest {
     }
     public String getGuardianPhone() {
         return guardianPhone1 +"-"+ guardianPhone2 +"-"+ guardianPhone3;
+    }
+    public String getParsedBirthDate() {
+        String inputDate = birthDate;
+
+        // 년, 월, 일을 각각 추출
+        String year = "19" + inputDate.substring(0, 2);  // "19"를 추가
+        String month = inputDate.substring(2, 4);
+        String day = inputDate.substring(4, 6);
+
+        // 최종적으로 "yyyy-MM-dd" 형식으로 조합
+        return year + "-" + month + "-" + day;
     }
 }

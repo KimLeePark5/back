@@ -1,9 +1,6 @@
 package com.kimleepark.thesilver.board.program.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
+@ToString
 public class Teacher {
 
     @Id
@@ -43,17 +41,17 @@ public class Teacher {
     private String profilePicture; // 강사 프로필 사진
 
 
-//    public Teacher(Long code, String name, String birthDate, String gender, String phone, String postNo, String address, String detailAddress, String profilePicture) {
-//        this.code = code;
-//        this.name = name;
-//        this.birthDate = birthDate;
-//        this.gender = gender;
-//        this.phone = phone;
-//        this.postNo = postNo;
-//        this.address = address;
-//        this.detailAddress = detailAddress;
-//        this.profilePicture = profilePicture;
-//    }
+    public Teacher(Long code, String teacherName, String birthDate, String gender, String phone, String postNo, String address, String detailAddress, String profilePicture) {
+        this.code = code;
+        this.teacherName = teacherName;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.phone = phone;
+        this.postNo = postNo;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.profilePicture = profilePicture;
+    }
 
 
 }

@@ -58,7 +58,13 @@ dependencies {
     // JavaMailSender 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    implementation 'org.apache.commons:commons-lang3:3.12.0' // 사용 가능한 최신 버전으로 업데이트
+
+    // MapStruct
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+
+
 
 
 }

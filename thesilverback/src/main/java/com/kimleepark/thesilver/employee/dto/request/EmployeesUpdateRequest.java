@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,12 +46,11 @@ public class EmployeesUpdateRequest {
 
     private final String employeeAddress;
     @NotNull
-    private final LocalDateTime joinDate;
+    private final LocalDate joinDate;
 
     private final LocalDateTime leaveDate;
 
     private final String leaveReason;
     @NotNull
-    @Min(value = 99)
     private final Long teamCode;
 }
