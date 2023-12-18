@@ -51,7 +51,7 @@ public class JournalCreateRequest {
     private String rating;              //평가
     @NotNull
     private String note;                //비고
-
+    @NotNull
     private String participantNames;    // 참가자들의 이름을 쉼표로 구분하여 이어서 저장하는 문자열
 
 

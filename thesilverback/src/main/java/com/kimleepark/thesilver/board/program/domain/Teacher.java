@@ -1,9 +1,6 @@
 package com.kimleepark.thesilver.board.program.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
+@ToString
 public class Teacher {
 
     @Id
