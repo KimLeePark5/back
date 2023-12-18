@@ -140,7 +140,7 @@ public class ProgramController {
     @GetMapping("/program/myProgram")
     public ResponseEntity<Void> getMyProgram(@AuthenticationPrincipal CustomUser customUser){
 
-//        programService.getMyProgram(customUser.getEmployeeCode());
+        programService.getMyProgram(customUser.getEmployeeCode());
 
 
         return null;

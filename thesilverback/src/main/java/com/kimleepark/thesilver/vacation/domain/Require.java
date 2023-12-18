@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.vacation.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
+import com.kimleepark.thesilver.vacation.dto.request.UpdateRequireRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -37,10 +37,12 @@ public class Require {
     private Employee employee;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime endDate;
 
     @Column(nullable = false)
     private String reqContent;
@@ -54,7 +56,7 @@ public class Require {
     private LocalDateTime reqDate;
 
 
-    public Require(VacationType vacationType, Employee employee, LocalDate startDate, LocalDate endDate, String reqContent, RequireStatusType reqStatus) {
+    public Require(VacationType vacationType, Employee employee, LocalDateTime startDate, LocalDateTime endDate, String reqContent, RequireStatusType reqStatus) {
         this.vacationType = vacationType;
         this.employee = employee;
         this.startDate = startDate;
@@ -63,7 +65,7 @@ public class Require {
         this.reqStatus = reqStatus;
     }
 
-    public static Require of(VacationType vacationType, Employee employee, LocalDate startDate, LocalDate endDate, String reqContent, RequireStatusType reqStatus) {
+    public static Require of(VacationType vacationType, Employee employee, LocalDateTime startDate, LocalDateTime endDate, String reqContent, RequireStatusType reqStatus) {
         return new Require(
                 vacationType,
                 employee,
@@ -71,5 +73,20 @@ public class Require {
                 endDate,
                 reqContent,
                 reqStatus);
+    }
+
+
+
+    public void updatePass() {
+
+        this.reqStatus = RequireStatusType.PASS;
+    }
+
+    public void updateReturn() {
+        this.reqStatus = RequireStatusType.RETURN;
+    }
+
+    public void updateCancel() {
+        this.reqStatus = RequireStatusType.CANCEL;
     }
 }

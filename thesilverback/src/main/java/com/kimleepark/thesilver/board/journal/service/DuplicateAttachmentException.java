@@ -18,3 +18,4 @@ public class DuplicateAttachmentException extends RuntimeException {
         super(cause);
     }
 }
+

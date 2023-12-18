@@ -50,7 +50,7 @@ public class Journal {
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>(); // 참석자들
 
-    //    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Attachment> attachments = new ArrayList<>();       // 첨부파일들
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments = new HashSet<>(); // 중복 방지를 위한 Set 사용

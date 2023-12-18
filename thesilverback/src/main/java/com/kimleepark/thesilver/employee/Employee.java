@@ -1,7 +1,5 @@
 package com.kimleepark.thesilver.employee;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kimleepark.thesilver.account.domain.Account;
 import com.kimleepark.thesilver.attend.domain.Attend;
 import com.kimleepark.thesilver.attend.domain.Attend;
 import com.kimleepark.thesilver.employee.type.*;
@@ -121,10 +119,6 @@ public class Employee {
     @OneToMany(mappedBy = "employeeCode")
     private List<Attend> attendList;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "employee", fetch = FetchType.EAGER)
-    private Account account;
-
     public Employee(Rank rankCode, Team teamCode, String employeeName, String employeeEmail, GenderType gender, DisabilityType disability, MarriageType marriage, PatriotsType patriots, EmploymentType employmentType, WorkingType workingStatus, LeaveType leaveType, String registrationNumber, String employeePhone, String employeeAddress, LocalDate joinDate) {
         this.rank=rankCode;
         this.team=teamCode;
@@ -201,9 +195,5 @@ public class Employee {
 
 
     public void imgupdates(String employeePicture) { this.employeePicture = employeePicture;
-    }
-
-    public void empPwdUpdate(Account account) {
-        this.account = account;
     }
 }
