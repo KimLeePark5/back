@@ -1,11 +1,9 @@
 package com.kimleepark.thesilver.board.program.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -13,6 +11,7 @@ import java.time.LocalTime;
 @Table(name = "tbl_program")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
+@ToString
 @Setter
 public class Program {
 
@@ -21,10 +20,10 @@ public class Program {
     private Long code; // 프로그램 번호
 
     @Column(nullable = false)
-    private LocalDateTime startDate; // 시작일
+    private LocalDate startDate; // 시작일
 
     @Column(nullable = false)
-    private LocalDateTime endDate; // 종료일
+    private LocalDate endDate; // 종료일
 
     @Column(nullable = false)
     private String day; // 요일
@@ -52,7 +51,7 @@ public class Program {
     @Column(nullable = false)
     private Long employeeCode; // 직원코드
 
-    public Program(Long code, ProgramCategory category, LocalDateTime startDate, LocalDateTime endDate,
+    public Program(Long code, ProgramCategory category, LocalDate startDate, LocalDate endDate,
                    String day, String round, LocalTime startTime, LocalTime endTime, String shortStory, Teacher teacher, Long employeeCode
     ) {
         this.code = code;

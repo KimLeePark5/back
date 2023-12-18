@@ -23,6 +23,8 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     Optional<Object> findByCategoryCategoryNameAndRound(String categoryName, String round);
 
     @Query("SELECT DISTINCT p.category.categoryName FROM Program p")
-    List<String> findAllCategoryName();
+    List<String> findAllCategoryNames();
+
+
 }
 

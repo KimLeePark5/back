@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class VacationController {
 
-    private final VacationRepository vacationRepository;
     private final RequireRepository requireRepository;
     private final VacationService vacationService;
 
@@ -60,18 +59,10 @@ public class VacationController {
     @GetMapping("/vacation")
     public ResponseEntity<VacationResponse> getVacation(@AuthenticationPrincipal CustomUser customUser) {
 
-        System.out.println("확인" + customUser.getEmployeeName());
-        // 연차 정보 확인
-        Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
+        VacationResponse vacationResponse = vacationService.getVacation(customUser);
 
-        // 'PASS' 상태인 휴가 요청의 갯수 조회
-        Long passedReqCount = vacationService.getPassedRequireCount(customUser);
 
-        System.out.println("PASS상태인 휴가 요청 갯수는? : "+ passedReqCount );
 
-        VacationResponse vacationResponse = VacationResponse.from(vacation, passedReqCount, customUser);
-
-        log.info("customUser 권한: {}", vacationResponse.getAuthorities());
 
         return ResponseEntity.ok(vacationResponse);
     }
@@ -83,6 +74,7 @@ public class VacationController {
                                      @AuthenticationPrincipal CustomUser customUser) {
         System.out.println("확인" + customUser.getEmployeeName());
        vacationService.save(createRequireRequest, customUser);
+
 
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
