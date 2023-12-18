@@ -273,19 +273,19 @@ public class AttendService {
     }
 
 
-    @Scheduled(cron = "0 0 05 * * ?")
-    public void scheduleAttned(){
-
-        List<Employee> employees  = employeeRepository.findAll();
-        List<Attend> attendList = employees.stream().map(emp -> Attend.getEmpNo(emp)).collect(Collectors.toList());
-
-        attendRepository.saveAll(attendList);
-    }
-
-    @Scheduled(cron = "0 00 15 * * MON-FRI")
-    public void absentSchedule(){
-        List<Attend> attendList = attendRepository.findByAttendDateAndEntertimeIsNull(LocalDate.now());
-
-        attendList.forEach(att -> att.updateAbsent());
-    }
+//    @Scheduled(cron = "0 0 05 * * ?")
+//    public void scheduleAttned(){
+//
+//        List<Employee> employees  = employeeRepository.findAll();
+//        List<Attend> attendList = employees.stream().map(emp -> Attend.getEmpNo(emp)).collect(Collectors.toList());
+//
+//        attendRepository.saveAll(attendList);
+//    }
+//
+//    @Scheduled(cron = "0 00 15 * * MON-FRI")
+//    public void absentSchedule(){
+//        List<Attend> attendList = attendRepository.findByAttendDateAndEntertimeIsNull(LocalDate.now());
+//
+//        attendList.forEach(att -> att.updateAbsent());
+//    }
 }
