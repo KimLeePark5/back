@@ -1,6 +1,5 @@
 package com.kimleepark.thesilver.customer.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kimleepark.thesilver.board.journal.domain.Journal;
 import com.kimleepark.thesilver.customer.domain.type.CustomerGender;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
@@ -131,7 +130,7 @@ public class Customer {
     public void update(Long employeeCode, UpdateCustomersRequest updateCustomersRequest) {
         this.name = updateCustomersRequest.getName();
         this.gender = updateCustomersRequest.getGender();
-//        this.birthDate = updateCustomersRequest.getParsedBirthDate();
+        this.birthDate = updateCustomersRequest.getParsedBirthDate();
         this.phone = updateCustomersRequest.getPhone();
         this.postalCode = updateCustomersRequest.getPostalCode();
         this.primaryAddress = updateCustomersRequest.getPrimaryAddress();
