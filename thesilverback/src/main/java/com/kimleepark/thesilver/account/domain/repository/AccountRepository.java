@@ -14,7 +14,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findAll();
 
     Optional<Account> findByEmployeeNumber(String employeeNumber);
-    Optional<Account> findByEmployeeEmployeeCode(Long code);
 
     Optional<Account> findByRefreshToken(String refreshToken);
 
