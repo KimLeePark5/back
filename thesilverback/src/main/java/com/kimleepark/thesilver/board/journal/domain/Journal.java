@@ -12,9 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "tbl_journal")
@@ -47,16 +45,20 @@ public class Journal {
     @JoinColumn(name = "employeeCode")
     private Employee employee;
 
+    // mappedBy 속성은 양방향 관계에서 사용되어 어떤 필드가 연관 관계의 주인(Owner)인지를 나타냄
+    //@OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
+    //@JoinColumn(name = "participantCode") //@JoinColumn는 외래키 지정하는데 mappedBy랑 같이 쓰면 안됨
+    //private List<Participant> participants;        //참석자들
+
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>(); // 참석자들
 
-//    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Attachment> attachments = new ArrayList<>();       // 첨부파일들
+
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Attachment> attachments = new HashSet<>(); // 중복 방지를 위한 Set 사용
+    private List<Attachment> attachments = new ArrayList<>();       // 첨부파일들
 
     public Journal(Long journalCode, String subProgress, String observe, String rating, String note,
-                   LocalDate observation, String programTopic, Program program, Employee employee, List<Participant> participants, Set<Attachment> attachments
+                   LocalDate observation, String programTopic, Program program, Employee employee, List<Participant> participants, List<Attachment> attachments
     ) {
         this.journalCode = journalCode;
         this.subProgress = subProgress;
@@ -101,15 +103,4 @@ public class Journal {
             this.program = program;
         }
     }
-
-    public void addAttachment(Attachment attachment) {
-        attachments.add(attachment);
-        attachment.setJournal(this);
-    }
-
-    public void removeAttachment(Attachment attachment) {
-        attachments.remove(attachment);
-        attachment.setJournal(null);
-    }
-
 }

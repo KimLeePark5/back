@@ -115,6 +115,8 @@ public class AttendController {
 
         return ResponseEntity.ok(pagingResponse);
     }
+
+    //검색
     @GetMapping("/getAttendAdminByEmpName")
     public ResponseEntity<PagingResponse> getAttendAdminByName(@RequestParam(defaultValue = "1") final Integer page, String month,String name){
 

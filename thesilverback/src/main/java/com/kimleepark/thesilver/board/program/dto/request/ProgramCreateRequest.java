@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -26,9 +25,9 @@ public class ProgramCreateRequest {
     private  String categoryName;
 
     @NotNull
-    private   LocalDate startDate;
+    private   LocalDateTime startDate;
     @NotNull
-    private LocalDate endDate;
+    private   LocalDateTime endDate;
     @NotBlank
     private   String day;
     @NotBlank
@@ -39,7 +38,7 @@ public class ProgramCreateRequest {
     private  LocalTime endTime;
     @NotBlank
     private   String shortStory;
-
+    @Min(value = 1)
     private Long employeeCode;
 
 
@@ -56,7 +55,7 @@ public class ProgramCreateRequest {
     @NotBlank
     private  String address; // 주소
     @NotBlank
-    private  String detailAddress; // 상세 주소
+    private  String detailAddress; // 강사 상세 주소
 
     private String profilePicture; // 강사 프로필 사진
 
