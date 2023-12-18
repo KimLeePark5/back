@@ -66,6 +66,7 @@ public class Employee {
     @Column(nullable = false)
     private PatriotsType patriots;
 
+
     @Enumerated(value = STRING)
     @Column(nullable = false)
     private EmploymentType employmentType;

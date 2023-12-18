@@ -20,9 +20,9 @@ public class CustomerProgramResponse {
 
     private Long code;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     private String day;
     private String round;
     @JsonFormat(pattern = "HH:mm")
