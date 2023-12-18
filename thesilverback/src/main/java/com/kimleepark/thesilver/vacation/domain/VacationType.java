@@ -2,7 +2,6 @@ package com.kimleepark.thesilver.vacation.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -13,7 +12,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Getter
 @EntityListeners(AutoCloseable.class)
-@ToString
 public class VacationType {
 
     @Id
