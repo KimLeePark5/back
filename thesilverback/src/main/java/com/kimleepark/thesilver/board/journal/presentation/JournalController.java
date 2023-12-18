@@ -8,16 +8,11 @@ import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalsRespo
 import com.kimleepark.thesilver.board.journal.service.JournalService;
 import com.kimleepark.thesilver.board.program.domain.Program;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
-import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
-import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
-import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
-import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.employee.Employee;
-import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +20,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +28,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.nio.file.AccessDeniedException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
@@ -147,7 +137,7 @@ public class JournalController {
     // 4. 일지 등록 - (참관한 직원, 관리자)
     @PostMapping("/journals")  // 프로그램 스케줄에 등록된 직원만 해당 프로그램 종료시간 이후에 일지를 작성할수 있게 조건 써야함. 직원코드 와 일치하는 직원이름이 자동 조회.
     public ResponseEntity<Void> save(@RequestPart @Valid JournalCreateRequest journalRequest,
-                                     @RequestPart MultipartFile journalImg) {
+                                     @RequestPart List<MultipartFile> journalImages) {
 
         try {
             // 프로그램 정보 가져오기
@@ -221,7 +211,7 @@ public class JournalController {
             }
 //-------------------------------------------------------------------
             // 프로그램 정보가 정상적으로 조회되었으므로 일지 서비스 호출
-            Long journalCode = journalService.save(journalImg, journalRequest);
+            Long journalCode = journalService.save(journalImages, journalRequest);
 
             System.out.println("일지가 성공적으로 저장되었습니다. 일지 코드: " + journalCode);
 
