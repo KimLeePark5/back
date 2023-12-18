@@ -4,6 +4,7 @@ import com.kimleepark.thesilver.attachment.Attachment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class JournalCreateRequest {
     private String day;                 // 요일
 
 
-    //private Long employeeCode;          // 직원코드
+//    private Long employeeCode;          // 직원코드
     @NotNull
     private String employeeName;        // 직원 이름
     @NotNull
@@ -50,6 +51,8 @@ public class JournalCreateRequest {
     private String rating;              //평가
     @NotNull
     private String note;                //비고
+    @NotNull
     private String participantNames;    // 참가자들의 이름을 쉼표로 구분하여 이어서 저장하는 문자열
+
 
 }

@@ -43,6 +43,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     @Query("SELECT DISTINCT e.employeeName FROM Employee e")
-    List<String> findAllEmployeeName();
+    List<String> findAllEmployeeNames();
 
 }

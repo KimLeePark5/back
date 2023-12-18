@@ -15,12 +15,16 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
 
     Page<Program> findAll(Pageable pageable);
+
     Page<Program> findByCategory_CategoryNameContaining(String categoryName, Pageable pageable);
+    
     Program findByCode(Long categoryCode);
 
     Optional<Object> findByCategoryCategoryNameAndRound(String categoryName, String round);
 
     @Query("SELECT DISTINCT p.category.categoryName FROM Program p")
-    List<String> findAllCategoryName();
+    List<String> findAllCategoryNames();
+
+
 }
 

@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.customer.domain;
 
+import com.kimleepark.thesilver.board.journal.domain.Journal;
 import com.kimleepark.thesilver.customer.domain.type.CustomerGender;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;

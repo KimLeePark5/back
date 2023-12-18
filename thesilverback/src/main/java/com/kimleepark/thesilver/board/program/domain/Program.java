@@ -1,9 +1,6 @@
 package com.kimleepark.thesilver.board.program.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +10,7 @@ import java.time.LocalTime;
 @Table(name = "tbl_program")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
+@ToString
 @Setter
 public class Program {
 

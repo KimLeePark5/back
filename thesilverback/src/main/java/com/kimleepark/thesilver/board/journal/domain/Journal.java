@@ -71,6 +71,12 @@ public class Journal {
         this.employee = employee;
         this.participants = participants;
         this.attachments = attachments;
+
+        // null 체크를 추가하여 participants를 초기화합니다.
+        if (participants != null) {
+            this.participants.addAll(participants);
+            participants.forEach(participant -> participant.setJournal(this));
+        }
     }
 
     // 참석자들 설정
@@ -81,6 +87,7 @@ public class Journal {
             participants.forEach(participant -> participant.setJournal(this));
         }
     }
+
 
     public void setJournalCode(Long journalCode) {
         this.journalCode = journalCode;
