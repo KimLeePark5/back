@@ -245,7 +245,7 @@ public class ProgramService {
     }
 
 
-    public void getMyProgram(Long employeeCode) {
+//    public void getMyProgram(Long employeeCode) {
 //        programRepository.findByEmployeeCodeAnd
-    }
+//    }
 }

@@ -53,8 +53,8 @@ public enum ExceptionCode {
     NOT_FOUND_REVIEW_CODE(6000, "리뷰 코드에 해당하는 리뷰가 존재하지 않습니다."),
 
     ALREADY_EXIST_REVIEW(6001, "이미  작성되어 작성할 수 없습니다."),
-
-    ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다.");
+    ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다."),
+    ATTEND_TIME_NULL(2,"출근시간 또는 퇴근시간이 누락되었습니다.");
 
     private final int code;
     private final String message;
