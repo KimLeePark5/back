@@ -20,7 +20,7 @@ public class Participant {
     private Long participantCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "journalCode")   // 일지 코드
+    @JoinColumn(name = "journalCode")
     private Journal journal;
 
     @ManyToOne(fetch = FetchType.LAZY)

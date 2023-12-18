@@ -57,7 +57,7 @@ image:
 jwt:
   secret: WOSQm0RhClTbPJ//eWqAqw3+kUkKvCnE/NqYM35o1tpzYIBDaQocMDudhlZfV7tkxl39dcvE6tL809eAcRoGPLqccHb6jjhIjakMzhP8FvZGedTlSs6iHmYCLKEmf5n7YE5XpMzU+dOWau5hhJ7NmxCcyMHEtO
   access:
-    expiration: 10000
+    expiration: 1000000
     #expiration: 1000
   refresh:
     expiration: 21600000

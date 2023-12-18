@@ -31,11 +31,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     @Query("SELECT DISTINCT e.employeeName FROM Employee e")
-    List<String> findAllEmployeeName();
+    List<String> findAllEmployeeNames();
 
     Optional<Object> findTeamLeaderByTeamTeamCode(Long teamCode);
 
     Employee findByTeamAndRankRankCode(Team team, Long rankCode);
 
     Employee findByRankRankCode(Long rankCode);
+
 }

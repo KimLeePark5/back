@@ -69,26 +69,65 @@ public class JournalService {
     }
 
     // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (직원, 프로그램 카테고리, 참관 일자)
+//    @Transactional(readOnly = true)
+//    public Page<CustomerJournalsResponse> getJournalsByMultipleCriteria(
+//            Integer page, String employeeCode, Long programCategoryCode, LocalDate observation) {
+//
+//        // 다중 검색 기준에 따라 동적으로 쿼리를 생성
+//        Specification<Journal> spec = Specification.where(null);
+//
+//        if (StringUtils.hasText(employeeCode)) {
+//            spec = spec.and((root, query, builder) -> {
+//                // 직원 코드 검색 조건을 추가
+//                System.out.println("Adding employeeCode condition: " + employeeCode);
+//                return builder.equal(root.get("employee").get("employeeCode"), employeeCode);
+//            });
+//        }
+//
+//        if (programCategoryCode != null) {
+//            spec = spec.and((root, query, builder) -> {
+//                // 프로그램 카테고리 코드 검색 조건을 추가
+//                System.out.println("Adding programCategoryCode condition: " + programCategoryCode);
+//                return builder.equal(root.get("program").get("category").get("categoryCode"), programCategoryCode);
+//            });
+//        }
+//
+//        if (observation != null) {
+//            spec = spec.and((root, query, builder) -> {
+//                // 참관 일자 검색 조건을 추가
+//                System.out.println("Adding observation condition: " + observation);
+//                return builder.equal(root.get("observation"), observation);
+//            });
+//        }
+//
+//        Page<Journal> journals = journalRepository.findAll(spec, getPageable(page));
+//
+//        if (journals.isEmpty()) {
+//            throw new CustomException(ExceptionCode.NOT_FOUND_MULTIPLE_LOOKUPS);
+//        }
+//        return journals.map(journal -> CustomerJournalsResponse.from(journal));
+//    }
+    // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (카테고리명, 직원명, 참관 일자)
     @Transactional(readOnly = true)
     public Page<CustomerJournalsResponse> getJournalsByMultipleCriteria(
-            Integer page, String employeeCode, Long programCategoryCode, LocalDate observation) {
+            Integer page, String categoryName, String employeeName, LocalDate observation) {
 
         // 다중 검색 기준에 따라 동적으로 쿼리를 생성
         Specification<Journal> spec = Specification.where(null);
 
-        if (StringUtils.hasText(employeeCode)) {
+        if (categoryName != null) {
             spec = spec.and((root, query, builder) -> {
-                // 직원 코드 검색 조건을 추가
-                System.out.println("Adding employeeCode condition: " + employeeCode);
-                return builder.equal(root.get("employee").get("employeeCode"), employeeCode);
+                // 카테고리명 검색 조건을 추가
+                System.out.println("Adding categoryName condition: " + categoryName);
+                return builder.equal(root.get("program").get("category").get("categoryName"), categoryName);
             });
         }
 
-        if (programCategoryCode != null) {
+        if (StringUtils.hasText(employeeName)) {
             spec = spec.and((root, query, builder) -> {
-                // 프로그램 카테고리 코드 검색 조건을 추가
-                System.out.println("Adding programCategoryCode condition: " + programCategoryCode);
-                return builder.equal(root.get("program").get("category").get("categoryCode"), programCategoryCode);
+                // 직원명 검색 조건을 추가
+                System.out.println("Adding employeeName condition: " + employeeName);
+                return builder.equal(root.get("employee").get("employeeName"), employeeName);
             });
         }
 
@@ -108,16 +147,16 @@ public class JournalService {
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
-    //2-1. 다중 검색 셀렉트 바 (직원 이름)
+    // 2-1. 다중 검색 셀렉트 바 (직원 이름)
     @Transactional(readOnly = true)
     public List<String> getEmployeeName() {
-        return employeeRepository.findAllEmployeeName();
+        return employeeRepository.findAllEmployeeNames();
     }
 
-    //2-1. 다중 검색 셀렉트 바 (카테고리 이름)
+    // 2-2. 다중 검색 셀렉트 바 (카테고리 이름)
     @Transactional(readOnly = true)
     public List<String> getCategoryName() {
-        return programRepository.findAllCategoryName(); // 고유한 카테고리 이름을 가져오는 리포지토리 메서드를 가정합니다.
+        return programRepository.findAllCategoryNames(); // findAllCategoryNames 메서드가 존재한다고 가정합니다.
     }
 
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
@@ -193,6 +232,9 @@ public class JournalService {
                 // 각 첨부파일을 일지에 추가
                 journal.addAttachment(attachment);
 
+                // 이미지 파일 저장 로직 호출
+                String savedFileName = saveImageFile(journalImg);
+                attachment.setUrl(savedFileName);
 
 //                // 일지가 존재하는지 확인하고, 없으면 새로운 일지를 생성합니다.
 //                journal = journalRepository.findByJournalCode(journalRequest.getJournalCode())
@@ -201,7 +243,7 @@ public class JournalService {
 
             System.out.println("일지 존재하는지 조회 없으면 생성 : " + journal.getJournalCode());
 
-            // 참가자 엔터티 생성 및 설정
+            // 참가자 엔터티 생성 및 설정/////////////////////////////////////
             List<Participant> participants = Arrays.stream(journalRequest.getParticipantNames().split(","))
                     .map(participantName -> {
                         Customer customer = (Customer) customerRepository.findByName(participantName.trim())
@@ -210,10 +252,11 @@ public class JournalService {
                     })
                     .collect(Collectors.toList());
 
+            journal.setParticipants(participants);
+
             System.out.println("참가자 설정 및 일지 저장 : " + participants.size() + "명, 일지 코드: " + journal.getJournalCode());
 
             // 새로운 일지를 생성하고, 기타 세부 정보를 설정한 후 저장합니다.
-            journal = new Journal();
             journal.setJournalCode(journalRequest.getJournalCode());
             journal.setSubProgress(journalRequest.getSubProgress());
             journal.setObserve(journalRequest.getObserve());

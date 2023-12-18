@@ -53,9 +53,8 @@ public class ProgramService {
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerPrograms(Integer page) {
 
-
         Page<Program> programs = programRepository.findAll(getPageable(page));
-
+    log.info("aaaaaaa : {}", programs);
         return programs.map(program -> CustomerProgramsResponse.from(program));
     }
 
@@ -149,10 +148,13 @@ public class ProgramService {
     private String saveImageFile(MultipartFile imageFile) throws IOException {
         // 파일명 중복을 방지하기 위해 UUID를 이용하여 파일명 생성
         String replaceFileName = UUID.randomUUID().toString().replace("-", "");
-        // 이미지 파일을 지정된 디렉토리에 저장
-        FileUploadUtils.saveFile(IMAGE_DIR, replaceFileName, imageFile);
-        // 저장된 파일명 반환
-        return replaceFileName;
+        // 이미지 파일의 확장자 추출
+        String originalFilename = imageFile.getOriginalFilename();
+        String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+        // 이미지 파일을 지정된 디렉토리에 저장 (확장자 포함)
+        FileUploadUtils.saveFile(IMAGE_DIR, replaceFileName + fileExtension, imageFile);
+        // 저장된 파일명 반환 (확장자 포함)
+        return replaceFileName + fileExtension;
     }
 
     //5. 프로그램 수정(관리자)
