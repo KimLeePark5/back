@@ -119,7 +119,7 @@ public class JournalService {
             spec = spec.and((root, query, builder) -> {
                 // 카테고리명 검색 조건을 추가
                 System.out.println("Adding categoryName condition: " + categoryName);
-                return builder.equal(root.get("program").get("category").get("categoryName"), categoryName);
+                return builder.like(root.get("program").get("category").get("categoryName"), "%" + categoryName + "%");
             });
         }
 
@@ -127,7 +127,7 @@ public class JournalService {
             spec = spec.and((root, query, builder) -> {
                 // 직원명 검색 조건을 추가
                 System.out.println("Adding employeeName condition: " + employeeName);
-                return builder.equal(root.get("employee").get("employeeName"), employeeName);
+                return builder.like(root.get("employee").get("employeeName"),  "%" + employeeName + "%");
             });
         }
 
