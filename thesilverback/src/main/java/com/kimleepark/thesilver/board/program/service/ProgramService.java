@@ -40,7 +40,6 @@ public class ProgramService {
     private final ProgramCategoryRepository programCategoryRepository;
     private final TeacherRepository teacherRepository;
 
-
     @Value("${image.image-url}")
     private String IMAGE_URL;
     @Value("${image.image-dir}")
@@ -54,16 +53,10 @@ public class ProgramService {
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerPrograms(Integer page) {
 
-
         Page<Program> programs = programRepository.findAll(getPageable(page));
-
-//        List<CustomerProgramsResponse> responseList = programs.stream()
-//                .map(CustomerProgramsResponse::from)
-//                .collect(Collectors.toList());
-
+    log.info("aaaaaaa : {}", programs);
         return programs.map(program -> CustomerProgramsResponse.from(program));
     }
-
 
     // 2. 프로그램 목록 조회 - 프로그램명 입력 검색 기준, 페이징 (직원, 관리자)
     @Transactional(readOnly = true)
@@ -77,13 +70,8 @@ public class ProgramService {
         // 검색된 프로그램 수
         System.out.println("검색된 프로그램 수 Found " + programs.getTotalElements() + " programs."); // 디버깅용 프린트
 
-//        List<CustomerProgramsResponse> responseList = programs.stream()
-//                .map(CustomerProgramsResponse::from)
-//                .collect(Collectors.toList());
-
         return programs.map(program -> CustomerProgramsResponse.from(program));
     }
-
 
     // 3. 프로그램 상세 조회 - code 로 프로그램 1개 조회(고객, 관리자)
     @Transactional(readOnly = true)
@@ -98,8 +86,6 @@ public class ProgramService {
         // 프로그램을 CustomerProgramResponse로 변환하여 반환
         return CustomerProgramResponse.from(program);
     }
-
-
 
     // 4. 프로그램 등록 (관리자)
     public Long save(MultipartFile teacherImg, ProgramCreateRequest programRequest) {
@@ -162,10 +148,13 @@ public class ProgramService {
     private String saveImageFile(MultipartFile imageFile) throws IOException {
         // 파일명 중복을 방지하기 위해 UUID를 이용하여 파일명 생성
         String replaceFileName = UUID.randomUUID().toString().replace("-", "");
-        // 이미지 파일을 지정된 디렉토리에 저장
-        FileUploadUtils.saveFile(IMAGE_DIR, replaceFileName, imageFile);
-        // 저장된 파일명 반환
-        return replaceFileName;
+        // 이미지 파일의 확장자 추출
+        String originalFilename = imageFile.getOriginalFilename();
+        String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+        // 이미지 파일을 지정된 디렉토리에 저장 (확장자 포함)
+        FileUploadUtils.saveFile(IMAGE_DIR, replaceFileName + fileExtension, imageFile);
+        // 저장된 파일명 반환 (확장자 포함)
+        return replaceFileName + fileExtension;
     }
 
     //5. 프로그램 수정(관리자)
