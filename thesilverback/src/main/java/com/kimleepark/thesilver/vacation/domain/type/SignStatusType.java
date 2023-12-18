@@ -7,7 +7,8 @@ public enum SignStatusType {
 
     PASS("결재완료"),
     PROCEED("상신"),
-    RETURN("반려");
+    RETURN("반려"),
+    CANCEL("취소");
 
     private final String value;
 
