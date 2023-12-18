@@ -13,7 +13,7 @@ public class VacationResponse {
 
     private final String employeeName;
     private final Long occurVacation;
-    private final Long useVacation;
+    private final Double useVacation;
     private final Long remainingVacation;
     private final String rank;
     private final Long approverCode;
@@ -21,7 +21,9 @@ public class VacationResponse {
 
 
 
-    public static VacationResponse from(final Vacation vacation, Long passedReqCount, CustomUser customUser, Employee approver){
+
+    public static VacationResponse from(final Vacation vacation, Double passedReqCount, CustomUser customUser, Employee approver){
+
 
         return new VacationResponse(
                 vacation.getEmployee().getEmployeeName(),

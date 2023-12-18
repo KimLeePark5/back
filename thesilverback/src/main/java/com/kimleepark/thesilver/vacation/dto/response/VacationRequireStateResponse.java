@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class VacationRequireStateResponse {
 
+    private final Long reqNo;
     private final String vacationName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime startDate;
@@ -26,6 +27,7 @@ public class VacationRequireStateResponse {
 
     public static VacationRequireStateResponse from(Require require) {
         return new VacationRequireStateResponse(
+                require.getReqNo(),
                 require.getVacationType().getVacationName(),
                 require.getStartDate(),
                 require.getEndDate(),

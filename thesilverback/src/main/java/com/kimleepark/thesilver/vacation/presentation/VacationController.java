@@ -6,15 +6,12 @@ import com.kimleepark.thesilver.common.paging.PagingResponse;
 
 import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
-import com.kimleepark.thesilver.vacation.domain.Vacation;
-
-import com.kimleepark.thesilver.vacation.domain.repository.VacationRepository;
 
 
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
-import com.kimleepark.thesilver.vacation.domain.type.SignStatusType;
 import com.kimleepark.thesilver.vacation.dto.request.CreateRequireRequest;
 
+import com.kimleepark.thesilver.vacation.dto.request.UpdateRequireRequest;
 import com.kimleepark.thesilver.vacation.dto.response.UsedVacationListResponse;
 import com.kimleepark.thesilver.vacation.dto.response.*;
 import com.kimleepark.thesilver.vacation.service.VacationService;
@@ -26,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.stereotype.Controller;
@@ -41,7 +37,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,9 +56,6 @@ public class VacationController {
 
         VacationResponse vacationResponse = vacationService.getVacation(customUser);
 
-
-
-
         return ResponseEntity.ok(vacationResponse);
     }
 
@@ -72,9 +64,10 @@ public class VacationController {
     @PostMapping("/require") // 등록
     public ResponseEntity<Void> save(@RequestBody @Validated CreateRequireRequest createRequireRequest,
                                      @AuthenticationPrincipal CustomUser customUser) {
-        System.out.println("확인" + customUser.getEmployeeName());
-       vacationService.save(createRequireRequest, customUser);
+        System.out.println("확인" + createRequireRequest.getApproverCode());
 
+//        Long employeeCode = customUser.getEmployeeCode();
+        vacationService.save(createRequireRequest, customUser);
 
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -123,5 +116,41 @@ public class VacationController {
 
         return ResponseEntity.ok(pagingResponse);
     }
+
+    /* 연차 결재하기 */
+    @PutMapping("/require/{reqNo}/pass")
+    public ResponseEntity<Void> updatePass(@PathVariable final Long reqNo) {
+
+        log.info("PASS 확인 : {}", reqNo);
+
+        vacationService.updatePass(reqNo);
+        return ResponseEntity.created(URI.create("/require/" + reqNo)).build();
+    }
+
+    @PutMapping("/require/{reqNo}/return")
+    public ResponseEntity<Void> updateReturn(@PathVariable final Long reqNo,
+                                             @RequestBody final UpdateRequireRequest updateRequireRequest) {
+
+        log.info("RETURN 확인 : {}", reqNo);
+        log.info("RETURN 확인2 : {}", updateRequireRequest.getCause());
+        log.info("RETURN 확인2 : {}", updateRequireRequest.getReqStatus());
+
+        vacationService.updateReturn(reqNo,updateRequireRequest);
+        return ResponseEntity.created(URI.create("/require/" + reqNo)).build();
+    }
+
+    @PutMapping("/require/{reqNo}/cancel")
+    public ResponseEntity<Void> updateCancel(@PathVariable final Long reqNo,
+                                             @RequestBody final UpdateRequireRequest updateRequireRequest) {
+
+        log.info("CANCEL 확인 : {}", reqNo);
+
+        vacationService.updateCancel(reqNo, updateRequireRequest);
+        return ResponseEntity.created(URI.create("/require/" + reqNo)).build();
+    }
+
+
+
+
 
 }
