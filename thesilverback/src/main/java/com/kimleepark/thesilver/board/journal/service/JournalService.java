@@ -68,45 +68,6 @@ public class JournalService {
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
-    // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (직원, 프로그램 카테고리, 참관 일자)
-//    @Transactional(readOnly = true)
-//    public Page<CustomerJournalsResponse> getJournalsByMultipleCriteria(
-//            Integer page, String employeeCode, Long programCategoryCode, LocalDate observation) {
-//
-//        // 다중 검색 기준에 따라 동적으로 쿼리를 생성
-//        Specification<Journal> spec = Specification.where(null);
-//
-//        if (StringUtils.hasText(employeeCode)) {
-//            spec = spec.and((root, query, builder) -> {
-//                // 직원 코드 검색 조건을 추가
-//                System.out.println("Adding employeeCode condition: " + employeeCode);
-//                return builder.equal(root.get("employee").get("employeeCode"), employeeCode);
-//            });
-//        }
-//
-//        if (programCategoryCode != null) {
-//            spec = spec.and((root, query, builder) -> {
-//                // 프로그램 카테고리 코드 검색 조건을 추가
-//                System.out.println("Adding programCategoryCode condition: " + programCategoryCode);
-//                return builder.equal(root.get("program").get("category").get("categoryCode"), programCategoryCode);
-//            });
-//        }
-//
-//        if (observation != null) {
-//            spec = spec.and((root, query, builder) -> {
-//                // 참관 일자 검색 조건을 추가
-//                System.out.println("Adding observation condition: " + observation);
-//                return builder.equal(root.get("observation"), observation);
-//            });
-//        }
-//
-//        Page<Journal> journals = journalRepository.findAll(spec, getPageable(page));
-//
-//        if (journals.isEmpty()) {
-//            throw new CustomException(ExceptionCode.NOT_FOUND_MULTIPLE_LOOKUPS);
-//        }
-//        return journals.map(journal -> CustomerJournalsResponse.from(journal));
-//    }
     // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (카테고리명, 직원명, 참관 일자)
     @Transactional(readOnly = true)
     public Page<CustomerJournalsResponse> getJournalsByMultipleCriteria(
@@ -145,18 +106,6 @@ public class JournalService {
             throw new CustomException(ExceptionCode.NOT_FOUND_MULTIPLE_LOOKUPS);
         }
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
-    }
-
-    // 2-1. 다중 검색 셀렉트 바 (직원 이름)
-    @Transactional(readOnly = true)
-    public List<String> getEmployeeName() {
-        return employeeRepository.findAllEmployeeNames();
-    }
-
-    // 2-2. 다중 검색 셀렉트 바 (카테고리 이름)
-    @Transactional(readOnly = true)
-    public List<String> getCategoryName() {
-        return programRepository.findAllCategoryNames(); // findAllCategoryNames 메서드가 존재한다고 가정합니다.
     }
 
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
@@ -327,7 +276,7 @@ public class JournalService {
                     .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
 
             // 일지 조회
-            Journal journal = journalRepository.findById(journalCode)
+            Journal existingJournal = journalRepository.findById(journalCode)
                     .orElseThrow(() -> new NotFoundException(NOT_FOUND_JOURNAL_CODE));
 
             // 이미지 수정 시 새로운 이미지 저장 후 기존 이미지 삭제 로직 필요함
@@ -336,7 +285,7 @@ public class JournalService {
                 String replaceFileName = saveImageFile(journalImg);
 
                 // 기존 이미지 삭제
-                FileUploadUtils.deleteFile(IMAGE_DIR, journal.getAttachments().iterator().next().getUrl().replace(IMAGE_URL, ""));
+                FileUploadUtils.deleteFile(IMAGE_DIR, existingJournal.getAttachments().iterator().next().getUrl().replace(IMAGE_URL, ""));
 
                 // 일지 첨부파일 URL 업데이트
                 Attachment attachment = new Attachment();
@@ -344,18 +293,17 @@ public class JournalService {
                 attachment.setSeperation(1L); // 구분 설정, 예시로 1L로 설정
 
                 // 각 첨부파일을 일지에 추가
-                journal.addAttachment(attachment);
+                existingJournal.addAttachment(attachment);
 
                 System.out.println("이미지 수정 완료: " + replaceFileName);
             }
-
             // 정보 업데이트
-            journal.setSubProgress(journalRequest.getSubProgress());
-            journal.setObserve(journalRequest.getObserve());
-            journal.setRating(journalRequest.getRating());
-            journal.setNote(journalRequest.getNote());
-            journal.setObservation(journalRequest.getObservation());
-            journal.setProgramTopic(journalRequest.getProgramTopic());
+            existingJournal.setSubProgress(journalRequest.getSubProgress());
+            existingJournal.setObserve(journalRequest.getObserve());
+            existingJournal.setRating(journalRequest.getRating());
+            existingJournal.setNote(journalRequest.getNote());
+            existingJournal.setObservation(journalRequest.getObservation());
+            existingJournal.setProgramTopic(journalRequest.getProgramTopic());
             System.out.println("일지 정보 업데이트 완료");
 
             // 참가자 업데이트
@@ -363,10 +311,10 @@ public class JournalService {
                     .map(participantName -> {
                         Customer customer = (Customer) customerRepository.findByName(participantName)
                                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_CUSTOMER_CODE));
-                        return new Participant(journal, customer);
+                        return new Participant(existingJournal, customer);
                     })
                     .collect(Collectors.toList());
-            journal.setParticipants(participants);
+            existingJournal.setParticipants(participants);
             System.out.println("참가자 업데이트 완료: " + participants.size() + "명");
 
             // 직원 업데이트
@@ -385,14 +333,15 @@ public class JournalService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             System.out.println("유저 권한: " + authentication.getAuthorities());
 
-
             // 프로그램 업데이트
-            journal.setProgram(program);
+            existingJournal.setProgram(program);
             System.out.println("프로그램 업데이트 완료: " + program.getCode());
 
             // 일지를 저장하여 업데이트 반영
-            journalRepository.save(journal);
+            // Save the existingJournal to update the entry
+            journalRepository.save(existingJournal);
             System.out.println("일지 저장 완료");
+
 
         } catch (NotFoundException e) {
             log.error("프로그램 또는 일지를 찾을 수 없습니다.", e);

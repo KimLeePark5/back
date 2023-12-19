@@ -45,7 +45,7 @@ public class ProgramController {
         return ResponseEntity.ok(pagingResponse);
     }
 
-    // 2. 프로그램 목록 조회 - 프로그램명 검색 기준, 페이징 (직원, 관리자)
+    // 2. 프로그램 목록 조회- input - 프로그램명 검색 기준, 페이징 (직원, 관리자)
     @GetMapping("/programs/search")
     public ResponseEntity<PagingResponse> getCustomerProgramsByCategory(
             @RequestParam(defaultValue = "1") final Integer page, @RequestParam final String categoryName) {

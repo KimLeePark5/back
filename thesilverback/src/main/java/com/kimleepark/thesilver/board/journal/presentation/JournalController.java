@@ -65,25 +65,6 @@ public class JournalController {
         return ResponseEntity.ok(pagingResponse);
     }
 
-    // 2. 일지 목록 조회 - 다중 검색 기준, 페이징 (직원, 프로그램 카테고리, 참관 일자)
-//    @GetMapping("/journals/search")
-//    public ResponseEntity<PagingResponse> getJournalsByMultipleCriteria(
-//            @RequestParam(defaultValue = "1") final Integer page,
-//            @RequestParam(required = false) final String employeeCode,
-//            @RequestParam(required = false) final Long programCategoryCode,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate observation) {
-//
-//        // 다중 검색 기준에 따라 일지를 검색하여 페이징된 결과를 가져옵니다.
-//        final Page<CustomerJournalsResponse> journals = journalService.getJournalsByMultipleCriteria(
-//                page, employeeCode, programCategoryCode, observation);
-//
-//        // 페이징된 결과를 PagingResponse로 변환합니다.
-//        final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(journals);
-//        final PagingResponse pagingResponse = PagingResponse.of(journals.getContent(), pagingButtonInfo);
-//
-//        // 생성된 PagingResponse를 ResponseEntity로 감싸서 반환합니다.
-//        return ResponseEntity.ok(pagingResponse);
-//    }
     // 2. 일지 목록 조회 - 다중 검색 기준 - input, 페이징 (카테고리명, 직원명, 참관 일자)
     @GetMapping("/journals/search")
     public ResponseEntity<PagingResponse> getJournalsByMultipleCriteria(
@@ -103,21 +84,6 @@ public class JournalController {
         // 생성된 PagingResponse를 ResponseEntity로 감싸서 반환합니다.
         return ResponseEntity.ok(pagingResponse);
     }
-
-//    //2-1. 다중 검색 셀렉트 바 (직원 이름)
-//    @GetMapping("/journals/search/employeeNames")
-//    public ResponseEntity<List<String>> getEmployeeName() {
-//        List<String> employeeName = journalService.getEmployeeName();
-//        return ResponseEntity.ok(employeeName);
-//    }
-//
-//    //2-2. 다중 검색 셀렉트 바 (카테고리 이름)
-//    @GetMapping("/journals/search/categoryNames")
-//    public ResponseEntity<List<String>> getCategoryName() {
-//        List<String> categoryName = journalService.getCategoryName();
-//        return ResponseEntity.ok(categoryName);
-//    }
-
 
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(직원, 관리자)
     @GetMapping("/journals/{journalCode}")
