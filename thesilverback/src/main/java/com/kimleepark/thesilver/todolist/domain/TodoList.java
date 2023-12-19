@@ -25,7 +25,6 @@ import static com.kimleepark.thesilver.todolist.domain.type.CompleteType.INCOMPL
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE tbl_todolist SET status = 'Y' WHERE todo_no=?")
 public class TodoList {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long todoNo;

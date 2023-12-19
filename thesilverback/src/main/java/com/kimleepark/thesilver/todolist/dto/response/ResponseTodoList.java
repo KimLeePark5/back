@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @ToString
 @Getter
 public class ResponseTodoList {
+
     private final Long todoNo;
     private final String todoContent;
     private final CompleteType todoComplete;

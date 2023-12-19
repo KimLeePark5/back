@@ -13,6 +13,7 @@ import java.time.LocalTime;
 public class RequestAttend {
     private final LocalTime enterTime;
     private final LocalTime leaveTime;
+
     private final String note;
     private final String type;
 }
