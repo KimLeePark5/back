@@ -31,8 +31,8 @@ public class ResponseModifiedAttend {
                 history.getAfterEntertime(),
                 history.getBeforeLeavetime(),
                 history.getAfterLeavetime(),
-                history.getNote(),
-                history.getType()
+                history.getBeforeNote(),
+                history.getAfterNote()
         );
     }
 }
