@@ -32,6 +32,7 @@ public enum ExceptionCode {
     NOT_FOUND_EMPLOYEE_NUMBER(9002, "사번에 해당하는 직원을 찾을 수 없습니다."),
     ACCESS_DENIED(9003, "허가 되지 않은 요청입니다."),
     MANY_LOGIN_ATTEMPTS(9004, "비밀번호 5회 오류로 잠금된 계정입니다."),
+    EXPIRED_ACCESS_TOKEN(9005, "엑세스 토큰이 만료되었습니다."),
 
     NOT_FOUND_EMPLOYEE_PWD(9004, "비밀번호가 맞지 않습니다."),
     // 임시 비밀번호 발급 에러 처리
@@ -53,8 +54,8 @@ public enum ExceptionCode {
     NOT_FOUND_REVIEW_CODE(6000, "리뷰 코드에 해당하는 리뷰가 존재하지 않습니다."),
 
     ALREADY_EXIST_REVIEW(6001, "이미  작성되어 작성할 수 없습니다."),
-    ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다."),
-    ATTEND_TIME_NULL(2,"출근시간 또는 퇴근시간이 누락되었습니다.");
+
+    ALREADY_EXIST_ATTEND(1,"이미 출근등록이 된 상태입니다.");
 
     private final int code;
     private final String message;

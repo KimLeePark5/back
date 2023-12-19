@@ -1,6 +1,7 @@
 package com.kimleepark.thesilver.employee.repository;
 
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.employee.Team;
 import com.kimleepark.thesilver.employee.type.LeaveType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +31,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     @Query("SELECT DISTINCT e.employeeName FROM Employee e")
-    List<String> findAllEmployeeName();
+    List<String> findAllEmployeeNames();
 
     Optional<Object> findTeamLeaderByTeamTeamCode(Long teamCode);
+
+    Employee findByTeamAndRankRankCode(Team team, Long rankCode);
+
+    Employee findByRankRankCode(Long rankCode);
 
 }

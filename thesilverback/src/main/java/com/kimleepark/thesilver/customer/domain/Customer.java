@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.customer.domain;
 
+import com.kimleepark.thesilver.board.journal.domain.Journal;
 import com.kimleepark.thesilver.customer.domain.type.CustomerGender;
 import com.kimleepark.thesilver.customer.domain.type.CustomerStatus;
 import com.kimleepark.thesilver.customer.dto.request.CreateCustomersRequest;
@@ -113,7 +114,7 @@ public class Customer {
         return new Customer(
                 createCustomersRequest.getName(),
                 createCustomersRequest.getGender(),
-                createCustomersRequest.getBirthDate(),
+                createCustomersRequest.getParsedBirthDate(),
                 createCustomersRequest.getPhone(),
                 createCustomersRequest.getPostalCode(),
                 createCustomersRequest.getPrimaryAddress(),
@@ -129,7 +130,7 @@ public class Customer {
     public void update(Long employeeCode, UpdateCustomersRequest updateCustomersRequest) {
         this.name = updateCustomersRequest.getName();
         this.gender = updateCustomersRequest.getGender();
-        this.birthDate = updateCustomersRequest.getBirthDate();
+        this.birthDate = updateCustomersRequest.getParsedBirthDate();
         this.phone = updateCustomersRequest.getPhone();
         this.postalCode = updateCustomersRequest.getPostalCode();
         this.primaryAddress = updateCustomersRequest.getPrimaryAddress();

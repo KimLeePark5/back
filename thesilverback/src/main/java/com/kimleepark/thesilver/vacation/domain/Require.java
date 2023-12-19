@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.vacation.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.vacation.domain.type.RequireStatusType;
+import com.kimleepark.thesilver.vacation.dto.request.UpdateRequireRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -72,5 +73,20 @@ public class Require {
                 endDate,
                 reqContent,
                 reqStatus);
+    }
+
+
+
+    public void updatePass() {
+
+        this.reqStatus = RequireStatusType.PASS;
+    }
+
+    public void updateReturn() {
+        this.reqStatus = RequireStatusType.RETURN;
+    }
+
+    public void updateCancel() {
+        this.reqStatus = RequireStatusType.CANCEL;
     }
 }
