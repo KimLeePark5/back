@@ -13,7 +13,6 @@ public class ResponseModifiedAttend {
     private final int attendNo;
     private final String employeeName;
     private final LocalDateTime modifiedAt;
-
     private final LocalTime beforeEntertime;
     private final LocalTime afterEntertime;
     private final LocalTime beforeLeavetime;

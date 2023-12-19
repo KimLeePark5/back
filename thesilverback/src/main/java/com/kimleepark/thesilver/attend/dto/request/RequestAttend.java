@@ -12,7 +12,6 @@ import java.time.LocalTime;
 @ToString
 public class RequestAttend {
     private final LocalTime enterTime;
-
     private final LocalTime leaveTime;
     private final String note;
     private final String type;

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class TodolistController {
-
     private final TodoListService todoListService;
     @GetMapping("/todoList")
     public ResponseEntity<PagingResponse> getTodoLists(Integer page, String day, @AuthenticationPrincipal CustomUser customUser){
