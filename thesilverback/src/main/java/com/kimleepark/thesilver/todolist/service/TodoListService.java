@@ -21,7 +21,6 @@ public class TodoListService {
 
     private final TodoListRepository todoListRepository;
 
-
     private Pageable getPageable(int page) {
         return PageRequest.of(page-1,9);
     }
