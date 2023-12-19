@@ -1,18 +1,19 @@
 package com.kimleepark.thesilver.employee.service;
 
-import com.kimleepark.thesilver.common.exception.NotFoundException;
+import com.kimleepark.thesilver.account.domain.Account;
+import com.kimleepark.thesilver.account.domain.repository.AccountRepository;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import com.kimleepark.thesilver.employee.Employee;
 
 import com.kimleepark.thesilver.employee.Rank;
+import com.kimleepark.thesilver.employee.RankHistory;
 import com.kimleepark.thesilver.employee.Team;
-import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
-import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
-import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
+import com.kimleepark.thesilver.employee.dto.request.*;
 import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeesResponse;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
 import com.kimleepark.thesilver.employee.repository.RankRepository;
 import com.kimleepark.thesilver.employee.repository.TeamRepository;
+import com.kimleepark.thesilver.employee.type.GenderType;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,24 +21,32 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 
-import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_CATEGORY_CODE;
+import static com.kimleepark.thesilver.employee.type.GenderType.MEN;
+import static com.kimleepark.thesilver.employee.type.GenderType.WOMAN;
 import static com.kimleepark.thesilver.employee.type.LeaveType.NO;
+import static com.kimleepark.thesilver.employee.type.LeaveType.valueOf;
+
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class EmployeeService {
-
+    private final BCryptPasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
     private final RankRepository rankRepository;
     private final TeamRepository teamRepository;
+    private final AccountRepository accountRepository;
 
     @Value("${image.image-url}")
     private String IMAGE_URL;
@@ -122,6 +131,13 @@ public class EmployeeService {
         );
     }
 
+    public void empPwdUpdate(Long employeeCode) {
+        Employee employee = employeeRepository.findByEmployeeCodeAndLeaveType(employeeCode, NO);
+        Account account = accountRepository.findByEmployeeEmployeeCode(employee.getEmployeeCode()).orElseThrow(()->new IllegalArgumentException());
+
+        account.resetPwd();
+    }
+
     public void delete(Long employeeCode) {
 
         employeeRepository.deleteById(employeeCode);
@@ -131,36 +147,78 @@ public class EmployeeService {
         Rank rank = rankRepository.findById(employeesCreateRequest.getRankCode()).orElseThrow(() -> new IllegalArgumentException());
         Team team = teamRepository.findById(employeesCreateRequest.getTeamCode()).orElseThrow(() -> new IllegalArgumentException());
 
-            /* 전달 된 파일을 서버의 지정 경로에 저장 */
+        /* 전달 된 파일을 서버의 지정 경로에 저장 */
 //        Optional<Team> team = teamRepository.findById(employeesCreateRequest.getTeamCode())
 //                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CATEGORY_CODE));
 
-                final Employee newEmployee = Employee.of(
-                        rank,
-                        team,
-                        employeesCreateRequest.getEmployeeName(),
-                        employeesCreateRequest.getEmployeeEmail(),
-                        employeesCreateRequest.getGender(),
-                        employeesCreateRequest.getDisability(),
-                        employeesCreateRequest.getMarriage(),
-                        employeesCreateRequest.getPatriots(),
-                        employeesCreateRequest.getEmploymentType(),
-                        employeesCreateRequest.getWorkingStatus(),
-                        employeesCreateRequest.getLeaveType(),
-                        employeesCreateRequest.getRegistrationNumber(),
-                        employeesCreateRequest.getEmployeePhone(),
-                        employeesCreateRequest.getEmployeeAddress(),
-                        employeesCreateRequest.getJoinDate()
-                );
+        final Employee newEmployee = Employee.of(
+                rank,
+                team,
+                employeesCreateRequest.getEmployeeName(),
+                employeesCreateRequest.getEmployeeEmail(),
+                employeesCreateRequest.getGender(),
+                employeesCreateRequest.getDisability(),
+                employeesCreateRequest.getMarriage(),
+                employeesCreateRequest.getPatriots(),
+                employeesCreateRequest.getEmploymentType(),
+                employeesCreateRequest.getWorkingStatus(),
+                employeesCreateRequest.getLeaveType(),
+                employeesCreateRequest.getRegistrationNumber(),
+                employeesCreateRequest.getEmployeePhone(),
+                employeesCreateRequest.getEmployeeAddress(),
+                employeesCreateRequest.getJoinDate()
+        );
 
         if(multipartFile != null) {
             String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, getRandomName(), multipartFile);
-                newEmployee.imgupdate(IMAGE_URL + replaceFileName);}
+            newEmployee.imgupdate(IMAGE_URL + replaceFileName);}
 
-                final Employee employee = employeeRepository.save(newEmployee);
+        final Employee employee = employeeRepository.save(newEmployee);
 
-            return employee.getEmployeeCode();
+        String pwd = passwordEncoder.encode("silver"+ employee.getEmployeeCode());
 
+
+        Account newAccount = Account.of(
+                "silver"+ employee.getEmployeeCode(),
+                pwd,
+                0,
+                employee
+        );
+        accountRepository.save(newAccount);
+
+        return employee.getEmployeeCode();
+
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CustomerEmployeesResponse> getCustomerEmployeesSearch(final Integer page, String searchCategory, String searchValue) {
+        Page<Employee> employees=null;
+
+        GenderType gender =
+                searchValue.equals("남")||searchValue.equals("남성")||searchValue.equals("남자") ?
+                        MEN : searchValue.equals("여")||searchValue.equals("여성")||searchValue.equals("여자") ?
+                        WOMAN : null;
+
+        if(searchCategory.equals("employeeCode")){
+            employees = employeeRepository.findByEmployeeCodeLikeAndLeaveType(getPageable(page), Long.valueOf(searchValue), NO);
+        } else if(searchCategory.equals("rankCode")){
+            employees = employeeRepository.findByRankRankNameContainingAndLeaveType(getPageable(page), searchValue, NO);
+        } else if(searchCategory.equals("employeeName")){
+            employees = employeeRepository.findByEmployeeNameContainingAndLeaveType(getPageable(page), searchValue, NO);
+        } else if(searchCategory.equals("gender")){
+            employees = employeeRepository.findByGenderLikeAndLeaveType(getPageable(page), gender, NO);
+        } else if(searchCategory.equals("joinDate")){
+            employees = employeeRepository.findByJoinDateAndLeaveType(getPageable(page),  searchValue, NO);
+        } else {
+            employees = employeeRepository.findByLeaveType(getPageable(page), NO);
         }
 
+        return employees.map(employee -> CustomerEmployeesResponse.from(employee));
+    }
+
+
+
+//        Page<Employee> employees = employeeRepository.findByLeaveType(getPageable(page), NO);
+//        return employees.map(employee -> CustomerEmployeesResponse.from(employee));
+//    }
 }

@@ -1,11 +1,11 @@
 package com.kimleepark.thesilver.employee.presentation;
-
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.employee.dto.request.EmployeeUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesCreateRequest;
 import com.kimleepark.thesilver.employee.dto.request.EmployeesUpdateRequest;
+import com.kimleepark.thesilver.employee.dto.request.RankUpdateRequest;
 import com.kimleepark.thesilver.employee.dto.response.CustomerEmployeesResponse;
 import com.kimleepark.thesilver.employee.service.EmployeeService;
 import com.kimleepark.thesilver.jwt.CustomUser;
@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.time.LocalDateTime;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -60,8 +58,8 @@ public class EmployeeController {
     // 직원 정보 수정
     @PutMapping("/employees/{employeeCode}")
     public ResponseEntity<Void> updates(@PathVariable final Long employeeCode,
-                                       @RequestPart @Valid final EmployeesUpdateRequest employeesUpdateRequest,
-                                       @RequestPart(required = false) final MultipartFile employeePicture) {
+                                        @RequestPart @Valid final EmployeesUpdateRequest employeesUpdateRequest,
+                                        @RequestPart(required = false) final MultipartFile employeePicture) {
 
         employeeService.updates(employeeCode, employeePicture, employeesUpdateRequest);
 
@@ -93,12 +91,33 @@ public class EmployeeController {
                                      @RequestPart(required = false) final MultipartFile employeePicture) {
 
 
-            final Long employeeCode = employeeService.save(employeePicture, employeesCreateRequest);
+        final Long employeeCode = employeeService.save(employeePicture, employeesCreateRequest);
 
 
-            return ResponseEntity.created(URI.create("/employees/" + employeeCode)).build();
+        return ResponseEntity.created(URI.create("/employees/" + employeeCode)).build();
 
     }
+
+    @GetMapping("/employees/search")
+    public ResponseEntity<PagingResponse> getCustomerEmployeesSearch(@RequestParam(defaultValue = "1") final Integer page, String searchCategory,String searchValue){
+        final Page<CustomerEmployeesResponse> employeesSearch = employeeService.getCustomerEmployeesSearch(page, searchCategory, searchValue);
+        final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(employeesSearch);
+        final PagingResponse pagingResponse = PagingResponse.of(employeesSearch.getContent(), pagingButtonInfo);
+
+        return ResponseEntity.ok(pagingResponse);
+    }
+
+    @PutMapping("/resetPwd/{employeeCode}")
+    public ResponseEntity<Void> empPwdUpdate(@PathVariable final Long employeeCode) {
+
+
+        employeeService.empPwdUpdate(employeeCode);
+
+        return ResponseEntity.created(URI.create("/resetPwd/" + employeeCode)).build();
+    }
+
+     //직원 직급변경시
+
 
 
 
