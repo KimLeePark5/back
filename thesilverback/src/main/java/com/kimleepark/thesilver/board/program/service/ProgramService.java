@@ -236,9 +236,8 @@ public class ProgramService {
 
 
     public  List<ResponseProgram> getMyProgram(Long employeeCode) {
-        List<Program> programList = programRepository.findByEmployeeCode(employeeCode);
+        List<Program> programList = programRepository.findAll();
         List<ProgramCategory> programCategories = (List<ProgramCategory>) programCategoryRepository.findAll();
-
 
         log.info("afdaf : {}",programCategories);
         List<ResponseProgram> responsePrograms = programList.stream().map(program -> ResponseProgram.from(program,programCategories)).collect(Collectors.toList());

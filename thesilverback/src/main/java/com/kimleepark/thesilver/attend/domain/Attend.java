@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.attend.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.attend.domain.type.AttendType;
 import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
+import com.kimleepark.thesilver.common.exception.BadRequestException;
 import com.kimleepark.thesilver.employee.Employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static com.kimleepark.thesilver.attend.domain.type.AttendType.N;
+import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.ATTEND_MODIFY_NULL;
 
 @Entity
 @Table(name = "tbl_attend")
@@ -116,6 +118,13 @@ public class Attend {
                 this.note = requestAttend.getNote();
             }
         }
+
+        if(this.entertime != null && this.leavetime == null){
+            throw new BadRequestException(ATTEND_MODIFY_NULL);
+        } else if (this.leavetime != null && this.entertime == null) {
+            throw new BadRequestException(ATTEND_MODIFY_NULL);
+        }
+
 
         if(requestAttend.getEnterTime() != null || requestAttend.getLeaveTime() != null){
         Duration diff = Duration.between(this.entertime,this.leavetime);

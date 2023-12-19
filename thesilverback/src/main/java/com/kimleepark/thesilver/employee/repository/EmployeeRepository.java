@@ -48,5 +48,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Employee findByTeamAndRankRankCode(Team team, long l);
 
+    Page<Employee> findByTeamTeamCode(Pageable page, Long code);
+
     Employee findByRankRankCode(long l);
 }
