@@ -272,7 +272,6 @@ public class AttendService {
         return responseAttendAndModify;
     }
 
-
 //    @Scheduled(cron = "0 0 05 * * ?")
 //    public void scheduleAttned(){
 //

@@ -37,7 +37,6 @@ public class ModifiedAttend {
     private String afterNote;
     private String beforeType;
     private String afterType;
-
     public ModifiedAttend(Attend attend, Employee empNo, LocalTime beforeEntertime, LocalTime afterEnterTime,
                           LocalTime beforLeavetime, LocalTime AfterLeaveTime, String beforeNote,String afterNote,
                           String beforeType, String afterType) {

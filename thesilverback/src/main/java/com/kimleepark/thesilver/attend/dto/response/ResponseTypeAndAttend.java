@@ -8,6 +8,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class ResponseTypeAndAttend {
+
     private final List<ResponseAttend> responseAttend;
     private final ResponseAttendType responseAttendType;
 
