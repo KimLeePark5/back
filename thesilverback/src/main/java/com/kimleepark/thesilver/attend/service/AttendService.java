@@ -174,7 +174,6 @@ public class AttendService {
             throw new BadRequestException(ALREADY_EXIST_ATTEND);
         }
     }
-
     public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page,final String month) {
 
         String date = month + "-01";
@@ -271,6 +270,7 @@ public class AttendService {
         ResponseAttendAndModify responseAttendAndModify = ResponseAttendAndModify.of(responseModifiedAttends,pageResponseAttendAdmin);
         return responseAttendAndModify;
     }
+
 
 
 //    @Scheduled(cron = "0 0 05 * * ?")

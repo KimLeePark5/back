@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AttendRepository extends JpaRepository<Attend,Integer> {
-
     List<Attend> findByEmployeeCodeAndAttendDateBetween(Employee employeeCode, LocalDate start, LocalDate end);
 
     Optional<Attend> findByEmployeeCodeAndAttendDate(Employee empNo, LocalDate date);
