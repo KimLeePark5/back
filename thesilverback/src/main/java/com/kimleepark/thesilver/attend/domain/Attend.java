@@ -96,6 +96,7 @@ public class Attend {
         this.attendTime = attendTime;
     }
 
+
     public void updateNote(String note) {
         switch (note) {
             case "EARLY_LEAVE":

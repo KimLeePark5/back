@@ -16,4 +16,5 @@ public interface AttendRepository extends JpaRepository<Attend,Integer> {
 
     List<Attend> findByAttendDateAndEntertimeIsNull(LocalDate date);
     boolean existsByEmployeeCodeAndAttendDate(Employee empNo, LocalDate today);
+
 }
