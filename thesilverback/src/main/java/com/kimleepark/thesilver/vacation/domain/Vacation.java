@@ -39,6 +39,8 @@ public class Vacation {
     private Employee employee;
 
 
+
+
     public Vacation(Long vacationCode, LocalDateTime occurYear, Long occurVacation, Long useVacation, Employee employee) {
         this.vacationCode = vacationCode;
         this.occurYear = occurYear;
