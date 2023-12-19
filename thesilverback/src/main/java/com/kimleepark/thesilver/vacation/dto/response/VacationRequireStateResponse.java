@@ -19,7 +19,7 @@ public class VacationRequireStateResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime endDate;
     private final String reqContent;
-    private final RequireStatusType ReqStatus;
+    private final RequireStatusType reqStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime reqDate;
 
