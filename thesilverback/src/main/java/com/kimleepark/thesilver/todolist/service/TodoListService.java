@@ -42,6 +42,7 @@ public class TodoListService {
         TodoList  newTodolist = TodoList.of(empNo,content);
         todoListRepository.save(newTodolist);
     }
+
     public void deleteTodo(Long todoNo) {
         todoListRepository.deleteById(todoNo);
     }

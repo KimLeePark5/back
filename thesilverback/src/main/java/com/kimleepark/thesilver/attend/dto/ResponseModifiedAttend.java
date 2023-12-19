@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @Getter
 @RequiredArgsConstructor
 public class ResponseModifiedAttend {
-
     private final int attendNo;
     private final String employeeName;
     private final LocalDateTime modifiedAt;
@@ -31,8 +30,8 @@ public class ResponseModifiedAttend {
                 history.getAfterEntertime(),
                 history.getBeforeLeavetime(),
                 history.getAfterLeavetime(),
-                history.getBeforeNote(),
-                history.getAfterNote()
+                history.getNote(),
+                history.getType()
         );
     }
 }
