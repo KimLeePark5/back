@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @Getter
 @RequiredArgsConstructor
 public class ResponseModifiedAttend {
-
     private final int attendNo;
     private final String employeeName;
     private final LocalDateTime modifiedAt;
@@ -18,10 +17,10 @@ public class ResponseModifiedAttend {
     private final LocalTime afterEntertime;
     private final LocalTime beforeLeavetime;
     private final LocalTime afterLeavetime;
-    private final String note;
-    private final String type;
-
-
+    private final String beforeNote;
+    private final String afterNote;
+    private final String beforeType;
+    private final String afterType;
     public static ResponseModifiedAttend from(ModifiedAttend history) {
         return new ResponseModifiedAttend(
                 history.getAttendNo(),
@@ -32,7 +31,10 @@ public class ResponseModifiedAttend {
                 history.getBeforeLeavetime(),
                 history.getAfterLeavetime(),
                 history.getBeforeNote(),
-                history.getAfterNote()
+                history.getAfterNote(),
+                history.getBeforeType(),
+                history.getAfterType()
         );
     }
+
 }

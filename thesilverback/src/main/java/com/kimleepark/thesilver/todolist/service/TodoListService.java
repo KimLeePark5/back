@@ -37,11 +37,11 @@ public class TodoListService {
         TodoList todoList = todoListRepository.findById(todoNo).orElseThrow(()-> new IllegalArgumentException());
         todoList.updateContent(content);
     }
-
     public void postTodoList(long empNo, String content) {
         TodoList  newTodolist = TodoList.of(empNo,content);
         todoListRepository.save(newTodolist);
     }
+
     public void deleteTodo(Long todoNo) {
         todoListRepository.deleteById(todoNo);
     }

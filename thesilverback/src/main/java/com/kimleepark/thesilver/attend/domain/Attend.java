@@ -3,6 +3,7 @@ package com.kimleepark.thesilver.attend.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kimleepark.thesilver.attend.domain.type.AttendType;
 import com.kimleepark.thesilver.attend.dto.request.RequestAttend;
+import com.kimleepark.thesilver.common.exception.BadRequestException;
 import com.kimleepark.thesilver.employee.Employee;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static com.kimleepark.thesilver.attend.domain.type.AttendType.N;
+import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.ATTEND_MODIFY_NULL;
 
 @Entity
 @Table(name = "tbl_attend")
@@ -40,7 +42,6 @@ public class Attend {
     private LocalDate attendDate;
 
     @JsonFormat(pattern = "HH:mm:ss")
-    @CreatedDate
     private LocalTime entertime;
 
     @JsonFormat(pattern = "HH:mm:ss")
@@ -68,6 +69,14 @@ public class Attend {
 
     public static void setEmp(Attend attend, Employee employee){
         attend.employeeCode = employee;
+    }
+
+    public Attend(Employee employeeCode) {
+        this.employeeCode = employeeCode;
+    }
+
+    public static Attend getEmpNo(Employee emp) {
+        return new Attend(emp);
     }
 
     public void updateType() {
@@ -109,6 +118,13 @@ public class Attend {
                 this.note = requestAttend.getNote();
             }
         }
+
+        if(this.entertime != null && this.leavetime == null){
+            throw new BadRequestException(ATTEND_MODIFY_NULL);
+        } else if (this.leavetime != null && this.entertime == null) {
+            throw new BadRequestException(ATTEND_MODIFY_NULL);
+        }
+
 
         if(requestAttend.getEnterTime() != null || requestAttend.getLeaveTime() != null){
         Duration diff = Duration.between(this.entertime,this.leavetime);
@@ -153,5 +169,14 @@ public class Attend {
 
     public void updateafternoonoff() {
         this.note = "오후반차";
+    }
+
+    public void updateTypeDefault() {
+        this.type = "기본근무";
+    }
+
+    public void updateAbsent() {
+        this.note = "결근";
+
     }
 }

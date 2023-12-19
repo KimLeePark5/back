@@ -5,6 +5,7 @@ import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
+import com.kimleepark.thesilver.board.program.dto.response.ResponseProgram;
 import com.kimleepark.thesilver.board.program.service.ProgramService;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.paging.Pagenation;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -138,12 +140,11 @@ public class ProgramController {
 
     // 7. 본인 프로그램 조회(직원) 메인에 조회하는용
     @GetMapping("/program/myProgram")
-    public ResponseEntity<Void> getMyProgram(@AuthenticationPrincipal CustomUser customUser){
+    public ResponseEntity<List<ResponseProgram>> getMyProgram(@AuthenticationPrincipal CustomUser customUser){
 
-        programService.getMyProgram(customUser.getEmployeeCode());
+        List<ResponseProgram> programList =  programService.getMyProgram(customUser.getEmployeeCode());
 
-
-        return null;
+        return ResponseEntity.ok(programList);
     }
 
 }

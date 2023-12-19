@@ -10,6 +10,7 @@ import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
 import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
 import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
+import com.kimleepark.thesilver.board.program.dto.response.ResponseProgram;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.util.FileUploadUtils;
 import java.io.IOException;
@@ -234,7 +235,13 @@ public class ProgramService {
     }
 
 
-    public void getMyProgram(Long employeeCode) {
-//        programRepository.findByEmployeeCodeAnd
+    public  List<ResponseProgram> getMyProgram(Long employeeCode) {
+        List<Program> programList = programRepository.findAll();
+        List<ProgramCategory> programCategories = (List<ProgramCategory>) programCategoryRepository.findAll();
+
+        log.info("afdaf : {}",programCategories);
+        List<ResponseProgram> responsePrograms = programList.stream().map(program -> ResponseProgram.from(program,programCategories)).collect(Collectors.toList());
+
+        return responsePrograms;
     }
 }
