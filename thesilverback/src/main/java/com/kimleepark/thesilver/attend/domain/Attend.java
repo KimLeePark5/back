@@ -154,4 +154,8 @@ public class Attend {
     public void updateafternoonoff() {
         this.note = "오후반차";
     }
+
+    public void updateTypeDefault() {
+        this.type = "기본근무";
+    }
 }
