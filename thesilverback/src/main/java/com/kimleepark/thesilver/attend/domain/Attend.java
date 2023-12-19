@@ -40,7 +40,6 @@ public class Attend {
     private LocalDate attendDate;
 
     @JsonFormat(pattern = "HH:mm:ss")
-    @CreatedDate
     private LocalTime entertime;
 
     @JsonFormat(pattern = "HH:mm:ss")
@@ -68,6 +67,14 @@ public class Attend {
 
     public static void setEmp(Attend attend, Employee employee){
         attend.employeeCode = employee;
+    }
+
+    public Attend(Employee employeeCode) {
+        this.employeeCode = employeeCode;
+    }
+
+    public static Attend getEmpNo(Employee emp) {
+        return new Attend(emp);
     }
 
     public void updateType() {
@@ -157,5 +164,10 @@ public class Attend {
 
     public void updateTypeDefault() {
         this.type = "기본근무";
+    }
+
+    public void updateAbsent() {
+        this.note = "결근";
+
     }
 }
