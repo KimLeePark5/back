@@ -12,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @ToString
 public class ResponseAttendAndModify {
+
     private final List<ResponseModifiedAttend> responseModifiedAttends;
     private final Page<ResponseAttendAdminTwo> responseAttendAdminTwos;
 

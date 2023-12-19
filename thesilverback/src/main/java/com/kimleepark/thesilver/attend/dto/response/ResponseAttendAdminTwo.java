@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @ToString
 public class ResponseAttendAdminTwo {
 
+
     private final Long empCode;
     private final String empRank;
     private final String team;

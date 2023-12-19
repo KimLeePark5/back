@@ -8,11 +8,16 @@ import com.kimleepark.thesilver.board.journal.dto.response.CustomerJournalsRespo
 import com.kimleepark.thesilver.board.journal.service.JournalService;
 import com.kimleepark.thesilver.board.program.domain.Program;
 import com.kimleepark.thesilver.board.program.domain.repository.ProgramRepository;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramCreateRequest;
+import com.kimleepark.thesilver.board.program.dto.request.ProgramUpdateRequest;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramResponse;
+import com.kimleepark.thesilver.board.program.dto.response.CustomerProgramsResponse;
 import com.kimleepark.thesilver.common.exception.NotFoundException;
 import com.kimleepark.thesilver.common.paging.Pagenation;
 import com.kimleepark.thesilver.common.paging.PagingButtonInfo;
 import com.kimleepark.thesilver.common.paging.PagingResponse;
 import com.kimleepark.thesilver.employee.Employee;
+import com.kimleepark.thesilver.jwt.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +34,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;

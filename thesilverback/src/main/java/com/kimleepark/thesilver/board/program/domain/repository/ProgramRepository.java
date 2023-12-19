@@ -23,6 +23,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     @Query("SELECT DISTINCT p.category.categoryName FROM Program p")
     List<String> findAllCategoryNames();
 
-
+    List<Program> findByEmployeeCode(Long employeeCode);
 }
 
