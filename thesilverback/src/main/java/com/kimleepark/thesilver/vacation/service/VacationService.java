@@ -51,13 +51,12 @@ public class VacationService {
         return PageRequest.of(page - 1, 5, Sort.by("reqDate").descending());
     }
 
-
+    /* 연차 카운트 */
     @Transactional(readOnly = true)
     public VacationResponse getVacation(CustomUser customUser) {
 
         // 연차 정보 확인
         Vacation vacation = vacationRepository.findByEmployeeEmployeeCode(customUser.getEmployeeCode());
-
 
 
         // 'PASS' 상태인 휴가 요청의 일수 카운트
@@ -88,19 +87,18 @@ public class VacationService {
             }
         }
 
-
         //로그인 유저
         Employee loginUser = employeeRepository.getReferenceById(customUser.getEmployeeCode());
 
         // 결재자 정보
         Employee approver = null;
 
-
         if (loginUser.getRank().getRankCode() == 3) {
             approver = employeeRepository.findByTeamAndRankRankCode(loginUser.getTeam(), 2L);
         } else {
             approver = employeeRepository.findByRankRankCode(1L);
         }
+
 
         return VacationResponse.from(vacation, passedReqCount, customUser, approver);
     }
@@ -149,8 +147,7 @@ public class VacationService {
     /* 상신 리스트 조회 - 관리자 */
     @Transactional(readOnly = true)
     public Page<RequireStateAdminResponse> getTeamRequires(final Integer page, final CustomUser customUser, String signStatus) {
-        // signs 테이블에서 requireNo를 get. (customUser.getEmployeeCode, PROCEED)
-//        String signStatus = "PROCEED";
+
         List<Sign> signs;
 
         if (signStatus.equals(PROCEED.getValue())) {
@@ -194,8 +191,8 @@ public class VacationService {
         requireRepository.save(require);
         signRepository.save(sign);
     }
-  
-   /* 연차 반려 */
+
+    /* 연차 반려 */
     @Transactional
     public void updateReturn(final Long reqNo, UpdateRequireRequest updateRequireRequest) {
 
@@ -214,7 +211,6 @@ public class VacationService {
         requireRepository.save(require);
         signRepository.save(sign);
     }
-
 
     /* 연차 취소 */
     @Transactional

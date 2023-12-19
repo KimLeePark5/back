@@ -1,5 +1,6 @@
 package com.kimleepark.thesilver.account.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kimleepark.thesilver.account.domain.type.AccountChangeStatus;
 import com.kimleepark.thesilver.account.domain.type.AccountStatus;
 import com.kimleepark.thesilver.employee.Employee;
@@ -44,19 +45,31 @@ public class Account {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountStatus status = ACTIVE;
+    private AccountStatus status = INACTIVE;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountChangeStatus changeStatus = UNCHANGED;
-
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeCode")
     private Employee employee;
 
+    public Account(String employeeNumber, String employeePassword, int attemptCount,Employee employee) {
+        this.employeeNumber = employeeNumber ;
+        this.employeePassword = employeePassword;
+        this.attemptCount = attemptCount;
+        this.employee = employee;
+    }
 
-
-
+    public static Account of(final String employeeNumber, final String employeePassword, int attemptCount, Employee employee){
+        return new Account(
+                employeeNumber,
+                employeePassword,
+                attemptCount,
+                employee
+        );
+    }
 
 
     public void updateRefreshToken(String refreshToken) {
@@ -76,6 +89,10 @@ public class Account {
     public void changePassword(String hashedNewPassword) {this.employeePassword = hashedNewPassword;}
 
     public void activeStatus() {this.status = ACTIVE;}
+
+    public void resetPwd() {
+        this.attemptCount = 0;
+    }
 }
 
 
