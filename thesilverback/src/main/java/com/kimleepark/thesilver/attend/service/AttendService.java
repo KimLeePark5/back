@@ -11,13 +11,19 @@ import com.kimleepark.thesilver.attend.dto.response.*;
 import com.kimleepark.thesilver.common.exception.BadRequestException;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
+import com.kimleepark.thesilver.vacation.domain.Require;
+import com.kimleepark.thesilver.vacation.domain.VacationType;
+import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
 import com.kimleepark.thesilver.vacation.domain.repository.RequireStateRepository;
+import com.kimleepark.thesilver.vacation.domain.repository.VacationTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,23 +31,28 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.ALREADY_EXIST_ATTEND;
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_MEMBER_CODE;
+import static com.kimleepark.thesilver.vacation.domain.type.RequireStatusType.PASS;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@EnableScheduling
 public class AttendService {
 
     private final RequireStateRepository requireStateRepository;
     private final AttendRepository attendRepository;
     private final ModifiedAttendRepository modifiedAttendRepository;
     private final EmployeeRepository employeeRepository;
+    private final VacationTypeRepository vacationTypeRepository;
+    private final RequireRepository requireRepository;
 
     @Transactional(readOnly = true)
     public List<ResponseAttend> getEmpAttend(long empNo, String month) {
@@ -59,20 +70,18 @@ public class AttendService {
     public void enterTimeSave(long empNo) {
         Employee employee = employeeRepository.findById(empNo).orElseThrow(() -> new IllegalArgumentException());
         Attend attend = attendRepository.findByEmployeeCodeAndAttendDate(employee,LocalDate.now()).orElseThrow(()->new IllegalArgumentException());
-
         attend.putEnterTime();
 
         LocalTime limit = LocalTime.of(9, 10);
         LocalTime now = LocalTime.now();
-
         LocalDateTime nowDate = LocalDateTime.now();
+        log.info("12312312321 :{}",requireStateRepository.existsByEmployeeAndEndDateAndVacationTypeVacationNameAndReqStatus(employee,LocalDateTime.of(nowDate.getYear(),nowDate.getMonth(),nowDate.getDayOfMonth(),13,0),"오전반차",PASS));
         if (now.isAfter(limit)) {
-//            if(requireStateRepository.existsByEmployeeAndEndDate(employee,LocalDateTime.of(nowDate.getYear(),nowDate.getMonth(),nowDate.getDayOfMonth(),13,0))){
-//                attend.updateMorningOff();
-//
-//            }else{
+            if(requireStateRepository.existsByEmployeeAndEndDateAndVacationTypeVacationNameAndReqStatus(employee,LocalDateTime.of(nowDate.getYear(),nowDate.getMonth(),nowDate.getDayOfMonth(),13,0),"오전반차",PASS)){
+                attend.updateMorningOff();
+            }else{
                 attend.updateLate();
-//            }
+            }
 
         }
 
@@ -94,27 +103,30 @@ public class AttendService {
         LocalDateTime today2 = LocalDateTime.now();
 
         LocalDateTime foramtDate = LocalDateTime.of(today2.getYear(),today2.getMonth(),today2.getDayOfMonth(),0,0);
-
+        attend.updateTypeDefault();
         if (now.isAfter(limit)) {
-//            log.info("boolean:{}",requireStateRepository.existsByEmployeeAndEndDateAndVacationTypeVacationNameAndReqStatus(employee,foramtDate,"오후반차");
-
             attend.updateType();
         }
 
         attend.setLeaveTime();
         Duration diff = Duration.between(attend.getEntertime(), attend.getLeavetime());
-        int attendTime =  diff.toHoursPart()-1;
-        attend.setAttendTime(attendTime);
+        int attendTime =  diff.toHoursPart();
+
+        if(attendTime >= 4 ){
+            attend.setAttendTime(attendTime - 1);
+        }else{
+            attend.setAttendTime(attendTime);
+        }
+
 
 
         if (now.isBefore(leaveEarly)) {
-//            if(requireStateRepository.existsByEmployeeAndEndDateAndVacationTypeVacationName(employee,foramtDate,"오후반차")){
-//                attend.updateafternoonoff();
-//            }else{
+            if(requireStateRepository.existsByEmployeeAndEndDateAndVacationTypeVacationNameAndReqStatus(employee,foramtDate,"오후반차",PASS)){
+                attend.updateafternoonoff();
+            }else{
                 attend.updateLeaveEarly();
-//            }
+            }
         }
-
     }
 
 
@@ -130,9 +142,11 @@ public class AttendService {
         Employee employee = employeeRepository.findById(empNo).orElseThrow(() -> new IllegalArgumentException());
         Attend attend = attendRepository.findById(attendNo)
                 .orElseThrow(() -> new IllegalArgumentException());
+
         ModifiedAttend newModifiedAttend = ModifiedAttend.of(attend, requestAttend, employee);
 
         attend.updateAttend(requestAttend);
+
 
         modifiedAttendRepository.save(newModifiedAttend);
     }
@@ -145,6 +159,7 @@ public class AttendService {
         log.info("attendHistory : {}", attendHistory.getContent());
 
         return attendHistory.map(history -> ResponseModifiedAttend.from(history));
+
 
     }
 
@@ -233,8 +248,6 @@ public class AttendService {
         List<Employee> employees = employeeRepository.findAll();
         List<ResponseAttendAdminTwo> two = employees.stream().map(emp->ResponseAttendAdminTwo.of(emp,start,end)).collect(Collectors.toList());
 
-
-
         switch (value){
             case "abs" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getAbsentCount).reversed());
             break;
@@ -253,13 +266,27 @@ public class AttendService {
         PageRequest pageRequest = PageRequest.of(page-1,10);
         int startList = (int) pageRequest.getOffset();
         int endList = Math.min((startList + pageRequest.getPageSize()), two.size());
-
         Page<ResponseAttendAdminTwo> pageResponseAttendAdmin = new PageImpl<>(two.subList(startList,endList),pageRequest, two.size());
-        log.info("12312312312312:{}",pageResponseAttendAdmin.getContent());
-
 
 
         ResponseAttendAndModify responseAttendAndModify = ResponseAttendAndModify.of(responseModifiedAttends,pageResponseAttendAdmin);
         return responseAttendAndModify;
     }
+
+
+//    @Scheduled(cron = "0 0 05 * * ?")
+//    public void scheduleAttned(){
+//
+//        List<Employee> employees  = employeeRepository.findAll();
+//        List<Attend> attendList = employees.stream().map(emp -> Attend.getEmpNo(emp)).collect(Collectors.toList());
+//
+//        attendRepository.saveAll(attendList);
+//    }
+//
+//    @Scheduled(cron = "0 00 15 * * MON-FRI")
+//    public void absentSchedule(){
+//        List<Attend> attendList = attendRepository.findByAttendDateAndEntertimeIsNull(LocalDate.now());
+//
+//        attendList.forEach(att -> att.updateAbsent());
+//    }
 }
