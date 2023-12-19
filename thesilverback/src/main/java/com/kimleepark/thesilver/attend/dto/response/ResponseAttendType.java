@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @ToString
 public class ResponseAttendType {
+
     private final long empNo;
     //결근
     private final int absentCount;

@@ -9,4 +9,5 @@ import java.time.LocalDate;
 
 public interface TodoListRepository extends JpaRepository<TodoList,Long> {
     Page<TodoList> findByEmployeeCodeAndTodoDate(Pageable pageable, Long empNo, LocalDate date);
+
 }

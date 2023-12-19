@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @ToString
 @RequiredArgsConstructor
 public class ResponseAttendAdmin {
+
     private final Long empCode;
     private final String empRank;
     private final String team;
