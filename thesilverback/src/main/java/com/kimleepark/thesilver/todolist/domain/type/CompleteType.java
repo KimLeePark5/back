@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CompleteType {
     COMPLETE("complete"),
-
     INCOMPLETE("incomplete");
 
     private final String value;

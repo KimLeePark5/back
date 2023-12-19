@@ -8,5 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ModifiedAttendRepository extends JpaRepository<ModifiedAttend,Long> {
     Page<ModifiedAttend> findByAttendNo(Pageable pageable, int attendNo);
-
 }

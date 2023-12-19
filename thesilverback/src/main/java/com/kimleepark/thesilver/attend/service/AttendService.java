@@ -160,6 +160,7 @@ public class AttendService {
             throw new BadRequestException(ALREADY_EXIST_ATTEND);
         }
     }
+
     public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page,final String month) {
 
         String date = month + "-01";
@@ -261,26 +262,4 @@ public class AttendService {
         ResponseAttendAndModify responseAttendAndModify = ResponseAttendAndModify.of(responseModifiedAttends,pageResponseAttendAdmin);
         return responseAttendAndModify;
     }
-
-
-
-//    @Scheduled(cron = "0 0 05 * * ?")
-//    public void scheduleAttned(){
-//
-//        List<Employee> employees  = employeeRepository.findAll();
-//        List<Attend> attendList = employees.stream().map(emp -> Attend.getEmpNo(emp)).collect(Collectors.toList());
-//
-
-//        attendRepository.saveAll(attendList);
-//    }
-//
-
-
-//    @Scheduled(cron = "0 00 15 * * MON-FRI")
-//    public void absentSchedule(){
-//        List<Attend> attendList = attendRepository.findByAttendDateAndEntertimeIsNull(LocalDate.now());
-//
-
-//        attendList.forEach(att -> att.updateAbsent());
-//    }
 }

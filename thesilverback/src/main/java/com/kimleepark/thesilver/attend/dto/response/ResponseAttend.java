@@ -16,7 +16,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 @ToString
 public class ResponseAttend {
-
     private final Long empNo;
     private final int attendCode;
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -14,6 +14,8 @@ import java.util.List;
 public class ResponseAttendAndModify {
     private final List<ResponseModifiedAttend> responseModifiedAttends;
     private final Page<ResponseAttendAdminTwo> responseAttendAdminTwos;
+
+
     public static ResponseAttendAndModify of(List<ResponseModifiedAttend> responseModifiedAttends, Page<ResponseAttendAdminTwo> two) {
 
         return new ResponseAttendAndModify(responseModifiedAttends, two);
