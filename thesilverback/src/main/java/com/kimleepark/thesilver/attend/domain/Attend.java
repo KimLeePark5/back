@@ -70,7 +70,6 @@ public class Attend {
         attend.employeeCode = employee;
     }
 
-
     public void updateType() {
         this.type = OVERTIME;
     }
