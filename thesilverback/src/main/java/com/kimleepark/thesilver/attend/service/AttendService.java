@@ -11,6 +11,7 @@ import com.kimleepark.thesilver.attend.dto.response.*;
 import com.kimleepark.thesilver.common.exception.BadRequestException;
 import com.kimleepark.thesilver.employee.Employee;
 import com.kimleepark.thesilver.employee.repository.EmployeeRepository;
+import com.kimleepark.thesilver.jwt.CustomUser;
 import com.kimleepark.thesilver.vacation.domain.Require;
 import com.kimleepark.thesilver.vacation.domain.VacationType;
 import com.kimleepark.thesilver.vacation.domain.repository.RequireRepository;
@@ -175,19 +176,28 @@ public class AttendService {
         }
     }
 
-    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page,final String month) {
+    public ResponseAttendAdminAndModifiedAttend getAttendAdmin(final Integer page, final String month, final CustomUser customUser) {
+        Employee employee1 = employeeRepository.findById(customUser.getEmployeeCode()).orElseThrow(()-> new IllegalArgumentException());
+
 
         String date = month + "-01";
         LocalDate start = LocalDate.parse(date).minusDays(1);
         LocalDate end = LocalDate.parse(date).plusMonths(1);
-
         List<ModifiedAttend> modifiedAttends = modifiedAttendRepository.findAll();
 
-        Page<Employee> employees = employeeRepository.findAll(getPageable(page));
+        Page<Employee> employees = null;
+
+        if(employee1.getRank().getRankCode() == 1) {
+            employees = employeeRepository.findAll(getPageable(page));
+        }else{
+            employees = employeeRepository.findByTeamTeamCode(getPageable(page),employee1.getTeam().getTeamCode());
+        }
+
 
         Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
-        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
 
+
+        List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
         Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
         ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
         return lists;
