@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RequireRepository extends JpaRepository<Require, Long> {
 
     /* 사용 연차 계산하여 연차 현황에 반영하기 */
-    Long countByEmployeeEmployeeCodeAndReqStatus(Long employeeCode, RequireStatusType reqStatus);
+    List<Require> findByEmployeeEmployeeCodeAndReqStatus(Long employeeCode, RequireStatusType requireStatusType);
 
     /* 로그인 한 직원 코드로 연차 상신 현황 조회 */
     List<Require> findByEmployeeEmployeeCode(Long employeeCode);

@@ -18,10 +18,8 @@ public class ResponseModifiedAttend {
     private final LocalTime afterEntertime;
     private final LocalTime beforeLeavetime;
     private final LocalTime afterLeavetime;
-    private final String beforeNote;
-    private final String afterNote;
-    private final String beforeType;
-    private final String afterType;
+    private final String note;
+    private final String type;
 
 
     public static ResponseModifiedAttend from(ModifiedAttend history) {
@@ -33,10 +31,8 @@ public class ResponseModifiedAttend {
                 history.getAfterEntertime(),
                 history.getBeforeLeavetime(),
                 history.getAfterLeavetime(),
-                history.getBeforeNote(),
-                history.getAfterNote(),
-                history.getBeforeType(),
-                history.getAfterType()
+                history.getNote(),
+                history.getType()
         );
     }
 }

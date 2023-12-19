@@ -57,10 +57,6 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/programimgs/**").permitAll() //이미지 요청
                 .antMatchers(HttpMethod.GET, "/api/v1/programs/**", "/api/v1/journals/**").permitAll()
                 .antMatchers("/api/v1/programs-management/**").hasAnyRole("센터장","팀장")
-                .antMatchers("/api/v1/**").permitAll()
-
-//                .antMatchers("/api/v1/**").permitAll()ㄷ
-
                 .anyRequest().authenticated()
                 .and()
                 // 로그인 필터 설정

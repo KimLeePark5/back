@@ -64,6 +64,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Custo
                     "    month DESC", nativeQuery = true)
     List<ThirdGraphData> getThirdGraphData();
 
+    // 첫번째 데이터
     @Query(nativeQuery = true, value =
             "SELECT subquery.year, allMonths.month, COALESCE(SUM(subquery.totalCount) OVER (ORDER BY subquery.year, allMonths.month ASC), 0) AS cumulativeCount " +
                     "FROM ( " +
@@ -76,7 +77,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Custo
                     "    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 " +
                     "    UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 " +
                     ") AS allMonths ON subquery.month = allMonths.month " +
-                    "ORDER BY subquery.year DESC, allMonths.month DESC"
+                    "ORDER BY subquery.year DESC, allMonths.month"
     )
     List<FirstGraphData> getFirstGraphData();
 

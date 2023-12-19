@@ -96,10 +96,10 @@ public class ProgramController {
 
          System.out.println("programRequest" + programRequest);
          // ProgramService의 save 메서드 호출
-         Long programCode = programService.save(teacherImg, programRequest);
+         Long code = programService.save(teacherImg, programRequest);
 
          // 프로그램이 성공적으로 저장되면 해당 프로그램의 URI를 반환
-         return ResponseEntity.created(URI.create("/programs-management/" + programCode)).build();
+         return ResponseEntity.created(URI.create("/programs-management/" + code)).build();
      }
 
     // 5. 프로그램 수정(관리자)
@@ -140,7 +140,7 @@ public class ProgramController {
     @GetMapping("/program/myProgram")
     public ResponseEntity<Void> getMyProgram(@AuthenticationPrincipal CustomUser customUser){
 
-//        programService.getMyProgram(customUser.getEmployeeCode());
+        programService.getMyProgram(customUser.getEmployeeCode());
 
 
         return null;
