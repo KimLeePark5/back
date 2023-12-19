@@ -21,7 +21,6 @@ public class ResponseModifiedAttend {
     private final String afterNote;
     private final String beforeType;
     private final String afterType;
-
     public static ResponseModifiedAttend from(ModifiedAttend history) {
         return new ResponseModifiedAttend(
                 history.getAttendNo(),
@@ -37,4 +36,5 @@ public class ResponseModifiedAttend {
                 history.getAfterType()
         );
     }
+
 }
