@@ -147,18 +147,6 @@ public class JournalService {
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
-    // 2-1. 다중 검색 셀렉트 바 (직원 이름)
-    @Transactional(readOnly = true)
-    public List<String> getEmployeeName() {
-        return employeeRepository.findAllEmployeeNames();
-    }
-
-    // 2-2. 다중 검색 셀렉트 바 (카테고리 이름)
-    @Transactional(readOnly = true)
-    public List<String> getCategoryName() {
-        return programRepository.findAllCategoryNames(); // findAllCategoryNames 메서드가 존재한다고 가정합니다.
-    }
-
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
     @Transactional(readOnly = true)
     public CustomerJournalResponse getCustomerJournal(final Long journalCode) {
