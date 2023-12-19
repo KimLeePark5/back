@@ -54,5 +54,4 @@ public class JournalCreateRequest {
     @NotNull
     private String participantNames;    // 참가자들의 이름을 쉼표로 구분하여 이어서 저장하는 문자열
 
-
 }

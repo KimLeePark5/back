@@ -50,8 +50,6 @@ public class Journal {
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>(); // 참석자들
 
-//    @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Attachment> attachments = new ArrayList<>();       // 첨부파일들
     @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments = new HashSet<>(); // 중복 방지를 위한 Set 사용
 
@@ -86,6 +84,11 @@ public class Journal {
         }
     }
 
+    // Journal 엔터티의 addParticipant 메서드 추가
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
+        participant.setJournal(this);
+    }
 
     public void setJournalCode(Long journalCode) {
         this.journalCode = journalCode;

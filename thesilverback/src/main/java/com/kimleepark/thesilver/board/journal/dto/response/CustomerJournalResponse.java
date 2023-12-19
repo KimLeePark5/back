@@ -28,7 +28,7 @@ public class CustomerJournalResponse {
     private LocalTime startTime;        // 수업 시작 시간
     private LocalTime endTime;           // 수업 종료 시간
     private String day;                 // 요일
-//    private Long employeeCode;        // 직원 코드
+    //    private Long employeeCode;        // 직원 코드
     private String employeeName;        // 직원 이름
     private String teacherName;         // 강사 이름
     private String subProgress;          //프로그램 진행 사항
