@@ -214,18 +214,18 @@ public class AttendService {
 
         Page<Employee> employees = employeeRepository.findByEmployeeNameContaining(getPageable(page),name);
 
-        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee,start,end));
+        Page<ResponseAttendAdmin> responseAttendAdminList = employees.map(employee -> ResponseAttendAdmin.from(employee, start, end));
         List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
 
-        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
+        Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee, start, end));
 
-        ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
+        ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends, responseAttendTypes);
         return lists;
     }
 
-    public ResponseAttendAdminAndModifiedAttend getAttendByCategory(Integer page, String value,String month) {
-        log.info("aaaapage:{}",page);
-        log.info("vaa:{}",value);
+    public ResponseAttendAdminAndModifiedAttend getAttendByCategory(Integer page, String value, String month) {
+        log.info("aaaapage:{}", page);
+        log.info("vaa:{}", value);
         String date = month + "-01";
         LocalDate start = LocalDate.parse(date).minusDays(1);
         LocalDate end = LocalDate.parse(date).plusMonths(1);
@@ -234,9 +234,9 @@ public class AttendService {
         List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
 
         Page<Employee> employees = employees = employeeRepository.findAllByOrderByTeam(getPageable(page));
-        Page<ResponseAttendAdmin> pageResponseAttendAdmin = employees.map(emp->ResponseAttendAdmin.from(emp,start,end));
-        Page<ResponseAttendType> responseAttendTypes = responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
-        ResponseAttendAdminAndModifiedAttend lists = lists = ResponseAttendAdminAndModifiedAttend.of(pageResponseAttendAdmin, responseModifiedAttends,responseAttendTypes);
+        Page<ResponseAttendAdmin> pageResponseAttendAdmin = employees.map(emp -> ResponseAttendAdmin.from(emp, start, end));
+        Page<ResponseAttendType> responseAttendTypes = responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee, start, end));
+        ResponseAttendAdminAndModifiedAttend lists = lists = ResponseAttendAdminAndModifiedAttend.of(pageResponseAttendAdmin, responseModifiedAttends, responseAttendTypes);
 
 
         return lists;
@@ -245,6 +245,7 @@ public class AttendService {
     private Pageable getPageable(int currentPage) {
         return PageRequest.of(currentPage - 1, 10);
     }
+
     public ResponseAttendAndModify getAttendByLate(Integer page, String value, String month) {
         String date = month + "-01";
 
@@ -255,43 +256,73 @@ public class AttendService {
 
 
         List<Employee> employees = employeeRepository.findAll();
-        List<ResponseAttendAdminTwo> two = employees.stream().map(emp->ResponseAttendAdminTwo.of(emp,start,end)).collect(Collectors.toList());
+        List<ResponseAttendAdminTwo> two =
+                employees.stream()
+                        .map(emp -> ResponseAttendAdminTwo.of(emp, start, end))
+                        .collect(Collectors.toList());
 
-        switch (value){
-            case "abs" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getAbsentCount).reversed());
-            break;
-            case "late" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getLateCount).reversed());
+        switch (value) {
+            case "abs":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getAbsentCount)
+                        .reversed());
                 break;
-            case "leaveE" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getLeaveEarlyCount).reversed());
+            case "late":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getLateCount)
+                        .reversed());
                 break;
-            case "vac" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getVacCount).reversed());
+            case "leaveE":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getLeaveEarlyCount)
+                        .reversed());
                 break;
-            case "atTime" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getAttendTime).reversed());
+            case "vac":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getVacCount)
+                        .reversed());
                 break;
-            case "team" : two.sort(Comparator.comparing(ResponseAttendAdminTwo::getTeam));
-            break;
+            case "atTime":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getAttendTime)
+                        .reversed());
+                break;
+            case "team":
+                two.sort(Comparator
+                        .comparing(ResponseAttendAdminTwo::getTeam));
+                break;
         }
 
-        PageRequest pageRequest = PageRequest.of(page-1,10);
+        PageRequest pageRequest =
+                PageRequest.of(page - 1, 10);
         int startList = (int) pageRequest.getOffset();
-        int endList = Math.min((startList + pageRequest.getPageSize()), two.size());
-        Page<ResponseAttendAdminTwo> pageResponseAttendAdmin = new PageImpl<>(two.subList(startList,endList),pageRequest, two.size());
+        int endList = Math.min
+                ((startList + pageRequest.getPageSize()), two.size());
+        Page<ResponseAttendAdminTwo> pageResponseAttendAdmin =
+                new PageImpl<>(two.subList(startList, endList)
+                        , pageRequest, two.size());
+
+        log.info("pageRequest****************************");
+        log.info("PageRequesst:{}",pageRequest);
+        log.info("startList:{}",startList);
+        log.info("endList:{}",endList);
+        log.info("pageRequest****************************");
 
 
-        ResponseAttendAndModify responseAttendAndModify = ResponseAttendAndModify.of(responseModifiedAttends,pageResponseAttendAdmin);
+        ResponseAttendAndModify responseAttendAndModify = ResponseAttendAndModify.of(responseModifiedAttends, pageResponseAttendAdmin);
         return responseAttendAndModify;
     }
 
     @Scheduled(cron = "0 00 05 * * ?")
-    public void scheduleAttned(){
-        List<Employee> employees  = employeeRepository.findAll();
+    public void scheduleAttned() {
+        List<Employee> employees = employeeRepository.findAll();
         List<Attend> attendList = employees.stream().map(emp -> Attend.getEmpNo(emp)).collect(Collectors.toList());
 
         attendRepository.saveAll(attendList);
     }
 
     @Scheduled(cron = "0 00 15 * * MON-FRI")
-    public void absentSchedule(){
+    public void absentSchedule() {
         List<Attend> attendList = attendRepository.findByAttendDateAndEntertimeIsNull(LocalDate.now());
 
         attendList.forEach(att -> att.updateAbsent());
