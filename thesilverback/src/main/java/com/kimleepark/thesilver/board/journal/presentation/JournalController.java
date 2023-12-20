@@ -104,19 +104,7 @@ public class JournalController {
         return ResponseEntity.ok(pagingResponse);
     }
 
-    //2-1. 다중 검색 셀렉트 바 (직원 이름)
-    @GetMapping("/journals/search/employeeNames")
-    public ResponseEntity<List<String>> getEmployeeName() {
-        List<String> employeeName = journalService.getEmployeeName();
-        return ResponseEntity.ok(employeeName);
-    }
 
-    //2-2. 다중 검색 셀렉트 바 (카테고리 이름)
-    @GetMapping("/journals/search/categoryNames")
-    public ResponseEntity<List<String>> getCategoryName() {
-        List<String> categoryName = journalService.getCategoryName();
-        return ResponseEntity.ok(categoryName);
-    }
 
 
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(직원, 관리자)

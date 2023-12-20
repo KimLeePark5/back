@@ -34,13 +34,10 @@ public class AttendController {
 
     @GetMapping("/myAttend")
     public ResponseEntity<ResponseTypeAndAttend> getEmpAttend(@RequestParam final String month,@AuthenticationPrincipal CustomUser customUser ){
-        long empNo = customUser.getEmployeeCode();
+        long empNo = customUser.getEmployeeCode(); //로그인된 직원 번호
 
-        log.info("empNo : {}",customUser.getEmployeeCode());
         List<ResponseAttend> responseAttend = attendService.getEmpAttend(empNo,month);
         ResponseAttendType responseAttendType = ResponseAttendType.getAttendTypeCount(responseAttend,empNo);
-        log.info("responseAttend : {}", responseAttend);
-        log.info("responseAttendType : {}", responseAttendType);
 
         ResponseTypeAndAttend responseTypeAndAttend = ResponseTypeAndAttend.of(responseAttend,responseAttendType);
 
@@ -140,7 +137,4 @@ public class AttendController {
         PagingResponse pagingResponse = PagingResponse.of(responseAttendAdminTwo,button);
         return ResponseEntity.ok(pagingResponse);
     }
-
-
-
 }

@@ -64,7 +64,6 @@ public class AttendService {
         Employee employee = employeeRepository.findById(empNo).orElseThrow(() -> new IllegalArgumentException());
         List<Attend> attendList = attendRepository.findByEmployeeCodeAndAttendDateBetween(employee, start, end);
         log.info("attendList : {}", attendList);
-
         return attendList.stream().map(attend -> ResponseAttend.from(attend,empNo)).collect(Collectors.toList());
     }
 
@@ -199,6 +198,7 @@ public class AttendService {
 
         List<ResponseModifiedAttend> responseModifiedAttends = modifiedAttends.stream().map(modifylist -> ResponseModifiedAttend.from(modifylist)).collect(Collectors.toList());
         Page<ResponseAttendType> responseAttendTypes = employees.map(employee -> ResponseAttendType.getAttendTypeCountAdmin(employee,start,end));
+
         ResponseAttendAdminAndModifiedAttend lists = ResponseAttendAdminAndModifiedAttend.of(responseAttendAdminList, responseModifiedAttends,responseAttendTypes);
         return lists;
 
