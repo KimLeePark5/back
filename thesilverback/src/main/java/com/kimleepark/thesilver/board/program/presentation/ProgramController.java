@@ -51,32 +51,16 @@ public class ProgramController {
     @GetMapping("/programs/search")
     public ResponseEntity<PagingResponse> getCustomerProgramsByCategory(
             @RequestParam(defaultValue = "1") final Integer page, @RequestParam final String categoryName) {
-
-        // 요청 파라미터 확인
-        System.out.println("요청 파라미터 확인 Received request to get customer programs by category. Page: " + page + ", Category: " + categoryName);
-
         try {
             // 데이터 받아오기
             final Page<CustomerProgramsResponse> programs = programService.getCustomerProgramsByCategory(page, categoryName);
-
-            // 프린트 추가: 받아온 데이터 확인
-            System.out.println("받아온 데이터 확인 Received " + programs.getContent().size() + " programs for category '" + categoryName + "'");
-
             // 페이지 정보 생성
             final PagingButtonInfo pagingButtonInfo = Pagenation.getPagingButtonInfo(programs);
-
             // 응답 생성
             final PagingResponse pagingResponse = PagingResponse.of(programs.getContent(), pagingButtonInfo);
-
-            // 프린트 추가: 성공 응답 확인
-            System.out.println("성공 응답 확인 Returning programs response for category '" + categoryName + "'");
-
             return ResponseEntity.ok(pagingResponse);
-
         } catch (Exception e) {
-            // 프린트 추가: 예외 발생 시 에러 출력
             System.err.println("예외 발생 시 에러 출력 Error while processing request for customer programs by category '" + categoryName + "': " + e.getMessage());
-
             // 에러 응답 반환
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
