@@ -108,6 +108,7 @@ public class JournalService {
         return journals.map(journal -> CustomerJournalsResponse.from(journal));
     }
 
+
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(고객, 관리자)
     @Transactional(readOnly = true)
     public CustomerJournalResponse getCustomerJournal(final Long journalCode) {

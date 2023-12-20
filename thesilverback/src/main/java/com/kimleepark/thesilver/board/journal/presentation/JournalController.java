@@ -85,6 +85,7 @@ public class JournalController {
         return ResponseEntity.ok(pagingResponse);
     }
 
+
     // 3. 일지 상세 조회 - journalCode 로 프로그램 1개 조회(직원, 관리자)
     @GetMapping("/journals/{journalCode}")
     public ResponseEntity<CustomerJournalResponse> getCustomerJournal(@PathVariable final Long journalCode) {
