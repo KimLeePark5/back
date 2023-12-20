@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.kimleepark.thesilver.common.exception.type.ExceptionCode.NOT_FOUND_PROGRAM_CODE;
+import static java.awt.SystemColor.window;
 
 @Slf4j
 @Service
@@ -55,7 +56,6 @@ public class ProgramService {
     public Page<CustomerProgramsResponse> getCustomerPrograms(Integer page) {
 
         Page<Program> programs = programRepository.findAll(getPageable(page));
-    log.info("aaaaaaa : {}", programs);
         return programs.map(program -> CustomerProgramsResponse.from(program));
     }
 
@@ -63,13 +63,7 @@ public class ProgramService {
     @Transactional(readOnly = true)
     public Page<CustomerProgramsResponse> getCustomerProgramsByCategory(final Integer page, final String categoryName) {
 
-        // 입력된 카테고리명
-        System.out.println("입력된 카테고리명 Searching programs with category name: " + categoryName);
-
         Page<Program> programs = programRepository.findByCategory_CategoryNameContaining(categoryName, getPageable(page));
-
-        // 검색된 프로그램 수
-        System.out.println("검색된 프로그램 수 Found " + programs.getTotalElements() + " programs."); // 디버깅용 프린트
 
         return programs.map(program -> CustomerProgramsResponse.from(program));
     }
@@ -95,14 +89,18 @@ public class ProgramService {
             String replaceFileName = saveImageFile(teacherImg);
             System.out.println("이미지 파일 저장 : " + replaceFileName);
 
-            // 카테고리가 존재하는지 확인하고, 없으면 새로운 카테고리를 생성합니다.
-            ProgramCategory category = programCategoryRepository.findByCategoryName(programRequest.getCategoryName())
-                    .orElseGet(() -> {
-                        ProgramCategory newCategory = new ProgramCategory();
-                        newCategory.setCategoryName(programRequest.getCategoryName());
-                        return programCategoryRepository.save(newCategory);
-                    });
-            System.out.println("카테고리 존재 확인 후 생성 : " + category.getCategoryName()); ////
+            // 카테고리가 존재하는지 확인
+            Optional<ProgramCategory> existingCategoryOpt =
+                    programCategoryRepository.findByCategoryName(programRequest.getCategoryName());
+            if (existingCategoryOpt.isPresent()) {
+                // 이미 존재하는 경우 예외를 던지고 클라이언트에서 처리하도록 함
+                throw new CategoryAlreadyExistsException("이미 존재하는 카테고리입니다.");
+            }
+            // 존재하지 않는 경우 새로운 카테고리를 생성
+            ProgramCategory newCategory = new ProgramCategory();
+            newCategory.setCategoryName(programRequest.getCategoryName());
+            ProgramCategory category = programCategoryRepository.save(newCategory);
+            System.out.println("새로운 카테고리 생성 : " + category.getCategoryName());
 
             // 새로운 강사를 생성합니다.
             Teacher teacher = new Teacher();
@@ -139,6 +137,10 @@ public class ProgramService {
             System.out.println("프로그램 저장 : " + program.getCode());
 
             return program.getCode(); // 성공적으로 저장된 후 프로그램 코드를 반환합니다.
+
+        } catch (CategoryAlreadyExistsException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage()); // 클라이언트에서 이 메시지를 받아서 처리
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("프로그램 저장 중 오류 발생");
@@ -160,24 +162,19 @@ public class ProgramService {
 
     //5. 프로그램 수정(관리자)
     public void update(final Long programCode, final MultipartFile teacherImg, final ProgramUpdateRequest programRequest) {
-
         // 일단 프로그램 조회
         Program program = programRepository.findById(programCode)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
-
         try {
             // 이미지 수정 시 새로운 이미지 저장 후 기존 이미지 삭제 로직 필요함
             if (teacherImg != null) {
                 // 새로운 이미지 저장
                 String replaceFileName = saveImageFile(teacherImg);
-
                 // 기존 이미지 삭제
                 FileUploadUtils.deleteFile(IMAGE_DIR, program.getTeacher().getProfilePicture().replace(IMAGE_URL, ""));
-
                 // 강사 프로필 사진 URL 업데이트
                 program.getTeacher().setProfilePicture(IMAGE_URL + replaceFileName);
             }
-
             // 프로그램 정보 업데이트
             program.setStartDate(programRequest.getStartDate());
             program.setEndDate(programRequest.getEndDate());
