@@ -32,6 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (request.getRequestURI().startsWith("/programimgs/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
 
         /* 1. 사용자 헤더에서 Refresh Token 추출 */

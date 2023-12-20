@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long>, CustomerRepositoryCustom {
     Page<Customer> findByStatus(Pageable pageable, CustomerStatus status);
     Optional<Customer> findByCustomerCode(Long customerCode);
+
     Optional<Object> findByName(String name);
 
     // Second Graph Data

@@ -50,7 +50,7 @@ logging:
 # image file
 image:
   image-url: http://localhost:8001/programimgs/
-  image-dir: src/main/resources/static/programimgs
+  image-dir: src/main/resources/programimgs
 
 #---- CHECK ----
 # jwt setting
