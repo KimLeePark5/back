@@ -122,6 +122,8 @@ public class ProgramController {
         }
     }
 
+    //--------------------------------------------------------------------
+
     // 7. 본인 프로그램 조회(직원) 메인에 조회하는용
     @GetMapping("/program/myProgram")
     public ResponseEntity<List<ResponseProgram>> getMyProgram(@AuthenticationPrincipal CustomUser customUser){

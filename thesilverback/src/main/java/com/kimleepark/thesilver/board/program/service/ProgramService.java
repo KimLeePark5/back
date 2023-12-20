@@ -206,7 +206,7 @@ public class ProgramService {
             programRepository.save(program);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("프로그램 수정 중 오류 발생");
+            throw new ProgramUpdateException("프로그램을 업데이트하는 데 실패했습니다. 나중에 다시 시도해주세요.", e);
         }
     }
 
@@ -232,6 +232,7 @@ public class ProgramService {
     }
 
 
+    //-------------------------------------------------------------------------
     public  List<ResponseProgram> getMyProgram(Long employeeCode) {
         List<Program> programList = programRepository.findAll();
         List<ProgramCategory> programCategories = (List<ProgramCategory>) programCategoryRepository.findAll();
@@ -240,5 +241,13 @@ public class ProgramService {
         List<ResponseProgram> responsePrograms = programList.stream().map(program -> ResponseProgram.from(program,programCategories)).collect(Collectors.toList());
 
         return responsePrograms;
+    }
+
+    //--------------------------------------------------------------------
+
+    public class ProgramUpdateException extends RuntimeException { //수정 예외처리
+        public ProgramUpdateException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

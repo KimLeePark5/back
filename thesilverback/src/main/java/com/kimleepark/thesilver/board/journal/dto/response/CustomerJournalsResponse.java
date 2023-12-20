@@ -24,18 +24,15 @@ public class CustomerJournalsResponse {
     private String participantNames;
     private LocalDate observation; //참관 일자
     private String teacherName; // 강사 이름
-    private int numberOfParticipants; // 추가: 참가자 수
+    private int numberOfParticipants; // 참가자 수
 
     public static CustomerJournalsResponse from(Journal journal) {
-
         // 해당 일지에 있는 모든 참가자의 이름을 리스트로 가져옴
         List<String> participantNamesList = journal.getParticipants().stream()
                 .map(participant -> participant.getCustomer().getName())
                 .collect(Collectors.toList());
-
         // 참가자 수
         int numberOfParticipants = participantNamesList.size();
-
         // 여러 참가자가 있는 경우 이름을 쉼표와 공백으로 구분하여 조인
         String participantNames = String.join(", ", participantNamesList);
 
