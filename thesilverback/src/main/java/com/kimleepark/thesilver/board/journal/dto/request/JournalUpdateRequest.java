@@ -22,8 +22,10 @@ public class JournalUpdateRequest {
     private String categoryName;        // 카테고리 프로그램 이름
     @NotNull
     private String round;               // 회차
+
     @NotNull
     private LocalDate observation;      //참관 일자
+
     @NotNull
     private String programTopic;        // 프로그램 주제
     @NotNull
