@@ -218,7 +218,7 @@ public class JournalService {
             String employeeName = journalRequest.getEmployeeName();
             log.info("직원 이름으로 조회를 시도합니다: {}", employeeName);
 
-            // 참가자들 설정
+            // 직원 설정
             Employee employee = (Employee) employeeRepository.findByEmployeeName(journalRequest.getEmployeeName())
                     .orElseThrow(() -> {
                         // 직원이 없을 경우 예외
@@ -227,19 +227,16 @@ public class JournalService {
                     });
             log.info("직원을 찾았습니다: {}", employee.getEmployeeName());
 
-            Program program = (Program) programRepository.findByCategoryCategoryNameAndRound(journalRequest.getCategoryName(), journalRequest.getRound())
+            // 프로그램 엔터티 설정
+            Program program = (Program) programRepository.findByCategoryCategoryNameAndRound
+                            (journalRequest.getCategoryName(), journalRequest.getRound())
                     .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
-
             Teacher teacher = program.getTeacher(); // 프로그램과 관련된 선생님 정보 가져오기
 
             journal.setEmployee(employee);
             journal.setProgram(program);
 
             System.out.println("직원 및 프로그램 설정 : " + employee.getEmployeeName() + ", " + program.getCode());
-
-            // 프로그램 엔터티 설정
-            program = (Program) programRepository.findByCategoryCategoryNameAndRound(journalRequest.getCategoryName(), journalRequest.getRound())
-                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_PROGRAM_CODE));
 
             // 이 부분에서 setTeacherName이 아닌, Teacher 인스턴스를 바로 설정합니다.
             program.getTeacher().setTeacherName(teacher.getTeacherName());

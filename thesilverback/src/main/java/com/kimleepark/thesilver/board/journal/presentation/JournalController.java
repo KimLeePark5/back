@@ -129,7 +129,6 @@ public class JournalController {
             LocalTime programStartTime = program.getStartTime();
             LocalTime programEndTime = program.getEndTime();
             String programRound = program.getRound();
-
             // 직원의 참관 날짜 가져오기
             LocalDate observation = journalRequest.getObservation();
 
