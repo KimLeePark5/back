@@ -2,17 +2,15 @@
 
 ## 🖥️ 프로젝트 소개
 - 1000만에 임박한 고령인구를 케어하기 위한 시설이 증가하고 있습니다.
-  그렇기에 간편한 기록물 관리, 일정 관리, 건강 모니터링 등의 기능을 통해 노인 케어 환경을 개선하고
+- 그렇기에 간편한 기록물 관리, 일정 관리, 건강 모니터링 등의 기능을 통해 노인 케어 환경을 개선하고
   품질 높은 서비스를 제공하는 프로그램이 늘어나야 한다고 생각했습니다.
-  사용자 친화적이고 다양한 기능을 제공하여 노인들의 건강과 즐거운 놀이 활동을 도울수 있도록
-  THE SILVER 그룹웨어는 이러한 시설들이 보다 체계적으로 어르신들을 돌보고 관리할 수 있도록 효율적으로 운영하는 플랫폼입니다.
+- 사용자 친화적이고 다양한 기능을 제공하여 노인들의 건강과 즐거운 놀이 활동을 도울수 있도록
+- THE SILVER 그룹웨어는 이러한 시설들이 보다 체계적으로 어르신들을 돌보고 관리할 수 있도록 효율적으로 운영하는 플랫폼입니다.
 
 
 ## ⌛ 개발 기간
-- 23.11.13 ~ 23.12.22
-
-
-- 여기에 나중에 프로젝트 실행 계획표 사진 올리기
+- 23-11-13 ~ 23-12-22
+![image](https://github.com/KimLeePark5/front/assets/138549516/d78ecfec-a00f-4a99-a86e-c7084741b584)
 
 
 ## 🤼‍♀️ 멤버 구성
@@ -23,16 +21,7 @@
 - 팀원 : 박유리(https://github.com/qkrdbfl) - 프로그램 등록&수정&삭제 / 일지 등록&수정&삭제 / 캘린더 스케쥴 관리
 
 ## ⚙️ 개발환경
--  Software  | Tool	IntelliJ / Figma / Notion / Slack  
--  TEST      |	Post Man
--  DBMS      |	MySQL
--  Server    |	Apache TOMCAT
--  Language  |	JAVA 11 / javaScript / HTML / CSS
--  형상관리   |	GIT
--  화면구현   |  Figma
--  커뮤니티	 |  Notion / Slack
--  API	     |  kakao address api / FullCalendar api / DatePicker api
--  프레임워크 |	SpringBoot / React
+![image](https://github.com/KimLeePark5/front/assets/138549516/6dae63f4-5b3d-46de-93f6-49a0f5bc145b)
 
 
 ## 📌 주요 기능
